@@ -47,20 +47,19 @@
       margin-top: 20px;
       margin-bottom: 20px;
     }
-    /* ▼▼ ボタンのデザインを変更 ▼▼ */
-    /* 段選択ボタン（通常） */
+    
+    /* --- ▼▼ サイズ調整 ▼▼ --- */
     .dan-button {
       background-color: rgba(255, 255, 255, 0.7);
       color: #333;
       border: 2px solid rgba(0, 122, 255, 0.5);
       border-radius: 12px;
-      padding: 15px 10px;
-      font-size: 1.2em;
+      padding: 12px 10px; /* 変更 */
+      font-size: 1.1em; /* 変更 */
       font-weight: bold;
       cursor: pointer;
       transition: all 0.2s ease;
     }
-    /* 段選択ボタン（選択中） */
     .dan-button.selected {
       background-color: #007aff;
       color: white;
@@ -68,14 +67,13 @@
       transform: scale(1.05);
       box-shadow: 0 4px 10px rgba(0,0,0,0.2);
     }
-    /* モード選択ボタン（スタートボタン）*/
     .select-button {
       background: linear-gradient(135deg, #007aff, #5ac8fa);
       color: #fff;
       border: none;
       border-radius: 12px;
-      padding: 15px 10px;
-      font-size: 1.2em;
+      padding: 12px 10px; /* 変更 */
+      font-size: 1.1em; /* 変更 */
       font-weight: bold;
       cursor: pointer;
       transition: background 0.3s ease, transform 0.2s ease;
@@ -83,11 +81,13 @@
       width: 100%;
       margin-top: 10px;
     }
+    /* --- ▲▲ サイズ調整 ▲▲ --- */
+
     .select-button:hover {
       background: linear-gradient(135deg, #005bb5, #4aa0d3);
       transform: translateY(-2px);
     }
-    .select-button.tenkey-mode { /* テンキーモードボタン */
+    .select-button.tenkey-mode {
         background: linear-gradient(135deg, #ff9500, #ffc107);
     }
     .select-button.tenkey-mode:hover {
@@ -102,8 +102,6 @@
        background: linear-gradient(135deg, #34c759, #a8e6cf);
        width: 100%;
     }
-    /* ▲▲ ボタンのデザインを変更 ▲▲ */
-
     .quiz-container, .result-container {
         display: none;
     }
@@ -127,8 +125,12 @@
     .nav-button.random:hover { background: linear-gradient(135deg, #28a745, #82d4b2); }
 
     .question { margin-bottom: 20px; color: #1d1d1f; display: flex; align-items: baseline; flex-wrap: wrap; }
-    .question-number { font-size: 1.3em; margin-right: 10px; font-weight: normal; }
-    .question-text { font-size: 2.2em; font-weight: bold; }
+    
+    /* --- ▼▼ サイズ調整 ▼▼ --- */
+    .question-number { font-size: 1.2em; margin-right: 10px; font-weight: normal; } /* 変更 */
+    .question-text { font-size: 2.0em; font-weight: bold; } /* 変更 */
+    /* --- ▲▲ サイズ調整 ▲▲ --- */
+
     .options { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
     .option { background-color: rgba(255, 255, 255, 0.7); border: none; border-radius: 16px; padding: 15px; font-size: 1em; cursor: pointer; transition: background 0.3s ease 0.1s, transform 0.3s ease; text-align: center; position: relative; overflow: hidden; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); }
     .option:hover { background: linear-gradient(135deg, #a8edea, #fed6e3); box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); }
@@ -164,20 +166,20 @@
     .kuku-items { padding: 0 20px 15px 20px; border-top: 1px solid rgba(0,0,0,0.1); }
     .kuku-items p { margin: 8px 0; font-size: 1.1em; }
 
-    /* --- ▼▼ テンキー用CSS (ここから) ▼▼ --- */
+    /* --- ▼▼ テンキー サイズ調整 ▼▼ --- */
     #tenkey-container {
-      display: none; /* JSで表示を切り替える */
+      display: none;
       margin-top: 20px;
     }
     #tenkey-display {
       background-color: rgba(255, 255, 255, 0.8);
       border-radius: 12px;
       border: 2px solid rgba(0,0,0,0.1);
-      padding: 15px;
-      font-size: 2em;
+      padding: 12px; /* 変更 */
+      font-size: 1.8em; /* 変更 */
       font-weight: bold;
       text-align: right;
-      min-height: 1.5em; /* 高さを確保 */
+      min-height: 1.5em;
       color: #333;
       margin-bottom: 15px;
     }
@@ -190,27 +192,27 @@
       background-color: rgba(255, 255, 255, 0.7);
       border: none;
       border-radius: 16px;
-      padding: 20px;
-      font-size: 1.5em;
+      padding: 15px; /* 変更 */
+      font-size: 1.3em; /* 変更 */
       font-weight: bold;
       cursor: pointer;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
       transition: background-color 0.2s, transform 0.1s;
     }
+    /* --- ▲▲ テンキー サイズ調整 ▲▲ --- */
+    
     .tenkey-btn:active {
-      transform: scale(0.95); /* 押した感じ */
+      transform: scale(0.95);
     }
-    .tenkey-btn.ok { /* 決定ボタン */
+    .tenkey-btn.ok {
       background-color: #007aff;
       color: white;
-      grid-column: span 2; /* 2マス分の幅 */
+      grid-column: span 2;
     }
-    .tenkey-btn.clear { /* クリアボタン */
+    .tenkey-btn.clear {
       background-color: #ff3b30;
       color: white;
     }
-    /* --- ▲▲ テンキー用CSS (ここまで) ▲▲ --- */
-
   </style>
 </head>
 <body>
@@ -237,11 +239,11 @@
       <button class="select-button" onclick="startQuiz('choice')">4択モードでスタート</button>
       <button class="select-button tenkey-mode" onclick="startQuiz('tenkey')">テンキーモードでスタート</button>
     </div>
+
     <div id="quiz-container" class="quiz-container">
       <div id="quiz-content">
         <div id="question" class="question"></div> 
         <div id="options" class="options"></div>
-
         <div id="tenkey-container">
           <div id="tenkey-display"></div>
           <div class="tenkey-grid">
@@ -296,64 +298,42 @@
     let quizHistory = []; 
     let currentProblem = {}; 
     let shuffledOptions = [];
-    
-    // --- ▼▼ グローバル変数追加 ▼▼ ---
-    let selectedDan = null; // 'random', 1-9, または [3, 7] など
-    let currentMode = 'choice'; // 'choice' または 'tenkey'
-    let tenkeyInput = ''; // テンキーの入力内容
-    let answerSubmitted = false; // 答えを提出したか（重複防止）
-    // --- ▲▲ グローバル変数追加 ▲▲ ---
+    let selectedDan = null;
+    let currentMode = 'choice';
+    let tenkeyInput = '';
+    let answerSubmitted = false;
 
-
-    // --- ▼▼ 新設：段の選択 ▼▼ ---
     function setSelectedDan(dan) {
       selectedDan = dan;
-      // すべてのボタンから .selected を削除
       const buttons = document.querySelectorAll('.dan-button, .select-button.random');
       buttons.forEach(btn => btn.classList.remove('selected'));
-      
-      // 押されたボタンに .selected を追加
       if (dan === 'random') {
         document.getElementById('dan-btn-random').classList.add('selected');
       } else {
         document.getElementById(`dan-btn-${dan}`).classList.add('selected');
       }
     }
-    // --- ▲▲ 新設ここまで ▲▲ ---
 
-
-    // --- ▼▼ 変更：startQuiz ▼▼ ---
     function startQuiz(mode) {
-      // 1. 段が選ばれているかチェック
-      if (selectedDan === null && !Array.isArray(mode)) { // modeが配列の場合は苦手克服モード
+      if (selectedDan === null && !Array.isArray(mode)) {
         alert('1. どの段をれんしゅうするか選んでください');
         return;
       }
-
-      // 2. モードをセット
       if (Array.isArray(mode)) {
-          // 苦手克服モードの場合
-          selectedDan = mode; // [3, 7] など
-          currentMode = 'choice'; // 苦手克服は4択かテンキーか？ → とりあえず4択で
+          selectedDan = mode;
+          currentMode = 'choice'; // 苦手克服は当面4択固定（ご要望あれば変更可）
       } else {
-          // 通常モード
-          currentMode = mode; // 'choice' または 'tenkey'
+          currentMode = mode;
       }
-
-      // 3. 変数リセット
       currentQuestionIndex = 0;
       score = 0;
       quizHistory = [];
-      
-      // 4. 画面切り替え
       document.getElementById('selection-container').style.display = 'none';
       document.getElementById('quiz-container').style.display = 'block';
       document.getElementById('result-container').innerHTML = '';
       document.getElementById('attendance-link').style.display = 'none';
-
       loadQuestion();
     }
-    // --- ▲▲ 変更ここまで ▲▲ ---
     
     function shuffleArray(array) {
       for (let i = array.length - 1; i > 0; i--) {
@@ -365,24 +345,19 @@
 
     function generateKukuProblem() {
       let num1, num2;
-      
       if (selectedDan === 'random') {
         num1 = Math.floor(Math.random() * 9) + 1;
         num2 = Math.floor(Math.random() * 9) + 1;
       } else if (Array.isArray(selectedDan)) {
-        // 苦手克服モード (selectedDan が [3, 7] などの配列)
         const dan = selectedDan[Math.floor(Math.random() * selectedDan.length)];
         if (Math.random() > 0.5) { num1 = dan; num2 = Math.floor(Math.random() * 9) + 1; }
         else { num1 = Math.floor(Math.random() * 9) + 1; num2 = dan; }
       } else {
-        // 通常の段選択モード
         if (Math.random() > 0.5) { num1 = selectedDan; num2 = Math.floor(Math.random() * 9) + 1; }
         else { num1 = Math.floor(Math.random() * 9) + 1; num2 = selectedDan; }
       }
-
       const correctAnswer = num1 * num2;
       let options = [correctAnswer]; 
-
       while (options.length < 4) {
         let dummyAnswer;
         if (correctAnswer <= 10) { dummyAnswer = correctAnswer + (Math.floor(Math.random() * 11) - 5); }
@@ -390,7 +365,6 @@
         if (dummyAnswer === correctAnswer || dummyAnswer <= 0 || options.includes(dummyAnswer)) { continue; }
         options.push(dummyAnswer);
       }
-
       return {
         num1: num1, num2: num2,
         questionText: `${num1} × ${num2} = ?`,
@@ -400,10 +374,9 @@
       };
     }
 
-    // --- ▼▼ 変更：loadQuestion ▼▼ ---
     function loadQuestion() {
       currentProblem = generateKukuProblem();
-      answerSubmitted = false; // 回答フラグをリセット
+      answerSubmitted = false;
       
       const questionEl = document.getElementById('question');
       questionEl.innerHTML = `
@@ -411,59 +384,44 @@
         <span class="question-text">${currentProblem.questionText}</span>
       `;
       
-      // モードに応じて表示を切り替え
       const optionsEl = document.getElementById('options');
       const tenkeyEl = document.getElementById('tenkey-container');
       
       if (currentMode === 'choice') {
-        // 4択モード
         shuffledOptions = shuffleArray([...currentProblem.options]);
         const optionsHtml = shuffledOptions.map((option, index) => `
           <div class="option" onclick="selectOption(${index})">${option}</div>
         `).join('');
         optionsEl.innerHTML = optionsHtml;
-        optionsEl.style.display = 'grid'; // gridに戻す
+        optionsEl.style.display = 'grid';
         tenkeyEl.style.display = 'none';
       } else {
-        // テンキーモード
         optionsEl.innerHTML = '';
         optionsEl.style.display = 'none';
         tenkeyEl.style.display = 'block';
-        clearDisplay(); // テンキー表示をクリア
+        clearDisplay();
       }
-
-      // 解説を隠す
       const explanationEl = document.getElementById('explanation');
       explanationEl.style.display = 'none'; 
       explanationEl.style.opacity = '0'; 
     }
-    // --- ▲▲ 変更ここまで ▲▲ ---
 
-
-    // --- ▼▼ 変更：selectOption（4択の処理） ▼▼ ---
     function selectOption(index) {
-      if (answerSubmitted) return; // 既に回答済みなら何もしない
+      if (answerSubmitted) return;
       answerSubmitted = true;
-
       const options = document.querySelectorAll('.option');
       options.forEach(option => {
-        option.classList.add('disabled'); // すべての選択肢を無効化
+        option.classList.add('disabled');
       });
       options[index].classList.add('selected');
-
       const selectedAnswer = shuffledOptions[index];
       const isCorrect = (selectedAnswer === currentProblem.answer);
-
-      // 共通のフィードバック関数を呼ぶ
       showAnswerFeedback(isCorrect, selectedAnswer, options[index]);
     }
-    // --- ▲▲ 変更ここまで ▲▲ ---
 
-
-    // --- ▼▼ 新設：テンキーの処理 ▼▼ ---
     function pressKey(num) {
-      if (answerSubmitted) return; // 回答後は入力不可
-      if (tenkeyInput.length >= 3) return; // 3桁まで
+      if (answerSubmitted) return;
+      if (tenkeyInput.length >= 3) return;
       tenkeyInput += num;
       updateDisplay();
     }
@@ -472,43 +430,31 @@
       updateDisplay();
     }
     function updateDisplay() {
-      document.getElementById('tenkey-display').textContent = tenkeyInput || ' '; // 空の時代わりにスペース
+      document.getElementById('tenkey-display').textContent = tenkeyInput || ' ';
     }
     
-    // テンキーの「OK」ボタン
     function checkTenkeyAnswer() {
-      if (answerSubmitted) return; // 既に回答済みなら何もしない
-      if (tenkeyInput === '') return; // 未入力は無視
-
+      if (answerSubmitted) return;
+      if (tenkeyInput === '') return;
       answerSubmitted = true;
       const userAnswer = parseInt(tenkeyInput);
       const isCorrect = (userAnswer === currentProblem.answer);
-
-      // 共通のフィードバック関数を呼ぶ
-      showAnswerFeedback(isCorrect, userAnswer, null); // テンキーモードはハイライトする要素なし
+      showAnswerFeedback(isCorrect, userAnswer, null);
     }
-    // --- ▲▲ 新設ここまで ▲▲ ---
 
-
-    // --- ▼▼ 新設：共通フィードバック関数 ▼▼ ---
     function showAnswerFeedback(isCorrect, selectedAnswer, selectedOptionEl) {
-      // 1. 履歴に保存
       quizHistory[currentQuestionIndex] = {
         question: currentProblem.questionText,
-        selected: selectedAnswer, // 実際に選んだ/入力した答え
+        selected: selectedAnswer,
         correctAnswer: currentProblem.answer,
         explanation: currentProblem.explanation,
         isCorrect: isCorrect,
         num1: currentProblem.num1,
         num2: currentProblem.num2
       };
-
-      // 2. スコア加算
       if (isCorrect) {
         score++;
       }
-
-      // 3. 解説表示
       const explanationEl = document.getElementById('explanation');
       explanationEl.innerHTML = `
         <div class="explanation-header">
@@ -522,7 +468,6 @@
         explanationEl.style.opacity = '1';
       }, 100); 
 
-      // 4. スタイル適用 (4択モードの場合のみ)
       if (currentMode === 'choice' && selectedOptionEl) {
           if (isCorrect) {
             explanationEl.style.backgroundColor = 'rgba(232, 245, 233, 0.8)';
@@ -532,8 +477,6 @@
             explanationEl.style.backgroundColor = 'rgba(255, 235, 238, 0.8)';
             explanationEl.style.borderLeftColor = '#f44336';
             selectedOptionEl.classList.add('incorrect');
-            
-            // 不正解のときは正解も光らせる
             shuffledOptions.forEach((option, i) => {
               if (option === currentProblem.answer) {
                 document.querySelectorAll('.option')[i].classList.add('correct');
@@ -541,7 +484,6 @@
             });
           }
       } else {
-        // テンキーモードのスタイル
          if (isCorrect) {
             explanationEl.style.backgroundColor = 'rgba(232, 245, 233, 0.8)';
             explanationEl.style.borderLeftColor = '#4caf50';
@@ -553,17 +495,12 @@
           }
       }
     }
-    // --- ▲▲ 新設ここまで ▲▲ ---
-
 
     function nextQuestion() {
-      // --- ▼▼ 変更：回答済みかチェック ▼▼ ---
       if (!answerSubmitted) {
         alert('答えを選んでください');
         return;
       }
-      // --- ▲▲ 変更ここまで ▲▲ ---
-
       if (currentQuestionIndex < TOTAL_QUESTIONS - 1) {
         currentQuestionIndex++;
         loadQuestion();
@@ -572,7 +509,6 @@
       }
     }
     
-    // 苦手分析
     function analyzeMistakes() {
         const danStats = {};
         for (let i = 1; i <= 9; i++) { danStats[i] = { mistakes: 0 }; }
@@ -618,7 +554,6 @@
                 </div>
               `;
               const listString = JSON.stringify(nigatanaDanList);
-              // ▼▼ 苦手克服モードの呼び出し方を変更 ▼▼
               nigatanaButtonHtml = `
                 <button class="nav-button random" onclick='startQuiz(${listString})'>
                   苦手こくふくモード（${nigatanaDanList.join(', ')}の段）
@@ -655,23 +590,16 @@
       }
     }
 
-    // --- ▼▼ 変更：restartQuiz ▼▼ ---
     function restartQuiz() {
-      // 画面を戻す
       document.getElementById('quiz-container').style.display = 'none';
       document.getElementById('result-container').innerHTML = '';
       document.getElementById('attendance-link').style.display = 'none';
       document.getElementById('selection-container').style.display = 'block';
-      
-      // 選択状態をリセット
       selectedDan = null;
       const buttons = document.querySelectorAll('.dan-button, .select-button.random');
       buttons.forEach(btn => btn.classList.remove('selected'));
     }
-    // --- ▲▲ 変更ここまで ▲▲ ---
 
-
-    // モーダル用JS
     const modal = document.getElementById('kuku-modal-bg');
     function showKukuTable() { modal.style.display = 'flex'; }
     function closeKukuTable() { modal.style.display = 'none'; }
