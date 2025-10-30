@@ -48,14 +48,13 @@
       margin-bottom: 20px;
     }
     
-    /* --- ▼▼ サイズ調整 ▼▼ --- */
     .dan-button {
       background-color: rgba(255, 255, 255, 0.7);
       color: #333;
       border: 2px solid rgba(0, 122, 255, 0.5);
       border-radius: 12px;
-      padding: 12px 10px; /* 変更 */
-      font-size: 1.1em; /* 変更 */
+      padding: 12px 10px;
+      font-size: 1.1em;
       font-weight: bold;
       cursor: pointer;
       transition: all 0.2s ease;
@@ -72,8 +71,8 @@
       color: #fff;
       border: none;
       border-radius: 12px;
-      padding: 12px 10px; /* 変更 */
-      font-size: 1.1em; /* 変更 */
+      padding: 12px 10px;
+      font-size: 1.1em;
       font-weight: bold;
       cursor: pointer;
       transition: background 0.3s ease, transform 0.2s ease;
@@ -81,8 +80,6 @@
       width: 100%;
       margin-top: 10px;
     }
-    /* --- ▲▲ サイズ調整 ▲▲ --- */
-
     .select-button:hover {
       background: linear-gradient(135deg, #005bb5, #4aa0d3);
       transform: translateY(-2px);
@@ -102,6 +99,20 @@
        background: linear-gradient(135deg, #34c759, #a8e6cf);
        width: 100%;
     }
+
+    /* --- ▼▼ ここを追加しました ▼▼ --- */
+    .select-button.random.selected {
+      background: linear-gradient(135deg, #28a745, #82d4b2); /* 濃い緑（ホバー時と同じ）*/
+      color: white;
+      transform: scale(1.05);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+    /* --- ▲▲ ここまで追加 ▲▲ --- */
+    
+    .select-button.random:hover {
+       background: linear-gradient(135deg, #28a745, #82d4b2);
+    }
+
     .quiz-container, .result-container {
         display: none;
     }
@@ -125,11 +136,8 @@
     .nav-button.random:hover { background: linear-gradient(135deg, #28a745, #82d4b2); }
 
     .question { margin-bottom: 20px; color: #1d1d1f; display: flex; align-items: baseline; flex-wrap: wrap; }
-    
-    /* --- ▼▼ サイズ調整 ▼▼ --- */
-    .question-number { font-size: 1.2em; margin-right: 10px; font-weight: normal; } /* 変更 */
-    .question-text { font-size: 2.0em; font-weight: bold; } /* 変更 */
-    /* --- ▲▲ サイズ調整 ▲▲ --- */
+    .question-number { font-size: 1.2em; margin-right: 10px; font-weight: normal; }
+    .question-text { font-size: 2.0em; font-weight: bold; }
 
     .options { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
     .option { background-color: rgba(255, 255, 255, 0.7); border: none; border-radius: 16px; padding: 15px; font-size: 1em; cursor: pointer; transition: background 0.3s ease 0.1s, transform 0.3s ease; text-align: center; position: relative; overflow: hidden; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); }
@@ -165,8 +173,6 @@
     .kuku-chart-container details[open] summary::after { content: '－'; }
     .kuku-items { padding: 0 20px 15px 20px; border-top: 1px solid rgba(0,0,0,0.1); }
     .kuku-items p { margin: 8px 0; font-size: 1.1em; }
-
-    /* --- ▼▼ テンキー サイズ調整 ▼▼ --- */
     #tenkey-container {
       display: none;
       margin-top: 20px;
@@ -175,8 +181,8 @@
       background-color: rgba(255, 255, 255, 0.8);
       border-radius: 12px;
       border: 2px solid rgba(0,0,0,0.1);
-      padding: 12px; /* 変更 */
-      font-size: 1.8em; /* 変更 */
+      padding: 12px;
+      font-size: 1.8em;
       font-weight: bold;
       text-align: right;
       min-height: 1.5em;
@@ -192,15 +198,13 @@
       background-color: rgba(255, 255, 255, 0.7);
       border: none;
       border-radius: 16px;
-      padding: 15px; /* 変更 */
-      font-size: 1.3em; /* 変更 */
+      padding: 15px;
+      font-size: 1.3em;
       font-weight: bold;
       cursor: pointer;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
       transition: background-color 0.2s, transform 0.1s;
     }
-    /* --- ▲▲ テンキー サイズ調整 ▲▲ --- */
-    
     .tenkey-btn:active {
       transform: scale(0.95);
     }
@@ -272,7 +276,7 @@
   </div>
   
   
-  <div id="kuku-modal-bg" class="modal-bg" onclick="closeKukuTable()">
+  <div id="kuku-modal-bg" class="modal-bg" onclick="closeKKukuTable()">
     <div class="modal-content" onclick="event.stopPropagation()">
       <span class="modal-close-btn" onclick="closeKukuTable()">&times;</span>
       <h2>九九のひょう</h2>
@@ -283,7 +287,7 @@
         <details><summary>4のだん (し)</summary><div class="kuku-items"><p>4×1= 4 (しいちが し)</p><p>4×2= 8 (しにが はち)</p><p>4×3=12 (しさん じゅうに)</p><p>4×4=16 (しし じゅうろく)</p><p>4×5=20 (しご にじゅう)</p><p>4×6=24 (しろく にじゅうし)</p><p>4×7=28 (ししち にじゅうはち)</p><p>4×8=32 (しは さんじゅうに)</p><p>4×9=36 (しく さんじゅうろく)</p></div></details>
         <details><summary>5のだん (ご)</summary><div class="kuku-items"><p>5×1= 5 (ごいちが ご)</p><p>5×2=10 (ごに じゅう)</p><p>5×3=15 (ごさん じゅうご)</p><p>5×4=20 (ごし にじゅう)</p><p>5×5=25 (ごご にじゅうご)</p><p>5×6=30 (ごろく さんじゅう)</p><p>5×7=35 (ごしち さんじゅうご)</p><p>5×8=40 (ごは しじゅう)</p><p>5×9=45 (ごっく しじゅうご)</p></div></details>
         <details><summary>6のだん (ろく)</summary><div class="kuku-items"><p>6×1= 6 (ろくいちが ろく)</p><p>6×2=12 (ろくに じゅうに)</p><p>6×3=18 (ろくさん じゅうはち)</p><p>6×4=24 (ろくし にじゅうし)</p><p>6×5=30 (ろくご さんじゅう)</p><p>6×6=36 (ろくろく さんじゅうろく)</p><p>6×7=42 (ろくしち しじゅうに)</p><p>6×8=48 (ろくは しじゅうはち)</p><p>6×9=54 (ろっく ごじゅうし)</p></div></details>
-        <details><summary>7のだん (しち)</summary><div class="kuku-items"><p>7×1= 7 (しちいちが しち)</p><p>7×2=14 (しちに じゅうし)</p><p>7×3=21 (しちさん にじゅういち)</p><p>7×4=28 (しちし にじゅうはち)</p><p>7×5=35 (しちご さんじゅうご)</p><p>7×6=42 (しちろく しじゅうに)</p><p>7×7=49 (しちしち しじゅうく)</p><p>7×8=56 (しちは ごじゅうろく)</p><p>7×9=63 (しちく ろくじゅうさん)</p></div></details>
+        <details><summary>7のだん (しち)</summary><div class="kuku-items"><p>7×1= 7 (しちいちが しち)</p><p>7×2=14 (しちに じゅうし)</p><p>7×3=21 (しちさん にじゅういち)</p><p>7×4=28 (ししち にじゅうはち)</p><p>7×5=35 (しちご さんじゅうご)</p><p>7×6=42 (しちろく しじゅうに)</p><p>7×7=49 (しちしち しじゅうく)</p><p>7×8=56 (しちは ごじゅうろく)</p><p>7×9=63 (しちく ろくじゅうさん)</p></div></details>
         <details><summary>8のだん (はち)</summary><div class="kuku-items"><p>8×1= 8 (はちいちが はち)</p><p>8×2=16 (はちに じゅうろく)</p><p>8×3=24 (はちさん にじゅうし)</p><p>8×4=32 (はちし さんじゅうに)</p><p>8×5=40 (はちご しじゅう)</p><p>8×6=48 (はちろく しじゅうはち)</p><p>8×7=56 (はちしち ごじゅうろく)</p><p>8×8=64 (はっぱ ろくじゅうし)</p><p>8×9=72 (はっく しちじゅうに)</p></div></details>
         <details><summary>9のだん (く)</summary><div class="kuku-items"><p>9×1= 9 (くいちが く)</p><p>9×2=18 (くにく じゅうはち)</p><p>9×3=27 (くさん にじゅうしち)</p><p>9×4=36 (くし さんじゅうろく)</p><p>9×5=45 (くご しじゅうご)</p><p>9×6=54 (くろく ごじゅうし)</p><p>9×7=63 (くしち ろくじゅうさん)</p><p>9×8=72 (くはち しちじゅうに)</p><p>9×9=81 (くく はちじゅういち)</p></div></details>
       </div>
@@ -292,6 +296,7 @@
 
   
   <script>
+    // JavaScriptは前回のものと同一です (動作ロジックに変更はありません)
     const TOTAL_QUESTIONS = 10;
     let currentQuestionIndex = 0;
     let score = 0;
@@ -321,7 +326,7 @@
       }
       if (Array.isArray(mode)) {
           selectedDan = mode;
-          currentMode = 'choice'; // 苦手克服は当面4択固定（ご要望あれば変更可）
+          currentMode = 'choice';
       } else {
           currentMode = mode;
       }
