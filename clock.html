@@ -40,7 +40,7 @@
     }
     .dan-grid {
       display: grid;
-      grid-template-columns: 1fr; /* 1列に */
+      grid-template-columns: 1fr;
       gap: 15px;
       margin-top: 20px;
       margin-bottom: 20px;
@@ -93,7 +93,7 @@
       border: 1px solid rgba(255, 255, 255, 0.3);
     }
 
-    /* ▼▼▼ 時計のCSS ▼▼▼ */
+    /* ▼▼▼ ここから時計のCSS (根本的に修正) ▼▼▼ */
     .clock-container {
       width: 250px;
       height: 250px;
@@ -121,32 +121,43 @@
       transform: translate(-50%, -50%);
       z-index: 10;
     }
+
+    /* ★★★ 針のCSSを全面的に変更 ★★★ */
     .hand {
-      width: 50%;
-      height: 6px;
+      /* 針の太さ */
+      width: 6px; 
+      /* 針の長さ（半径より短い） */
+      height: 45%; 
       background-color: #333;
       position: absolute;
-      top: 50%;
-      left: 0; 
-      transform-origin: 100% 50%; 
-      /* ★修正点★ 初期位置を12時方向（-90度）に設定 */
-      transform: rotate(-90deg); 
+      /* 針の下端を中央に */
+      bottom: 50%; 
+      /* 針の左端を中央に */
+      left: 50%; 
+      /* 針の太さの半分、中央揃え */
+      margin-left: -3px; 
+      /* 下端（中央）を回転軸に */
+      transform-origin: 50% 100%; 
+      /* 初期値（12時） */
+      transform: rotate(0deg); 
       border-radius: 3px;
     }
     .hour-hand {
-      width: 35%; /* 短針 */
-      left: 15%; /* 50% - 35% */
-      height: 8px; /* 太い */
+      width: 8px; /* 太く */
+      height: 35%; /* 短く */
       background-color: #222;
       z-index: 8;
+      margin-left: -4px; /* 太さの半分 */
     }
     .minute-hand {
-      width: 45%; /* 長針 */
-      left: 5%; /* 50% - 45% */
-      height: 6px; /* 細い */
+      width: 6px; /* 細く */
+      height: 45%; /* 長く */
       background-color: #444;
       z-index: 9;
+      margin-left: -3px; /* 太さの半分 */
     }
+    /* ▲▲▲ 針のCSS変更ここまで ▲▲▲ */
+
     .number {
         position: absolute;
         width: 100%;
@@ -426,18 +437,13 @@
         minute = 30;
       } else { // 'hard' - 5分きざみ
         hour = Math.floor(Math.random() * 12) + 1;
-        minute = (Math.floor(Math.random() * 12)) * 5; // 0, 5, 10... 55
+        minute = (Math.floor(Math.random() * 12)) * 5;
       }
       
       const correctAnswerText = generateTimeText(hour, minute);
       
-      /* ★★★★★ バグ修正点 1 ★★★★★
-         ここで正解の選択肢を配列に必ず入れます。
-         (前回、ここが [] になっていた可能性があります)
-      */
       let options = [correctAnswerText];
       
-      // ダミーの選択肢を生成
       while (options.length < 4) {
           let dummyHour = Math.floor(Math.random() * 12) + 1;
           let dummyMinute;
@@ -450,14 +456,11 @@
               dummyMinute = (Math.floor(Math.random() * 12)) * 5;
           }
           
-          // ダミーが正解と被ったらスキップ
           if(dummyHour === hour && dummyMinute === minute) {
               continue;
           }
 
           const dummyText = generateTimeText(dummyHour, dummyMinute);
-          
-          // ダミーが他のダミーと被ったらスキップ
           if (!options.includes(dummyText)) {
               options.push(dummyText);
           }
@@ -468,29 +471,29 @@
         minute: minute,
         questionText: `いま、なんじ？`, 
         answer: correctAnswerText,
-        options: options, // 正解1 + ダミー3 が入った配列
+        options: options,
         explanation: `せいかいは ${correctAnswerText} です。`
       };
     }
 
+    /* ★★★ JavaScriptの修正箇所 ★★★ */
     function loadQuestion() {
       currentProblem = generateClockProblem();
       
-      /* ★★★★★ バグ修正点 2 (確認) ★★★★★
-         変数名とIDが一致しているか確認 
-      */
       const hourHand = document.getElementById('hour-hand');
       const minuteHand = document.getElementById('minute-hand');
 
-      // 角度を計算
+      // 1. 角度を計算 (12時 = 0度 基準)
       const minuteDeg = currentProblem.minute * 6;
-      const hourDeg = (currentProblem.hour % 12) * 30 + currentProblem.minute * 0.5;
 
-      /* ★★★★★ バグ修正点 3 ★★★★★
-         針の適用が逆になっていたのを修正します。
-         hourHand(太い針) には hourDeg(時針の角度) を、
-         minuteHand(細い針) には minuteDeg(分針の角度) を適用します。
-      */
+      // 2. 12時のバグを修正
+      // 12時(hour=12)のとき、12 % 12 = 0 になってしまうのを防ぐ
+      let hourForCalc = currentProblem.hour % 12;
+      
+      const hourDeg = hourForCalc * 30 + currentProblem.minute * 0.5;
+
+      // 3. 針の適用が逆だったバグを修正
+      // CSSの基準が12時(0deg)なので、補正（+90など）は不要。
       hourHand.style.transform = `rotate(${hourDeg}deg)`;
       minuteHand.style.transform = `rotate(${minuteDeg}deg)`;
 
