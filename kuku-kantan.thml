@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>九九れんしゅう（確認テスト）</title>
+  <style>
+    /* ご提示いただいたCSSをそのまま使用します */
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background: linear-gradient(135deg, #a8edea, #fed6e3);
+      background-size: cover;  
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      padding: 20px;
+      margin: 0;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    h1, h2 {
+      font-family: 'Noto Sans JP', sans-serif;
+      font-weight: 700;
+    }
+    .quiz-container, .result-card {
+      background-color: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+      margin-bottom: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    /* --- ▼ここを修正しました▼ --- */
+    .question {
+      /* font-size: 1.3em; を削除 */
+      margin-bottom: 20px;
+      color: #1d1d1f;
+      display: flex; /* 横並び */
+      align-items: baseline; /* ベースラインを揃える */
+      flex-wrap: wrap; /* 折り返し */
+    }
+    .question-number {
+      font-size: 1.3em; /* 「問題 1:」のサイズ (小さいまま) */
+      margin-right: 10px; /* 右側の余白 */
+      font-weight: normal;
+    }
+    .question-text {
+      font-size: 2.2em; /* 「7 × 9 = ?」のサイズ (大きく) */
+      font-weight: bold;
+    }
+    /* --- ▲ここまで修正▲ --- */
+    
+    .options {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+    }
+    .option {
+      background-color: rgba(255, 255, 255, 0.7);
+      border: none;
+      border-radius: 16px;
+      padding: 15px;
+      font-size: 1em;
+      cursor: pointer;
+      transition: background 0.3s ease 0.1s, transform 0.3s ease;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    .option:hover {
+      background: linear-gradient(135deg, #a8edea, #fed6e3);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+    .option.selected {
+      /* 選択した時点では色は変えず、正解・不正解で色を変える */
+    }
+    .option.disabled {
+      background: linear-gradient(135deg, #a8edea, #fed6e3);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+      pointer-events: none;
+    }
+    /* 正解時のグラデーション */
+    .option.correct {
+      background: linear-gradient(135deg, #34c759, #a8e6cf); /* 正解のグラデーション */
+      color: #fff;
+    }
+    /* 不正解時のグラデーション */
+    .option.incorrect {
+      background: linear-gradient(135deg, #ff3b30, #ff9a8b); /* 不正解のグラデーション */
+      color: #fff;
+    }
+    .option::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.1);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .option:active::after {
+      transform: scale(0.98);
+    }
+    .explanation {
+      margin-top: 20px;
+      font-size: 1em;
+      color: #333;
+      background-color: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(10px);
+      border-left: 5px solid #4caf50;
+      border-radius: 12px;
+      padding: 15px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      opacity: 0; /* JavaScriptで1にします */
+      display: none; /* JavaScriptでblockにします */
+      transition: opacity 0.3s ease;
+    }
+    .explanation-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+      font-weight: bold;
+      color: #4caf50;
+    }
+    .explanation-icon {
+      font-size: 1.5em;
+      margin-right: 10px;
+    }
+    .nav-button {
+      background: linear-gradient(135deg, #007aff, #5ac8fa);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      padding: 12px 24px;
+      font-size: 1em;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s ease;
+      margin-top: 20px;
+      width: 100%;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    .nav-button:hover {
+      background: linear-gradient(135deg, #005bb5, #4aa0d3);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+    .nav-button:active {
+      transform: scale(0.98);
+    }
+    .result-card {
+      margin-bottom: 20px;
+    }
+    .result-card h3 {
+      font-size: 1.2em;
+      margin-bottom: 10px;
+    }
+    .result-status {
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    .correct {
+      color: #34c759;
+    }
+    .incorrect {
+      color: #ff3b30;
+    }
+    #attendance-link {
+      background-color: #34c759;
+      color: white;
+      padding: 15px;
+      border-radius: 12px;
+      margin-top: 20px;
+      text-align: center;
+      display: none;
+    }
+    #attendance-link p {
+      margin: 0;
+      padding: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 style="text-align: center;">九九れんしゅう（確認テスト・改）</h1>
+    <div id="quiz-container" class="quiz-container">
+      <div id="quiz-content">
+        <div id="question" class="question"></div> 
+        <div id="options" class="options"></div>
+        <div id="explanation" class="explanation"></div>
+      </div>
+      <button id="next" class="nav-button" onclick="nextQuestion()">次の問題</button>
+    </div>
+    <div id="result-container"></div>
+    <div id="attendance-link"></div>
+  </div>
+  
+  
+  <script>
+    // --- ここからが九九練習アプリ用のプログラムです ---
+
+    const TOTAL_QUESTIONS = 10; // 問題数を10問に設定
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let quizHistory = []; // 解答の履歴を保存する配列
+    let currentProblem = {}; // 現在の問題（num1, num2, answer, options）
+    let shuffledOptions = []; // シャッフル後の選択肢
+
+    // 配列をシャッフルする関数
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    // 九九の問題を動的に生成する関数
+    function generateKukuProblem() {
+      const num1 = Math.floor(Math.random() * 9) + 1; // 1から9
+      const num2 = Math.floor(Math.random() * 9) + 1; // 1から9
+      const correctAnswer = num1 * num2;
+
+      let options = [correctAnswer]; // 正解の選択肢
+
+      // ダミーの不正解選択肢を3つ生成
+      while (options.length < 4) {
+        let dummyAnswer;
+        // 答えが10未満の場合、±5の範囲でダミーを作る
+        if (correctAnswer <= 10) {
+          dummyAnswer = correctAnswer + (Math.floor(Math.random() * 11) - 5); // -5から+5
+        } else {
+          // 答えが10以上の場合、±10の範囲でダミーを作る
+          dummyAnswer = correctAnswer + (Math.floor(Math.random() * 21) - 10); // -10から+10
+        }
+        
+        // ダミーが正解と同じ、0以下、または既に選択肢にある場合は再生成
+        if (dummyAnswer === correctAnswer || dummyAnswer <= 0 || options.includes(dummyAnswer)) {
+          continue;
+        }
+        options.push(dummyAnswer);
+      }
+
+      return {
+        num1: num1,
+        num2: num2,
+        questionText: `${num1} × ${num2} = ?`,
+        answer: correctAnswer,
+        options: options, // 正解1つとダミー3つ
+        explanation: `${num1} × ${num2} = ${correctAnswer} です。`
+      };
+    }
+
+    // 問題を読み込む関数
+    function loadQuestion() {
+      currentProblem = generateKukuProblem();
+      
+      // --- ▼ここを修正しました▼ ---
+      const questionEl = document.getElementById('question');
+      // 「問題番号」と「問題テキスト」を別々のspanにして、CSSで制御できるようにします
+      questionEl.innerHTML = `
+        <span class="question-number">問題 ${currentQuestionIndex + 1}:</span>
+        <span class="question-text">${currentProblem.questionText}</span>
+      `;
+      // --- ▲ここまで修正▲ ---
+
+      shuffledOptions = shuffleArray([...currentProblem.options]);
+      const optionsHtml = shuffledOptions.map((option, index) => `
+        <div class="option" onclick="selectOption(${index})">${option}</div>
+      `).join('');
+
+      document.getElementById('options').innerHTML = optionsHtml;
+
+      // 解説のリセット
+      const explanationEl = document.getElementById('explanation');
+      explanationEl.style.display = 'none'; // 解説を非表示に
+      explanationEl.style.opacity = '0'; 
+    }
+
+    // 選択肢を選んだ時の関数
+    function selectOption(index) {
+      const options = document.querySelectorAll('.option');
+      if (options[index].classList.contains('disabled')) {
+        return;
+      }
+
+      // すべての選択肢を無効化
+      options.forEach(option => {
+        option.classList.add('disabled');
+      });
+
+      options[index].classList.add('selected');
+
+      const selectedAnswer = shuffledOptions[index];
+      const isCorrect = (selectedAnswer === currentProblem.answer);
+
+      // 履歴に保存
+      quizHistory[currentQuestionIndex] = {
+        question: currentProblem.questionText,
+        selected: selectedAnswer,
+        correctAnswer: currentProblem.answer,
+        explanation: currentProblem.explanation,
+        isCorrect: isCorrect
+      };
+
+      if (isCorrect) {
+        score++;
+      }
+
+      // 解説の表示
+      const explanationEl = document.getElementById('explanation');
+      explanationEl.innerHTML = `
+        <div class="explanation-header">
+          <span class="explanation-icon">${isCorrect ? '🎉' : '💡'}</span>
+          ${isCorrect ? 'せいかい！' : 'おしい！'}
+        </div>
+        ${currentProblem.explanation}
+      `;
+      
+      explanationEl.style.display = 'block';
+
+      // 遅延させてフェードイン
+      setTimeout(() => {
+        explanationEl.style.opacity = '1';
+      }, 100); // 少し遅延させる
+
+      // 正解・不正解のスタイル適用
+      if (isCorrect) {
+        explanationEl.style.backgroundColor = 'rgba(232, 245, 233, 0.8)'; // 正解の背景色
+        explanationEl.style.borderLeftColor = '#4caf50';
+        options[index].classList.add('correct');
+      } else {
+        explanationEl.style.backgroundColor = 'rgba(255, 235, 238, 0.8)'; // 不正解の背景色
+        explanationEl.style.borderLeftColor = '#f44336';
+        options[index].classList.add('incorrect');
+        
+        // 不正解のときだけ、正解の選択肢もハイライトする
+        shuffledOptions.forEach((option, i) => {
+          if (option === currentProblem.answer) {
+            options[i].classList.add('correct'); // 正解の選択肢を緑にする
+          }
+        });
+      }
+    }
+
+    // 次の問題へ進む関数
+    function nextQuestion() {
+      const selectedOption = document.querySelector('.option.selected');
+      if (selectedOption === null) {
+        alert('選択肢を選んでください');
+        return;
+      }
+
+      if (currentQuestionIndex < TOTAL_QUESTIONS - 1) {
+        currentQuestionIndex++;
+        loadQuestion();
+      } else {
+        showResult();
+      }
+    }
+
+    // 結果を表示する関数
+    function showResult() {
+      const resultContainer = document.getElementById('result-container');
+      const quizContainer = document.getElementById('quiz-container');
+      quizContainer.style.display = 'none';
+
+      const percentage = (score / TOTAL_QUESTIONS) * 100;
+      let resultHtml = `
+        <div class="result-card">
+          <h2>クイズ結果</h2>
+          <p style="font-size: 1.5em; font-weight: bold;">正解数: ${score} / ${TOTAL_QUESTIONS}</p>
+          <p style="font-size: 1.2em;">正答率: ${percentage.toFixed(0)}%</p>
+        </div>
+      `;
+
+      // 解答履歴のレビュー
+      quizHistory.forEach((result, index) => {
+        resultHtml += `
+          <div class="result-card">
+            <h3>問題 ${index + 1}</h3>
+            <p class="result-status ${result.isCorrect ? 'correct' : 'incorrect'}">
+              ${result.isCorrect ? '正解' : '不正解'}
+            </p>
+            <p><strong>問題:</strong> ${result.question}</p>
+            <p><strong>あなたの回答:</strong> ${result.selected}</p>
+            <p><strong>正解:</strong> ${result.correctAnswer}</p>
+          </div>
+        `;
+      });
+
+      resultHtml += `<button class="nav-button" onclick="restartQuiz()">もう一度挑戦する</button>`;
+      resultContainer.innerHTML = resultHtml;
+
+      // 100点だったらお祝いメッセージ
+      const attendanceLink = document.getElementById('attendance-link');
+      if (percentage === 100) {
+        attendanceLink.style.display = 'block';
+        attendanceLink.innerHTML = `
+          <p style="font-size: 1.2em; font-weight: bold;">おめでとう！全問正解です！ 🎉</p>
+        `;
+      } else {
+         attendanceLink.style.display = 'none';
+      }
+    }
+
+    // クイズをリスタートする関数
+    function restartQuiz() {
+      currentQuestionIndex = 0;
+      score = 0;
+      quizHistory = [];
+      currentProblem = {};
+      shuffledOptions = [];
+      
+      document.getElementById('quiz-container').style.display = 'block';
+      document.getElementById('result-container').innerHTML = '';
+      document.getElementById('attendance-link').style.display = 'none';
+      loadQuestion();
+    }
+
+    // 最初の問題を読み込む
+    loadQuestion();
+  </script>
+</body>
+</html>
