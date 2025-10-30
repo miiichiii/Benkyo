@@ -26,6 +26,65 @@
       font-family: 'Noto Sans JP', sans-serif;
       font-weight: 700;
     }
+
+    /* --- ▼ここから追加・変更▼ --- */
+    
+    /* 段選択のコンテナ */
+    #selection-container {
+      background-color: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      border-radius: 16px;
+      padding: 20px 30px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+      margin-bottom: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      text-align: center;
+    }
+    
+    #selection-container h2 {
+      margin-top: 10px;
+    }
+
+    .dan-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr); /* 3列 */
+      gap: 15px;
+      margin-top: 20px;
+      margin-bottom: 20px;
+    }
+
+    /* 段選択ボタン */
+    .select-button {
+      background: linear-gradient(135deg, #007aff, #5ac8fa);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      padding: 15px 10px;
+      font-size: 1.2em;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s ease;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    .select-button:hover {
+      background: linear-gradient(135deg, #005bb5, #4aa0d3);
+      transform: translateY(-2px); /* 少し浮き上がる */
+    }
+    /* ランダムボタン（別色）*/
+    .select-button.random {
+       background: linear-gradient(135deg, #34c759, #a8e6cf);
+    }
+    .select-button.random:hover {
+       background: linear-gradient(135deg, #28a745, #82d4b2);
+    }
+    
+    /* クイズと結果は最初は非表示 */
+    .quiz-container, .result-container {
+        display: none;
+    }
+    
+    /* --- ▲ここまで追加・変更▲ --- */
+    
     .quiz-container, .result-card {
       background-color: rgba(255, 255, 255, 0.2);
       backdrop-filter: blur(10px);
@@ -35,26 +94,22 @@
       margin-bottom: 20px;
       border: 1px solid rgba(255, 255, 255, 0.3);
     }
-
-    /* --- ▼ここを修正しました▼ --- */
     .question {
-      /* font-size: 1.3em; を削除 */
       margin-bottom: 20px;
       color: #1d1d1f;
-      display: flex; /* 横並び */
-      align-items: baseline; /* ベースラインを揃える */
-      flex-wrap: wrap; /* 折り返し */
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
     }
     .question-number {
-      font-size: 1.3em; /* 「問題 1:」のサイズ (小さいまま) */
-      margin-right: 10px; /* 右側の余白 */
+      font-size: 1.3em;
+      margin-right: 10px;
       font-weight: normal;
     }
     .question-text {
-      font-size: 2.2em; /* 「7 × 9 = ?」のサイズ (大きく) */
+      font-size: 2.2em;
       font-weight: bold;
     }
-    /* --- ▲ここまで修正▲ --- */
     
     .options {
       display: grid;
@@ -78,22 +133,18 @@
       background: linear-gradient(135deg, #a8edea, #fed6e3);
       box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
     }
-    .option.selected {
-      /* 選択した時点では色は変えず、正解・不正解で色を変える */
-    }
+    .option.selected { }
     .option.disabled {
       background: linear-gradient(135deg, #a8edea, #fed6e3);
       box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
       pointer-events: none;
     }
-    /* 正解時のグラデーション */
     .option.correct {
-      background: linear-gradient(135deg, #34c759, #a8e6cf); /* 正解のグラデーション */
+      background: linear-gradient(135deg, #34c759, #a8e6cf);
       color: #fff;
     }
-    /* 不正解時のグラデーション */
     .option.incorrect {
-      background: linear-gradient(135deg, #ff3b30, #ff9a8b); /* 不正解のグラデーション */
+      background: linear-gradient(135deg, #ff3b30, #ff9a8b);
       color: #fff;
     }
     .option::after {
@@ -120,8 +171,8 @@
       border-radius: 12px;
       padding: 15px;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      opacity: 0; /* JavaScriptで1にします */
-      display: none; /* JavaScriptでblockにします */
+      opacity: 0; 
+      display: none; 
       transition: opacity 0.3s ease;
     }
     .explanation-header {
@@ -190,6 +241,23 @@
 <body>
   <div class="container">
     <h1 style="text-align: center;">九九れんしゅう（確認テスト・改）</h1>
+
+    <div id="selection-container">
+      <h2>どの段をれんしゅうする？</h2>
+      <div class="dan-grid">
+        <button class="select-button" onclick="startQuiz(1)">1のだん</button>
+        <button class="select-button" onclick="startQuiz(2)">2のだん</button>
+        <button class="select-button" onclick="startQuiz(3)">3のだん</button>
+        <button class="select-button" onclick="startQuiz(4)">4のだん</button>
+        <button class="select-button" onclick="startQuiz(5)">5のだん</button>
+        <button class="select-button" onclick="startQuiz(6)">6のだん</button>
+        <button class="select-button" onclick="startQuiz(7)">7のだん</button>
+        <button class="select-button" onclick="startQuiz(8)">8のだん</button>
+        <button class="select-button" onclick="startQuiz(9)">9のだん</button>
+      </div>
+      <button class="select-button random" onclick="startQuiz('random')" style="width: 100%;">ぜんぶ（ランダム）</button>
+    </div>
+
     <div id="quiz-container" class="quiz-container">
       <div id="quiz-content">
         <div id="question" class="question"></div> 
@@ -198,20 +266,44 @@
       </div>
       <button id="next" class="nav-button" onclick="nextQuestion()">次の問題</button>
     </div>
-    <div id="result-container"></div>
+
+    <div id="result-container" class="result-container"></div>
+    
     <div id="attendance-link"></div>
   </div>
   
   
   <script>
-    // --- ここからが九九練習アプリ用のプログラムです ---
-
-    const TOTAL_QUESTIONS = 10; // 問題数を10問に設定
+    const TOTAL_QUESTIONS = 10; // 問題数
     let currentQuestionIndex = 0;
     let score = 0;
-    let quizHistory = []; // 解答の履歴を保存する配列
-    let currentProblem = {}; // 現在の問題（num1, num2, answer, options）
-    let shuffledOptions = []; // シャッフル後の選択肢
+    let quizHistory = []; 
+    let currentProblem = {}; 
+    let shuffledOptions = [];
+    
+    let selectedDan; // 選択された「段」を保存する変数
+
+    // --- ▼▼ 新しく追加した関数 ▼▼ ---
+    // クイズを開始する
+    function startQuiz(dan) {
+      selectedDan = dan; // 'random' または 1〜9 の数字
+      
+      // クイズの変数をリセット
+      currentQuestionIndex = 0;
+      score = 0;
+      quizHistory = [];
+      
+      // 画面切り替え
+      document.getElementById('selection-container').style.display = 'none';
+      document.getElementById('quiz-container').style.display = 'block';
+      document.getElementById('result-container').innerHTML = ''; // 前回の結果をクリア
+      document.getElementById('attendance-link').style.display = 'none';
+
+      loadQuestion();
+    }
+    
+    // --- ▲▲ 新しく追加した関数 ▲▲ ---
+
 
     // 配列をシャッフルする関数
     function shuffleArray(array) {
@@ -224,24 +316,37 @@
 
     // 九九の問題を動的に生成する関数
     function generateKukuProblem() {
-      const num1 = Math.floor(Math.random() * 9) + 1; // 1から9
-      const num2 = Math.floor(Math.random() * 9) + 1; // 1から9
-      const correctAnswer = num1 * num2;
+      let num1, num2;
 
+      // --- ▼▼ ここのロジックを変更 ▼▼ ---
+      if (selectedDan === 'random') {
+        // ランダムの場合
+        num1 = Math.floor(Math.random() * 9) + 1;
+        num2 = Math.floor(Math.random() * 9) + 1;
+      } else {
+        // 段が指定されている場合
+        // 50%の確率で「7 x 3」、50%の確率で「3 x 7」のようになる
+        if (Math.random() > 0.5) {
+          num1 = selectedDan; // 選択した段
+          num2 = Math.floor(Math.random() * 9) + 1; // 相手はランダム
+        } else {
+          num1 = Math.floor(Math.random() * 9) + 1; // 相手はランダム
+          num2 = selectedDan; // 選択した段
+        }
+      }
+      // --- ▲▲ ここまで変更 ▲▲ ---
+
+      const correctAnswer = num1 * num2;
       let options = [correctAnswer]; // 正解の選択肢
 
       // ダミーの不正解選択肢を3つ生成
       while (options.length < 4) {
         let dummyAnswer;
-        // 答えが10未満の場合、±5の範囲でダミーを作る
         if (correctAnswer <= 10) {
           dummyAnswer = correctAnswer + (Math.floor(Math.random() * 11) - 5); // -5から+5
         } else {
-          // 答えが10以上の場合、±10の範囲でダミーを作る
           dummyAnswer = correctAnswer + (Math.floor(Math.random() * 21) - 10); // -10から+10
         }
-        
-        // ダミーが正解と同じ、0以下、または既に選択肢にある場合は再生成
         if (dummyAnswer === correctAnswer || dummyAnswer <= 0 || options.includes(dummyAnswer)) {
           continue;
         }
@@ -249,11 +354,9 @@
       }
 
       return {
-        num1: num1,
-        num2: num2,
         questionText: `${num1} × ${num2} = ?`,
         answer: correctAnswer,
-        options: options, // 正解1つとダミー3つ
+        options: options,
         explanation: `${num1} × ${num2} = ${correctAnswer} です。`
       };
     }
@@ -262,14 +365,11 @@
     function loadQuestion() {
       currentProblem = generateKukuProblem();
       
-      // --- ▼ここを修正しました▼ ---
       const questionEl = document.getElementById('question');
-      // 「問題番号」と「問題テキスト」を別々のspanにして、CSSで制御できるようにします
       questionEl.innerHTML = `
         <span class="question-number">問題 ${currentQuestionIndex + 1}:</span>
         <span class="question-text">${currentProblem.questionText}</span>
       `;
-      // --- ▲ここまで修正▲ ---
 
       shuffledOptions = shuffleArray([...currentProblem.options]);
       const optionsHtml = shuffledOptions.map((option, index) => `
@@ -280,7 +380,7 @@
 
       // 解説のリセット
       const explanationEl = document.getElementById('explanation');
-      explanationEl.style.display = 'none'; // 解説を非表示に
+      explanationEl.style.display = 'none'; 
       explanationEl.style.opacity = '0'; 
     }
 
@@ -290,12 +390,9 @@
       if (options[index].classList.contains('disabled')) {
         return;
       }
-
-      // すべての選択肢を無効化
       options.forEach(option => {
         option.classList.add('disabled');
       });
-
       options[index].classList.add('selected');
 
       const selectedAnswer = shuffledOptions[index];
@@ -323,28 +420,24 @@
         </div>
         ${currentProblem.explanation}
       `;
-      
       explanationEl.style.display = 'block';
-
-      // 遅延させてフェードイン
       setTimeout(() => {
         explanationEl.style.opacity = '1';
-      }, 100); // 少し遅延させる
+      }, 100); 
 
       // 正解・不正解のスタイル適用
       if (isCorrect) {
-        explanationEl.style.backgroundColor = 'rgba(232, 245, 233, 0.8)'; // 正解の背景色
+        explanationEl.style.backgroundColor = 'rgba(232, 245, 233, 0.8)';
         explanationEl.style.borderLeftColor = '#4caf50';
         options[index].classList.add('correct');
       } else {
-        explanationEl.style.backgroundColor = 'rgba(255, 235, 238, 0.8)'; // 不正解の背景色
+        explanationEl.style.backgroundColor = 'rgba(255, 235, 238, 0.8)';
         explanationEl.style.borderLeftColor = '#f44336';
         options[index].classList.add('incorrect');
         
-        // 不正解のときだけ、正解の選択肢もハイライトする
         shuffledOptions.forEach((option, i) => {
           if (option === currentProblem.answer) {
-            options[i].classList.add('correct'); // 正解の選択肢を緑にする
+            options[i].classList.add('correct');
           }
         });
       }
@@ -370,7 +463,10 @@
     function showResult() {
       const resultContainer = document.getElementById('result-container');
       const quizContainer = document.getElementById('quiz-container');
+      
+      // 画面切り替え
       quizContainer.style.display = 'none';
+      resultContainer.style.display = 'block'; // 結果を表示
 
       const percentage = (score / TOTAL_QUESTIONS) * 100;
       let resultHtml = `
@@ -411,22 +507,21 @@
       }
     }
 
-    // クイズをリスタートする関数
+    // クイズをリスタートする（段選択に戻る）関数
     function restartQuiz() {
-      currentQuestionIndex = 0;
-      score = 0;
-      quizHistory = [];
-      currentProblem = {};
-      shuffledOptions = [];
-      
-      document.getElementById('quiz-container').style.display = 'block';
-      document.getElementById('result-container').innerHTML = '';
+      // --- ▼▼ ここのロジックを変更 ▼▼ ---
+      // 画面切り替え
+      document.getElementById('quiz-container').style.display = 'none';
+      document.getElementById('result-container').innerHTML = ''; // 結果をクリア
       document.getElementById('attendance-link').style.display = 'none';
-      loadQuestion();
+      document.getElementById('selection-container').style.display = 'block'; // 段選択画面に戻る
+      
+      // 変数のリセットは startQuiz で行われるので不要
+      // --- ▲▲ ここまで変更 ▲AH ---
     }
 
-    // 最初の問題を読み込む
-    loadQuestion();
+    // 最初の読み込み時は何もしない（startQuizが呼ばれるのを待つ）
+    // loadQuestion(); 
   </script>
 </body>
 </html>
