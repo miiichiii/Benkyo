@@ -6,16 +6,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>九九れんしゅう（確認テスト）</title>
   <style>
-    /* --- ▼▼ ネコちゃん用のCSS変数を追加 ▼▼ --- */
-    :root { 
-      --fur:#f2c28d; 
-      --fur-dark:#e1a765; 
-      --line:#333; 
-      --ear:#f7d8b7; 
-      --bg:#fffaf2; 
-    }
-    /* --- ▲▲ ネコちゃん用のCSS変数を追加 ▲▲ --- */
-
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
       line-height: 1.6;
@@ -140,6 +130,15 @@
     .analysis-card li { background-color: rgba(255, 87, 34, 0.7); color: white; padding: 5px 15px; border-radius: 20px; font-size: 1.1em; font-weight: bold; }
     .nav-button.random { background: linear-gradient(135deg, #34c759, #a8e6cf); margin-top: 10px; }
     .nav-button.random:hover { background: linear-gradient(135deg, #28a745, #82d4b2); }
+    /* --- ▼▼ 復習ボタン（tenkey-modeの色を流用） ▼▼ --- */
+    .nav-button.tenkey-mode {
+        background: linear-gradient(135deg, #ff9500, #ffc107);
+        margin-top: 10px;
+    }
+    .nav-button.tenkey-mode:hover {
+        background: linear-gradient(135deg, #e08500, #e0a800);
+    }
+    /* --- ▲▲ 復習ボタン ▲▲ --- */
 
     .question { margin-bottom: 20px; color: #1d1d1f; display: flex; align-items: baseline; flex-wrap: wrap; }
     .question-number { font-size: 1.2em; margin-right: 10px; font-weight: normal; }
@@ -168,7 +167,7 @@
     #attendance-link {
         background-color: #34c759;
         color: white;
-        padding: 15px 15px 150px 15px; /* 下に150pxの余白を確保 */
+        padding: 15px 15px 150px 15px;
         border-radius: 12px;
         margin-top: 20px;
         text-align: center;
@@ -248,36 +247,25 @@
       color: white;
     }
 
-    /* --- ▼▼ SVGネコちゃん用 CSS (ここから) ▼▼ --- */
-    
-    /* まばたき */
     @keyframes blink {
       0%,92%,100% { opacity:0; transform:translateY(-2px); }
       95%,97%     { opacity:1; transform:translateY(0); }
     }
     .eyelid { animation: blink 6s infinite; transform-origin: 0 0; }
-
-    /* しっぽ */
     @keyframes wag {
       0%,100% { transform: rotate(10deg); }
       50%     { transform: rotate(-8deg); }
     }
     .tail { transform-origin: 340px 250px; animation: wag 3.5s ease-in-out infinite; }
-
-    /* ひげ ふわっ */
     @keyframes whisk {
       0%,100% { transform: translateX(0) }
       50%     { transform: translateX(1.5px) }
     }
     .whisk { animation: whisk 4.2s ease-in-out infinite; }
-
-    /* ホバーでごろにゃん */
     .cat:hover .mouth { d: path("M 210 250 Q 230 262 250 250"); transition: d .2s; }
-    
-    /* SVGネコちゃんのラッパー */
     .svg-cat-wrap {
       position: absolute;
-      bottom: -20px; /* 位置を微調整 */
+      bottom: -20px;
       left: 50%;
       transform: translateX(-50%);
       width: 200px; 
@@ -288,8 +276,6 @@
       width: 100%;
       height: auto;
     }
-    /* --- ▲▲ SVGネコちゃん用 CSS (ここまで) ▲▲ --- */
-
   </style>
 </head>
 <body>
@@ -348,9 +334,9 @@
     <div id="attendance-link">
         <p>おめでとう！全問正解です！ 🎉</p>
         <p id="praise-message"></p>
-        
         <div class="svg-cat-wrap">
-          <svg class="cat" viewBox="0 0 400 400" role="img" aria-labelledby="title desc"> <title id="title">ねこ</title>
+          <svg class="cat" viewBox="0 0 400 400" role="img" aria-labelledby="title desc">
+            <title id="title">ねこ</title>
             <desc id="desc">やさしい色の猫。まばたきして、しっぽが左右に揺れる。</desc>
             <ellipse cx="200" cy="330" rx="110" ry="16" fill="#000" opacity=".08"/>
             <g class="tail">
@@ -389,8 +375,9 @@
             <path d="M175 200 q -8 10 -20 12 M225 200 q 8 10 20 12" stroke="var(--fur-dark)" stroke-width="4" fill="none" opacity=".6" stroke-linecap="round"/>
           </svg>
         </div>
-        </div>
     </div>
+    
+  </div>
   
   
   <div id="kuku-modal-bg" class="modal-bg" onclick="closeKukuTable()">
@@ -413,7 +400,6 @@
 
   
   <script>
-    // JavaScript (変更なし)
     const TOTAL_QUESTIONS = 10;
     let currentQuestionIndex = 0;
     let score = 0;
@@ -424,6 +410,9 @@
     let currentMode = 'choice';
     let tenkeyInput = '';
     let answerSubmitted = false;
+    
+    // --- ▼▼ 復習用の問題セット ▼▼ ---
+    let reviewSet = [];
 
     const praiseMessages = [
       "あやめちゃん、すごい！天才だね！",
@@ -450,16 +439,25 @@
     }
 
     function startQuiz(mode) {
-      if (selectedDan === null && !Array.isArray(mode)) {
-        alert('1. どの段をれんしゅうするか選んでください');
-        return;
-      }
+      // --- ▼▼ 復習モードの判定を変更 ▼▼ ---
       if (Array.isArray(mode)) {
+          // 苦手克服モード
           selectedDan = mode;
-          currentMode = 'choice';
+          currentMode = 'choice'; // 苦手克服は4択
+      } else if (mode === 'review') {
+          // 復習モード
+          selectedDan = 'review';
+          // currentMode は変更しない（前回のモードを引き継ぐ）
       } else {
+          // 通常モード
+          if (selectedDan === null) {
+              alert('1. どの段をれんしゅうするか選んでください');
+              return;
+          }
           currentMode = mode;
       }
+      // --- ▲▲ 復習モードの判定を変更 ▲▲ ---
+
       currentQuestionIndex = 0;
       score = 0;
       quizHistory = [];
@@ -470,6 +468,14 @@
       loadQuestion();
     }
     
+    // --- ▼▼ 復習モード用の関数を新設 ▼▼ ---
+    function startReviewQuiz() {
+        // reviewSet は showResult で作成済
+        if (reviewSet.length === 0) return;
+        startQuiz('review');
+    }
+    // --- ▲▲ 復習モード用の関数を新設 ▲▲ ---
+
     function shuffleArray(array) {
       for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -509,9 +515,16 @@
       };
     }
 
+    // --- ▼▼ loadQuestion を修正 ▼▼ ---
     function loadQuestion() {
-      currentProblem = generateKukuProblem();
       answerSubmitted = false;
+      
+      // 復習モードか判定
+      if (selectedDan === 'review') {
+          currentProblem = reviewSet[currentQuestionIndex];
+      } else {
+          currentProblem = generateKukuProblem();
+      }
       
       const questionEl = document.getElementById('question');
       questionEl.innerHTML = `
@@ -540,6 +553,7 @@
       explanationEl.style.display = 'none'; 
       explanationEl.style.opacity = '0'; 
     }
+    // --- ▲▲ loadQuestion を修正 ▲▲ ---
 
     function selectOption(index) {
       if (answerSubmitted) return;
@@ -577,16 +591,15 @@
       showAnswerFeedback(isCorrect, userAnswer, null);
     }
 
+    // --- ▼▼ showAnswerFeedback を修正 (history登録内容) ▼▼ ---
     function showAnswerFeedback(isCorrect, selectedAnswer, selectedOptionEl) {
       quizHistory[currentQuestionIndex] = {
-        question: currentProblem.questionText,
+        problem: currentProblem, // 問題全体を保存
         selected: selectedAnswer,
-        correctAnswer: currentProblem.answer,
-        explanation: currentProblem.explanation,
-        isCorrect: isCorrect,
-        num1: currentProblem.num1,
-        num2: currentProblem.num2
+        isCorrect: isCorrect
       };
+      // --- ▲▲ 修正 ▲▲ ---
+
       if (isCorrect) {
         score++;
       }
@@ -631,27 +644,36 @@
       }
     }
 
+    // --- ▼▼ nextQuestion を修正 (総問題数) ▼▼ ---
     function nextQuestion() {
       if (!answerSubmitted) {
         alert('答えを選んでください');
         return;
       }
-      if (currentQuestionIndex < TOTAL_QUESTIONS - 1) {
+      
+      const isReview = (selectedDan === 'review');
+      const total = isReview ? reviewSet.length : TOTAL_QUESTIONS;
+
+      if (currentQuestionIndex < total - 1) {
         currentQuestionIndex++;
         loadQuestion();
       } else {
         showResult();
       }
     }
+    // --- ▲▲ nextQuestion を修正 ▲▲ ---
     
+    // --- ▼▼ analyzeMistakes を修正 (history参照) ▼▼ ---
     function analyzeMistakes() {
         const danStats = {};
         for (let i = 1; i <= 9; i++) { danStats[i] = { mistakes: 0 }; }
         let nigatanaDanList = [];
         quizHistory.forEach(result => {
             if (!result.isCorrect) {
-                danStats[result.num1].mistakes++;
-                if (result.num1 !== result.num2) { danStats[result.num2].mistakes++; }
+                danStats[result.problem.num1].mistakes++;
+                if (result.problem.num1 !== result.problem.num2) {
+                    danStats[result.problem.num2].mistakes++;
+                }
             }
         });
         for (let i = 1; i <= 9; i++) {
@@ -659,44 +681,73 @@
         }
         return nigatanaDanList;
     }
+    // --- ▲▲ analyzeMistakes を修正 ▲▲ ---
 
+    // --- ▼▼ showResult を修正 (ボタン表示ロジック) ▼▼ ---
     function showResult() {
       const resultContainer = document.getElementById('result-container');
       const quizContainer = document.getElementById('quiz-container');
       quizContainer.style.display = 'none';
       resultContainer.style.display = 'block'; 
 
-      const percentage = (score / TOTAL_QUESTIONS) * 100;
+      const isReview = (selectedDan === 'review');
+      const total = isReview ? reviewSet.length : TOTAL_QUESTIONS;
+      const percentage = (score / total) * 100;
+      
       let resultHtml = `
         <div class="result-card">
-          <h2>クイズ結果</h2>
-          <p style="font-size: 1.5em; font-weight: bold;">正解数: ${score} / ${TOTAL_QUESTIONS}</p>
+          <h2>${isReview ? '復習結果' : 'クイズ結果'}</h2>
+          <p style="font-size: 1.5em; font-weight: bold;">正解数: ${score} / ${total}</p>
           <p style="font-size: 1.2em;">正答率: ${percentage.toFixed(0)}%</p>
         </div>
       `;
 
       let nigatanaButtonHtml = '';
-      if (selectedDan === 'random') {
-          const nigatanaDanList = analyzeMistakes();
-          if (nigatanaDanList.length > 0) {
-              resultHtml += `
-                <div class="result-card analysis-card">
-                  <h2>苦手な段の分析</h2>
-                  <p>以下の段でまちがいがありました。<br>「苦手こくふくモード」で練習しよう！</p>
-                  <ul>
-                    ${nigatanaDanList.map(dan => `<li>${dan} のだん</li>`).join('')}
-                  </ul>
-                </div>
-              `;
-              const listString = JSON.stringify(nigatanaDanList);
-              nigatanaButtonHtml = `
-                <button class="nav-button random" onclick='startQuiz(${listString})'>
-                  苦手こくふくモード（${nigatanaDanList.join(', ')}の段）
+      let reviewButtonHtml = '';
+
+      // 通常クイズの時だけ分析と復習ボタンを出す
+      if (!isReview) {
+          // 苦手分析 (ランダムモードのみ)
+          if (selectedDan === 'random') {
+              const nigatanaDanList = analyzeMistakes();
+              if (nigatanaDanList.length > 0) {
+                  resultHtml += `
+                    <div class="result-card analysis-card">
+                      <h2>苦手な段の分析</h2>
+                      <p>以下の段でまちがいがありました。<br>「苦手こくふくモード」で練習しよう！</p>
+                      <ul>
+                        ${nigatanaDanList.map(dan => `<li>${dan} のだん</li>`).join('')}
+                      </ul>
+                    </div>
+                  `;
+                  const listString = JSON.stringify(nigatanaDanList);
+                  nigatanaButtonHtml = `
+                    <button class="nav-button random" onclick='startQuiz(${listString})'>
+                      苦手こくふくモード（${nigatanaDanList.join(', ')}の段）
+                    </button>
+                  `;
+              }
+          }
+
+          // 復習ボタン（間違えた問題がある場合）
+          let incorrectProblems = [];
+          quizHistory.forEach(result => {
+              if (!result.isCorrect) {
+                  incorrectProblems.push(result.problem);
+              }
+          });
+
+          if (incorrectProblems.length > 0) {
+              reviewSet = incorrectProblems; // グローバルに保存
+              reviewButtonHtml = `
+                <button class="nav-button tenkey-mode" onclick='startReviewQuiz()'>
+                  まちがえた問題だけ復習する (${reviewSet.length}問)
                 </button>
               `;
           }
       }
 
+      // 履歴の表示
       quizHistory.forEach((result, index) => {
         resultHtml += `
           <div class="result-card">
@@ -704,18 +755,21 @@
             <p class="result-status ${result.isCorrect ? 'correct' : 'incorrect'}">
               ${result.isCorrect ? '正解' : '不正解'}
             </p>
-            <p><strong>問題:</strong> ${result.question}</p>
+            <p><strong>問題:</strong> ${result.problem.questionText}</p>
             <p><strong>あなたの回答:</strong> ${result.selected}</p>
-            <p><strong>正解:</strong> ${result.correctAnswer}</p>
+            <p><strong>正解:</strong> ${result.problem.answer}</p>
           </div>
         `;
       });
+      
       resultHtml += `<button class="nav-button" onclick="restartQuiz()">もう一度挑戦する</button>`;
-      resultHtml += nigatanaButtonHtml; 
+      resultHtml += nigatanaButtonHtml; // 苦手
+      resultHtml += reviewButtonHtml;   // 復習
       resultContainer.innerHTML = resultHtml;
 
+      // 全問正解の表示（復習モードの時は表示しない）
       const attendanceLink = document.getElementById('attendance-link');
-      if (percentage === 100) {
+      if (percentage === 100 && !isReview) {
         attendanceLink.style.display = 'block';
         const randomIndex = Math.floor(Math.random() * praiseMessages.length);
         document.getElementById('praise-message').textContent = praiseMessages[randomIndex];
@@ -723,6 +777,7 @@
          attendanceLink.style.display = 'none';
       }
     }
+    // --- ▲▲ showResult を修正 ▲▲ ---
 
     function restartQuiz() {
       document.getElementById('quiz-container').style.display = 'none';
@@ -730,6 +785,7 @@
       document.getElementById('attendance-link').style.display = 'none';
       document.getElementById('selection-container').style.display = 'block';
       selectedDan = null;
+      reviewSet = []; // 復習セットをクリア
       const buttons = document.querySelectorAll('.dan-button, .select-button.random');
       buttons.forEach(btn => btn.classList.remove('selected'));
     }
