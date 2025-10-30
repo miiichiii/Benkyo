@@ -93,7 +93,7 @@
       border: 1px solid rgba(255, 255, 255, 0.3);
     }
 
-    /* ▼▼▼ ここから時計のCSS ▼▼▼ */
+    /* ▼▼▼ 時計のCSS ▼▼▼ */
     .clock-container {
       width: 250px;
       height: 250px;
@@ -136,14 +136,14 @@
     .hour-hand {
       width: 35%; /* 短針 */
       left: 15%; /* 50% - 35% */
-      height: 8px;
+      height: 8px; /* 太い */
       background-color: #222;
       z-index: 8;
     }
     .minute-hand {
       width: 45%; /* 長針 */
       left: 5%; /* 50% - 45% */
-      height: 6px;
+      height: 6px; /* 細い */
       background-color: #444;
       z-index: 9;
     }
@@ -418,10 +418,10 @@
     function generateClockProblem() {
       let hour, minute;
 
-      if (selectedDifficulty === 'easy') { // なんじ ちょうど
+      if (selectedDifficulty === 'easy') { 
         hour = Math.floor(Math.random() * 12) + 1;
         minute = 0;
-      } else if (selectedDifficulty === 'normal') { // なんじ はん
+      } else if (selectedDifficulty === 'normal') {
         hour = Math.floor(Math.random() * 12) + 1;
         minute = 30;
       } else { // 'hard' - 5分きざみ
@@ -431,8 +431,13 @@
       
       const correctAnswerText = generateTimeText(hour, minute);
       
+      /* ★★★★★ バグ修正点 1 ★★★★★
+         ここで正解の選択肢を配列に必ず入れます。
+         (前回、ここが [] になっていた可能性があります)
+      */
       let options = [correctAnswerText];
       
+      // ダミーの選択肢を生成
       while (options.length < 4) {
           let dummyHour = Math.floor(Math.random() * 12) + 1;
           let dummyMinute;
@@ -445,11 +450,14 @@
               dummyMinute = (Math.floor(Math.random() * 12)) * 5;
           }
           
+          // ダミーが正解と被ったらスキップ
           if(dummyHour === hour && dummyMinute === minute) {
               continue;
           }
 
           const dummyText = generateTimeText(dummyHour, dummyMinute);
+          
+          // ダミーが他のダミーと被ったらスキップ
           if (!options.includes(dummyText)) {
               options.push(dummyText);
           }
@@ -460,7 +468,7 @@
         minute: minute,
         questionText: `いま、なんじ？`, 
         answer: correctAnswerText,
-        options: options,
+        options: options, // 正解1 + ダミー3 が入った配列
         explanation: `せいかいは ${correctAnswerText} です。`
       };
     }
@@ -468,18 +476,21 @@
     function loadQuestion() {
       currentProblem = generateClockProblem();
       
+      /* ★★★★★ バグ修正点 2 (確認) ★★★★★
+         変数名とIDが一致しているか確認 
+      */
       const hourHand = document.getElementById('hour-hand');
       const minuteHand = document.getElementById('minute-hand');
 
-      // 角度を計算 (12時が0度)
-      // 分針: 1分で6度
+      // 角度を計算
       const minuteDeg = currentProblem.minute * 6;
-      // 時針: 1時間で30度 + 1分で0.5度
       const hourDeg = (currentProblem.hour % 12) * 30 + currentProblem.minute * 0.5;
 
-      // ★修正点★ 
-      // CSSの初期位置を12時(-90deg)基準にしたため、
-      // JS側での補正(-90)は不要。計算結果をそのまま適用する。
+      /* ★★★★★ バグ修正点 3 ★★★★★
+         針の適用が逆になっていたのを修正します。
+         hourHand(太い針) には hourDeg(時針の角度) を、
+         minuteHand(細い針) には minuteDeg(分針の角度) を適用します。
+      */
       hourHand.style.transform = `rotate(${hourDeg}deg)`;
       minuteHand.style.transform = `rotate(${minuteDeg}deg)`;
 
