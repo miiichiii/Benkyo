@@ -155,24 +155,25 @@
     .result-status { font-weight: bold; margin-bottom: 10px; }
     .correct { color: #34c759; }
     .incorrect { color: #ff3b30; }
-    /* --- ▼▼ 全問正解時のスタイル ▼▼ --- */
+
+    /* --- ▼▼ CSS 修正 ▼▼ --- */
     #attendance-link {
         background-color: #34c759;
         color: white;
-        padding: 15px;
+        padding: 15px 15px 80px 15px; /* 変更: 下に80pxの余白を追加 */
         border-radius: 12px;
         margin-top: 20px;
         text-align: center;
         display: none;
-        position: relative; /* ネコの位置調整のため */
-        overflow: hidden; /* ネコがはみ出さないように */
+        position: relative; 
+        overflow: hidden; 
     }
     #attendance-link p {
         margin: 0;
         padding: 0;
         font-size: 1.3em;
         font-weight: bold;
-        z-index: 10; /* テキストをネコより手前に */
+        z-index: 10; 
         position: relative;
     }
     #praise-message {
@@ -181,7 +182,17 @@
         z-index: 10;
         position: relative;
     }
-    /* --- ▲▲ 全問正解時のスタイル ▲▲ --- */
+    .cat-container {
+        position: absolute;
+        bottom: 5px; /* 変更: コンテナの下から5pxの位置に */
+        left: 50%;
+        transform: translateX(-50%) scale(0.8);
+        width: 100px;
+        height: 100px;
+        z-index: 5;
+        opacity: 0.8;
+    }
+    /* --- ▲▲ CSS 修正 ▲▲ --- */
 
     .modal-bg { display: none; position: fixed; z-index: 100; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); justify-content: center; align-items: center; }
     .modal-content { background: linear-gradient(135deg, #e0f7fa, #fce4ec); padding: 25px; border-radius: 16px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3); width: 90%; max-width: 500px; max-height: 80vh; overflow-y: auto; position: relative; }
@@ -240,22 +251,12 @@
       color: white;
     }
 
-    /* --- ▼▼ ネコちゃんのCSS (ここから) ▼▼ --- */
-    .cat-container {
-        position: absolute;
-        bottom: 0px; /* 位置を調整 */
-        left: 50%;
-        transform: translateX(-50%) scale(0.8); /* サイズ調整 */
-        width: 100px;
-        height: 100px;
-        z-index: 5; /* テキストより奥に */
-        opacity: 0.8; /* 少し透明に */
-    }
+    /* ネコのCSS (変更なし) */
     .cat-head {
         position: absolute;
         width: 60px;
         height: 55px;
-        background-color: #f7e0c4; /* クリーム色 */
+        background-color: #f7e0c4;
         border-radius: 50%;
         top: 25px;
         left: 20px;
@@ -283,7 +284,7 @@
         position: absolute;
         width: 15px;
         height: 20px;
-        background-color: #fcd9e2; /* ピンク */
+        background-color: #fcd9e2;
         border-radius: 50% 50% 0 0;
         top: 5px;
         left: 5px;
@@ -306,7 +307,7 @@
         position: absolute;
         width: 8px;
         height: 6px;
-        background-color: #ffb6c1; /* 薄いピンク */
+        background-color: #ffb6c1;
         border-radius: 50%;
         top: 48px;
         left: 45px;
@@ -324,8 +325,6 @@
         left: 42px;
         transform: translateX(-50%);
     }
-    /* --- ▲▲ ネコちゃんのCSS (ここまで) ▲▲ --- */
-
   </style>
 </head>
 <body>
@@ -383,8 +382,7 @@
     
     <div id="attendance-link">
         <p>おめでとう！全問正解です！ 🎉</p>
-        <p id="praise-message"></p>
-        <div class="cat-container">
+        <p id="praise-message"></p> <div class="cat-container">
             <div class="cat-head">
                 <div class="cat-ear left"><div class="cat-inner-ear"></div></div>
                 <div class="cat-ear right"><div class="cat-inner-ear"></div></div>
@@ -418,6 +416,7 @@
 
   
   <script>
+    // JavaScript (変更なし)
     const TOTAL_QUESTIONS = 10;
     let currentQuestionIndex = 0;
     let score = 0;
@@ -429,7 +428,6 @@
     let tenkeyInput = '';
     let answerSubmitted = false;
 
-    // --- ▼▼ 褒め言葉の配列を追加 ▼▼ ---
     const praiseMessages = [
       "あやめちゃん、すごい！天才だね！",
       "やったね！全問正解、お見事！",
@@ -442,8 +440,6 @@
       "感動したよ！とってもよくできたね！",
       "最強の九九マスターだ！おめでとう！"
     ];
-    // --- ▲▲ 褒め言葉の配列を追加 ▲▲ ---
-
 
     function setSelectedDan(dan) {
       selectedDan = dan;
@@ -724,10 +720,8 @@
       const attendanceLink = document.getElementById('attendance-link');
       if (percentage === 100) {
         attendanceLink.style.display = 'block';
-        // --- ▼▼ 褒め言葉をランダム表示 ▼▼ ---
         const randomIndex = Math.floor(Math.random() * praiseMessages.length);
         document.getElementById('praise-message').textContent = praiseMessages[randomIndex];
-        // --- ▲▲ 褒め言葉をランダム表示 ▲▲ ---
       } else {
          attendanceLink.style.display = 'none';
       }
