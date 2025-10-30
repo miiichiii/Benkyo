@@ -38,7 +38,6 @@
     #selection-container h2 {
       margin-top: 10px;
     }
-    /* ▼▼ 3列から1列に変更 ▼▼ */
     .dan-grid {
       display: grid;
       grid-template-columns: 1fr; /* 1列に */
@@ -62,7 +61,6 @@
       background: linear-gradient(135deg, #005bb5, #4aa0d3);
       transform: translateY(-2px);
     }
-    /* ▼▼ 難易度ボタンのスタイル調整 ▼▼ */
     .select-button.easy {
         background: linear-gradient(135deg, #34c759, #a8e6cf);
     }
@@ -95,7 +93,7 @@
       border: 1px solid rgba(255, 255, 255, 0.3);
     }
 
-    /* ▼▼▼ ここから時計のCSSを追加 ▼▼▼ */
+    /* ▼▼▼ ここから時計のCSS ▼▼▼ */
     .clock-container {
       width: 250px;
       height: 250px;
@@ -111,7 +109,6 @@
       position: relative;
       box-shadow: 0 4px 12px rgba(0,0,0,0.1), inset 0 0 10px rgba(0,0,0,0.1);
     }
-    /* 時計の中心の点 */
     .clock-face::after {
       content: '';
       width: 12px;
@@ -130,9 +127,10 @@
       background-color: #333;
       position: absolute;
       top: 50%;
-      left: 0; /* 左端を基点に */
-      transform-origin: 100% 50%; /* 右端（中央）を回転軸に */
-      transform: rotate(90deg); /* 初期位置（12時）に設定 */
+      left: 0; 
+      transform-origin: 100% 50%; 
+      /* ★修正点★ 初期位置を12時方向（-90度）に設定 */
+      transform: rotate(-90deg); 
       border-radius: 3px;
     }
     .hour-hand {
@@ -149,7 +147,6 @@
       background-color: #444;
       z-index: 9;
     }
-    /* 時計の数字 */
     .number {
         position: absolute;
         width: 100%;
@@ -158,7 +155,7 @@
         font-size: 1.5em;
         font-weight: bold;
         color: #333;
-        padding-top: 10px; /* 数字の位置を調整 */
+        padding-top: 10px; 
         box-sizing: border-box;
     }
     .number1 { transform: rotate(30deg); }
@@ -183,11 +180,9 @@
     .number10 span { transform: rotate(-300deg); display: inline-block; }
     .number11 { transform: rotate(330deg); }
     .number11 span { transform: rotate(-330deg); display: inline-block; }
-    .number12 { transform: rotate(0deg); } /* 12時は回転なし */
+    .number12 { transform: rotate(0deg); }
     .number12 span { display: inline-block; }
-
-    /* ▲▲▲ ここまで時計のCSS ▲▲▲ */
-
+    /* ▲▲▲ 時計のCSSここまで ▲▲▲ */
 
     .question {
       margin-bottom: 20px;
@@ -195,7 +190,7 @@
       display: flex;
       align-items: baseline;
       flex-wrap: wrap;
-      justify-content: center; /* 中央揃え */
+      justify-content: center; 
     }
     .question-number {
       font-size: 1.3em;
@@ -208,7 +203,6 @@
     }
     .options {
       display: grid;
-      /* ▼▼ 2列に変更 ▼▼ */
       grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
       gap: 15px;
     }
@@ -217,8 +211,8 @@
       border: none;
       border-radius: 16px;
       padding: 15px;
-      font-size: 1.1em; /* 少し大きく */
-      font-weight: bold; /* 太字に */
+      font-size: 1.1em;
+      font-weight: bold;
       cursor: pointer;
       transition: background 0.3s ease 0.1s, transform 0.3s ease;
       text-align: center;
@@ -333,9 +327,6 @@
       margin: 0;
       padding: 0;
     }
-    
-    /* ▼▼▼ 九九の表モーダルは不要なので削除 ▼▼▼ */
-
   </style>
 </head>
 <body>
@@ -349,7 +340,7 @@
         <button class="select-button normal" onclick="startQuiz('normal')">ふつう（なんじ はん）</button>
         <button class="select-button hard" onclick="startQuiz('hard')">むずかしい（なんぷん）</button>
       </div>
-      </div>
+    </div>
 
     <div id="quiz-container" class="quiz-container">
       <div id="quiz-content">
@@ -372,6 +363,7 @@
             <div class="hand minute-hand" id="minute-hand"></div>
           </div>
         </div>
+
         <div id="question" class="question"></div> 
         <div id="options" class="options"></div>
         <div id="explanation" class="explanation"></div>
@@ -384,7 +376,7 @@
     <div id="attendance-link"></div>
   </div>
   
-  
+
   <script>
     const TOTAL_QUESTIONS = 10;
     let currentQuestionIndex = 0;
@@ -392,9 +384,8 @@
     let quizHistory = []; 
     let currentProblem = {}; 
     let shuffledOptions = [];
-    let selectedDifficulty; // ▼▼ 変数名を変更 (selectedDan -> selectedDifficulty) ▼▼
+    let selectedDifficulty; 
 
-    // ▼▼ 関数名を変更 (dan -> difficulty) ▼▼
     function startQuiz(difficulty) {
       selectedDifficulty = difficulty; 
       currentQuestionIndex = 0;
@@ -417,8 +408,6 @@
       return array;
     }
 
-    // ▼▼▼ 九九問題生成(generateKukuProblem)を時計問題生成(generateClockProblem)に全面変更 ▼▼▼
-    
     /** 選択肢のテキストを生成するヘルパー関数 */
     function generateTimeText(h, m) {
         if (m === 0) return `${h}じ ちょうど`;
@@ -444,7 +433,6 @@
       
       let options = [correctAnswerText];
       
-      // ダミーの選択肢を生成
       while (options.length < 4) {
           let dummyHour = Math.floor(Math.random() * 12) + 1;
           let dummyMinute;
@@ -457,7 +445,6 @@
               dummyMinute = (Math.floor(Math.random() * 12)) * 5;
           }
           
-          // 答えと同じか、既に選択肢にある場合はスキップ
           if(dummyHour === hour && dummyMinute === minute) {
               continue;
           }
@@ -471,34 +458,30 @@
       return {
         hour: hour,
         minute: minute,
-        questionText: `いま、なんじ？`, // 問題文
+        questionText: `いま、なんじ？`, 
         answer: correctAnswerText,
         options: options,
         explanation: `せいかいは ${correctAnswerText} です。`
       };
     }
-    // ▲▲▲ 時計問題生成ロジックここまで ▲▲▲
 
     function loadQuestion() {
-      // ▼▼ 呼び出す関数を変更 ▼▼
       currentProblem = generateClockProblem();
       
-      // --- ▼▼▼ ここから時計の針を動かすロジック ▼▼▼ ---
       const hourHand = document.getElementById('hour-hand');
       const minuteHand = document.getElementById('minute-hand');
 
-      // 角度を計算
-      // 分針: 1分で6度 (360 / 60)
+      // 角度を計算 (12時が0度)
+      // 分針: 1分で6度
       const minuteDeg = currentProblem.minute * 6;
-      // 時針: 1時間で30度 (360 / 12) + 1分で0.5度 (30 / 60)
-      // (hour % 12) は 12時を0時として計算するため
+      // 時針: 1時間で30度 + 1分で0.5度
       const hourDeg = (currentProblem.hour % 12) * 30 + currentProblem.minute * 0.5;
 
-      // CSSのtransformを更新して針を回転
-      // -90度しているのは、CSSの初期位置が3時(90度)を指しているため12時(0度)に補正するため
-      hourHand.style.transform = `rotate(${hourDeg - 90}deg)`;
-      minuteHand.style.transform = `rotate(${minuteDeg - 90}deg)`;
-      // --- ▲▲▲ 時計ロジックここまで ▲▲▲ ---
+      // ★修正点★ 
+      // CSSの初期位置を12時(-90deg)基準にしたため、
+      // JS側での補正(-90)は不要。計算結果をそのまま適用する。
+      hourHand.style.transform = `rotate(${hourDeg}deg)`;
+      minuteHand.style.transform = `rotate(${minuteDeg}deg)`;
 
 
       const questionEl = document.getElementById('question');
@@ -532,17 +515,15 @@
       const selectedAnswer = shuffledOptions[index];
       const isCorrect = (selectedAnswer === currentProblem.answer);
 
-      // ▼▼ 履歴の保存内容を変更 (num1, num2は不要に) ▼▼
       quizHistory[currentQuestionIndex] = {
-        question: `[${currentProblem.hour}時 ${currentProblem.minute}分]`, // 問題（内部記録用）
+        question: `[${currentProblem.hour}時 ${currentProblem.minute}分]`, 
         selected: selectedAnswer,
         correctAnswer: currentProblem.answer,
         explanation: currentProblem.explanation,
         isCorrect: isCorrect,
-        hour: currentProblem.hour, // 分析用に保存
-        minute: currentProblem.minute // 分析用に保存
+        hour: currentProblem.hour,
+        minute: currentProblem.minute 
       };
-      // ▲▲▲ 変更ここまで ▲▲▲
 
       if (isCorrect) {
         score++;
@@ -593,8 +574,6 @@
       }
     }
 
-    // ▼▼▼ 苦手分析(analyzeMistakes)は九九専用ロジックなので削除 ▼▼▼
-
     function showResult() {
       const resultContainer = document.getElementById('result-container');
       const quizContainer = document.getElementById('quiz-container');
@@ -611,10 +590,6 @@
         </div>
       `;
 
-      // ▼▼▼ 苦手分析と「苦手こくふくモード」のロジックは削除 ▼▼▼
-
-
-      // 解答履歴のレビュー
       quizHistory.forEach((result, index) => {
         resultHtml += `
           <div class="result-card">
@@ -631,8 +606,6 @@
 
       resultHtml += `<button class="nav-button" onclick="restartQuiz()">もう一度ちょうせんする</button>`;
       
-      // ▼▼ 苦手克服ボタンのHTMLは削除 ▼▼
-
       resultContainer.innerHTML = resultHtml;
 
       const attendanceLink = document.getElementById('attendance-link');
@@ -652,9 +625,6 @@
       document.getElementById('attendance-link').style.display = 'none';
       document.getElementById('selection-container').style.display = 'block';
     }
-
-    // ▼▼▼ 九九の表モーダル用JSは不要なので削除 ▼▼▼
-    
   </script>
 </body>
 </html>
