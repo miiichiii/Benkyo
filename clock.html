@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>とけいの れんしゅう</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background: linear-gradient(135deg, #a8edea, #fed6e3);
+      background-size: cover;  
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      padding: 20px;
+      margin: 0;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    h1, h2 {
+      font-family: 'Noto Sans JP', sans-serif;
+      font-weight: 700;
+    }
+    #selection-container {
+      background-color: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      border-radius: 16px;
+      padding: 20px 30px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+      margin-bottom: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      text-align: center;
+    }
+    #selection-container h2 {
+      margin-top: 10px;
+    }
+    /* ▼▼ 3列から1列に変更 ▼▼ */
+    .dan-grid {
+      display: grid;
+      grid-template-columns: 1fr; /* 1列に */
+      gap: 15px;
+      margin-top: 20px;
+      margin-bottom: 20px;
+    }
+    .select-button {
+      background: linear-gradient(135deg, #007aff, #5ac8fa);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      padding: 15px 10px;
+      font-size: 1.2em;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s ease;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    .select-button:hover {
+      background: linear-gradient(135deg, #005bb5, #4aa0d3);
+      transform: translateY(-2px);
+    }
+    /* ▼▼ 難易度ボタンのスタイル調整 ▼▼ */
+    .select-button.easy {
+        background: linear-gradient(135deg, #34c759, #a8e6cf);
+    }
+    .select-button.easy:hover {
+        background: linear-gradient(135deg, #28a745, #82d4b2);
+    }
+    .select-button.normal {
+        background: linear-gradient(135deg, #ffc107, #ff8f0a);
+    }
+    .select-button.normal:hover {
+        background: linear-gradient(135deg, #e0a800, #e67e00);
+    }
+    .select-button.hard {
+        background: linear-gradient(135deg, #ff3b30, #ff9a8b);
+    }
+    .select-button.hard:hover {
+        background: linear-gradient(135deg, #e62e2e, #f08070);
+    }
+
+    .quiz-container, .result-container {
+        display: none;
+    }
+    .quiz-container, .result-card {
+      background-color: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+      margin-bottom: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    /* ▼▼▼ ここから時計のCSSを追加 ▼▼▼ */
+    .clock-container {
+      width: 250px;
+      height: 250px;
+      margin: 20px auto;
+      position: relative;
+    }
+    .clock-face {
+      width: 100%;
+      height: 100%;
+      border: 8px solid #555;
+      border-radius: 50%;
+      background-color: rgba(255, 255, 255, 0.8);
+      position: relative;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1), inset 0 0 10px rgba(0,0,0,0.1);
+    }
+    /* 時計の中心の点 */
+    .clock-face::after {
+      content: '';
+      width: 12px;
+      height: 12px;
+      background-color: #333;
+      border-radius: 50%;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 10;
+    }
+    .hand {
+      width: 50%;
+      height: 6px;
+      background-color: #333;
+      position: absolute;
+      top: 50%;
+      left: 0; /* 左端を基点に */
+      transform-origin: 100% 50%; /* 右端（中央）を回転軸に */
+      transform: rotate(90deg); /* 初期位置（12時）に設定 */
+      border-radius: 3px;
+    }
+    .hour-hand {
+      width: 35%; /* 短針 */
+      left: 15%; /* 50% - 35% */
+      height: 8px;
+      background-color: #222;
+      z-index: 8;
+    }
+    .minute-hand {
+      width: 45%; /* 長針 */
+      left: 5%; /* 50% - 45% */
+      height: 6px;
+      background-color: #444;
+      z-index: 9;
+    }
+    /* 時計の数字 */
+    .number {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        text-align: center;
+        font-size: 1.5em;
+        font-weight: bold;
+        color: #333;
+        padding-top: 10px; /* 数字の位置を調整 */
+        box-sizing: border-box;
+    }
+    .number1 { transform: rotate(30deg); }
+    .number1 span { transform: rotate(-30deg); display: inline-block; }
+    .number2 { transform: rotate(60deg); }
+    .number2 span { transform: rotate(-60deg); display: inline-block; }
+    .number3 { transform: rotate(90deg); }
+    .number3 span { transform: rotate(-90deg); display: inline-block; }
+    .number4 { transform: rotate(120deg); }
+    .number4 span { transform: rotate(-120deg); display: inline-block; }
+    .number5 { transform: rotate(150deg); }
+    .number5 span { transform: rotate(-150deg); display: inline-block; }
+    .number6 { transform: rotate(180deg); }
+    .number6 span { transform: rotate(-180deg); display: inline-block; }
+    .number7 { transform: rotate(210deg); }
+    .number7 span { transform: rotate(-210deg); display: inline-block; }
+    .number8 { transform: rotate(240deg); }
+    .number8 span { transform: rotate(-240deg); display: inline-block; }
+    .number9 { transform: rotate(270deg); }
+    .number9 span { transform: rotate(-270deg); display: inline-block; }
+    .number10 { transform: rotate(300deg); }
+    .number10 span { transform: rotate(-300deg); display: inline-block; }
+    .number11 { transform: rotate(330deg); }
+    .number11 span { transform: rotate(-330deg); display: inline-block; }
+    .number12 { transform: rotate(0deg); } /* 12時は回転なし */
+    .number12 span { display: inline-block; }
+
+    /* ▲▲▲ ここまで時計のCSS ▲▲▲ */
+
+
+    .question {
+      margin-bottom: 20px;
+      color: #1d1d1f;
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      justify-content: center; /* 中央揃え */
+    }
+    .question-number {
+      font-size: 1.3em;
+      margin-right: 10px;
+      font-weight: normal;
+    }
+    .question-text {
+      font-size: 2.2em;
+      font-weight: bold;
+    }
+    .options {
+      display: grid;
+      /* ▼▼ 2列に変更 ▼▼ */
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 15px;
+    }
+    .option {
+      background-color: rgba(255, 255, 255, 0.7);
+      border: none;
+      border-radius: 16px;
+      padding: 15px;
+      font-size: 1.1em; /* 少し大きく */
+      font-weight: bold; /* 太字に */
+      cursor: pointer;
+      transition: background 0.3s ease 0.1s, transform 0.3s ease;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    .option:hover {
+      background: linear-gradient(135deg, #a8edea, #fed6e3);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+    .option.selected { }
+    .option.disabled {
+      background: linear-gradient(135deg, #a8edea, #fed6e3);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+      pointer-events: none;
+    }
+    .option.correct {
+      background: linear-gradient(135deg, #34c759, #a8e6cf);
+      color: #fff;
+    }
+    .option.incorrect {
+      background: linear-gradient(135deg, #ff3b30, #ff9a8b);
+      color: #fff;
+    }
+    .option::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.1);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .option:active::after {
+      transform: scale(0.98);
+    }
+    .explanation {
+      margin-top: 20px;
+      font-size: 1em;
+      color: #333;
+      background-color: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(10px);
+      border-left: 5px solid #4caf50;
+      border-radius: 12px;
+      padding: 15px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      opacity: 0; 
+      display: none; 
+      transition: opacity 0.3s ease;
+    }
+    .explanation-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+      font-weight: bold;
+      color: #4caf50;
+    }
+    .explanation-icon {
+      font-size: 1.5em;
+      margin-right: 10px;
+    }
+    .nav-button {
+      background: linear-gradient(135deg, #007aff, #5ac8fa);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      padding: 12px 24px;
+      font-size: 1em;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s ease;
+      margin-top: 20px;
+      width: 100%;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    .nav-button:hover {
+      background: linear-gradient(135deg, #005bb5, #4aa0d3);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+    .nav-button:active {
+      transform: scale(0.98);
+    }
+    .result-card {
+      margin-bottom: 20px;
+    }
+    .result-card h3 {
+      font-size: 1.2em;
+      margin-bottom: 10px;
+    }
+    .result-status {
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    .correct {
+      color: #34c759;
+    }
+    .incorrect {
+      color: #ff3b30;
+    }
+    #attendance-link {
+      background-color: #34c759;
+      color: white;
+      padding: 15px;
+      border-radius: 12px;
+      margin-top: 20px;
+      text-align: center;
+      display: none;
+    }
+    #attendance-link p {
+      margin: 0;
+      padding: 0;
+    }
+    
+    /* ▼▼▼ 九九の表モーダルは不要なので削除 ▼▼▼ */
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 style="text-align: center;">とけいの れんしゅう</h1>
+
+    <div id="selection-container">
+      <h2>どのレベルに ちょうせんする？</h2>
+      <div class="dan-grid">
+        <button class="select-button easy" onclick="startQuiz('easy')">かんたん（なんじ ちょうど）</button>
+        <button class="select-button normal" onclick="startQuiz('normal')">ふつう（なんじ はん）</button>
+        <button class="select-button hard" onclick="startQuiz('hard')">むずかしい（なんぷん）</button>
+      </div>
+      </div>
+
+    <div id="quiz-container" class="quiz-container">
+      <div id="quiz-content">
+
+        <div class="clock-container">
+          <div class="clock-face">
+            <div class="number number1"><span>1</span></div>
+            <div class="number number2"><span>2</span></div>
+            <div class="number number3"><span>3</span></div>
+            <div class="number number4"><span>4</span></div>
+            <div class="number number5"><span>5</span></div>
+            <div class="number number6"><span>6</span></div>
+            <div class="number number7"><span>7</span></div>
+            <div class="number number8"><span>8</span></div>
+            <div class="number number9"><span>9</span></div>
+            <div class="number number10"><span>10</span></div>
+            <div class="number number11"><span>11</span></div>
+            <div class="number number12"><span>12</span></div>
+            <div class="hand hour-hand" id="hour-hand"></div>
+            <div class="hand minute-hand" id="minute-hand"></div>
+          </div>
+        </div>
+        <div id="question" class="question"></div> 
+        <div id="options" class="options"></div>
+        <div id="explanation" class="explanation"></div>
+      </div>
+      <button id="next" class="nav-button" onclick="nextQuestion()">次の問題</button>
+    </div>
+
+    <div id="result-container" class="result-container"></div>
+    
+    <div id="attendance-link"></div>
+  </div>
+  
+  
+  <script>
+    const TOTAL_QUESTIONS = 10;
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let quizHistory = []; 
+    let currentProblem = {}; 
+    let shuffledOptions = [];
+    let selectedDifficulty; // ▼▼ 変数名を変更 (selectedDan -> selectedDifficulty) ▼▼
+
+    // ▼▼ 関数名を変更 (dan -> difficulty) ▼▼
+    function startQuiz(difficulty) {
+      selectedDifficulty = difficulty; 
+      currentQuestionIndex = 0;
+      score = 0;
+      quizHistory = [];
+      
+      document.getElementById('selection-container').style.display = 'none';
+      document.getElementById('quiz-container').style.display = 'block';
+      document.getElementById('result-container').innerHTML = '';
+      document.getElementById('attendance-link').style.display = 'none';
+
+      loadQuestion();
+    }
+    
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    // ▼▼▼ 九九問題生成(generateKukuProblem)を時計問題生成(generateClockProblem)に全面変更 ▼▼▼
+    
+    /** 選択肢のテキストを生成するヘルパー関数 */
+    function generateTimeText(h, m) {
+        if (m === 0) return `${h}じ ちょうど`;
+        if (m === 30) return `${h}じ はん`;
+        return `${h}じ ${m}ふん`;
+    }
+
+    function generateClockProblem() {
+      let hour, minute;
+
+      if (selectedDifficulty === 'easy') { // なんじ ちょうど
+        hour = Math.floor(Math.random() * 12) + 1;
+        minute = 0;
+      } else if (selectedDifficulty === 'normal') { // なんじ はん
+        hour = Math.floor(Math.random() * 12) + 1;
+        minute = 30;
+      } else { // 'hard' - 5分きざみ
+        hour = Math.floor(Math.random() * 12) + 1;
+        minute = (Math.floor(Math.random() * 12)) * 5; // 0, 5, 10... 55
+      }
+      
+      const correctAnswerText = generateTimeText(hour, minute);
+      
+      let options = [correctAnswerText];
+      
+      // ダミーの選択肢を生成
+      while (options.length < 4) {
+          let dummyHour = Math.floor(Math.random() * 12) + 1;
+          let dummyMinute;
+          
+          if (selectedDifficulty === 'easy') {
+              dummyMinute = 0;
+          } else if (selectedDifficulty === 'normal') {
+              dummyMinute = 30;
+          } else {
+              dummyMinute = (Math.floor(Math.random() * 12)) * 5;
+          }
+          
+          // 答えと同じか、既に選択肢にある場合はスキップ
+          if(dummyHour === hour && dummyMinute === minute) {
+              continue;
+          }
+
+          const dummyText = generateTimeText(dummyHour, dummyMinute);
+          if (!options.includes(dummyText)) {
+              options.push(dummyText);
+          }
+      }
+
+      return {
+        hour: hour,
+        minute: minute,
+        questionText: `いま、なんじ？`, // 問題文
+        answer: correctAnswerText,
+        options: options,
+        explanation: `せいかいは ${correctAnswerText} です。`
+      };
+    }
+    // ▲▲▲ 時計問題生成ロジックここまで ▲▲▲
+
+    function loadQuestion() {
+      // ▼▼ 呼び出す関数を変更 ▼▼
+      currentProblem = generateClockProblem();
+      
+      // --- ▼▼▼ ここから時計の針を動かすロジック ▼▼▼ ---
+      const hourHand = document.getElementById('hour-hand');
+      const minuteHand = document.getElementById('minute-hand');
+
+      // 角度を計算
+      // 分針: 1分で6度 (360 / 60)
+      const minuteDeg = currentProblem.minute * 6;
+      // 時針: 1時間で30度 (360 / 12) + 1分で0.5度 (30 / 60)
+      // (hour % 12) は 12時を0時として計算するため
+      const hourDeg = (currentProblem.hour % 12) * 30 + currentProblem.minute * 0.5;
+
+      // CSSのtransformを更新して針を回転
+      // -90度しているのは、CSSの初期位置が3時(90度)を指しているため12時(0度)に補正するため
+      hourHand.style.transform = `rotate(${hourDeg - 90}deg)`;
+      minuteHand.style.transform = `rotate(${minuteDeg - 90}deg)`;
+      // --- ▲▲▲ 時計ロジックここまで ▲▲▲ ---
+
+
+      const questionEl = document.getElementById('question');
+      questionEl.innerHTML = `
+        <span class="question-number">問題 ${currentQuestionIndex + 1}:</span>
+        <span class="question-text">${currentProblem.questionText}</span>
+      `;
+
+      shuffledOptions = shuffleArray([...currentProblem.options]);
+      const optionsHtml = shuffledOptions.map((option, index) => `
+        <div class="option" onclick="selectOption(${index})">${option}</div>
+      `).join('');
+
+      document.getElementById('options').innerHTML = optionsHtml;
+
+      const explanationEl = document.getElementById('explanation');
+      explanationEl.style.display = 'none'; 
+      explanationEl.style.opacity = '0'; 
+    }
+
+    function selectOption(index) {
+      const options = document.querySelectorAll('.option');
+      if (options[index].classList.contains('disabled')) {
+        return;
+      }
+      options.forEach(option => {
+        option.classList.add('disabled');
+      });
+      options[index].classList.add('selected');
+
+      const selectedAnswer = shuffledOptions[index];
+      const isCorrect = (selectedAnswer === currentProblem.answer);
+
+      // ▼▼ 履歴の保存内容を変更 (num1, num2は不要に) ▼▼
+      quizHistory[currentQuestionIndex] = {
+        question: `[${currentProblem.hour}時 ${currentProblem.minute}分]`, // 問題（内部記録用）
+        selected: selectedAnswer,
+        correctAnswer: currentProblem.answer,
+        explanation: currentProblem.explanation,
+        isCorrect: isCorrect,
+        hour: currentProblem.hour, // 分析用に保存
+        minute: currentProblem.minute // 分析用に保存
+      };
+      // ▲▲▲ 変更ここまで ▲▲▲
+
+      if (isCorrect) {
+        score++;
+      }
+
+      const explanationEl = document.getElementById('explanation');
+      explanationEl.innerHTML = `
+        <div class="explanation-header">
+          <span class="explanation-icon">${isCorrect ? '🎉' : '💡'}</span>
+          ${isCorrect ? 'せいかい！' : 'おしい！'}
+        </div>
+        ${currentProblem.explanation}
+      `;
+      explanationEl.style.display = 'block';
+      setTimeout(() => {
+        explanationEl.style.opacity = '1';
+      }, 100); 
+
+      if (isCorrect) {
+        explanationEl.style.backgroundColor = 'rgba(232, 245, 233, 0.8)';
+        explanationEl.style.borderLeftColor = '#4caf50';
+        options[index].classList.add('correct');
+      } else {
+        explanationEl.style.backgroundColor = 'rgba(255, 235, 238, 0.8)';
+        explanationEl.style.borderLeftColor = '#f44336';
+        options[index].classList.add('incorrect');
+        
+        shuffledOptions.forEach((option, i) => {
+          if (option === currentProblem.answer) {
+            options[i].classList.add('correct');
+          }
+        });
+      }
+    }
+
+    function nextQuestion() {
+      const selectedOption = document.querySelector('.option.selected');
+      if (selectedOption === null) {
+        alert('選択肢を選んでください');
+        return;
+      }
+
+      if (currentQuestionIndex < TOTAL_QUESTIONS - 1) {
+        currentQuestionIndex++;
+        loadQuestion();
+      } else {
+        showResult();
+      }
+    }
+
+    // ▼▼▼ 苦手分析(analyzeMistakes)は九九専用ロジックなので削除 ▼▼▼
+
+    function showResult() {
+      const resultContainer = document.getElementById('result-container');
+      const quizContainer = document.getElementById('quiz-container');
+      
+      quizContainer.style.display = 'none';
+      resultContainer.style.display = 'block'; 
+
+      const percentage = (score / TOTAL_QUESTIONS) * 100;
+      let resultHtml = `
+        <div class="result-card">
+          <h2>クイズ結果</h2>
+          <p style="font-size: 1.5em; font-weight: bold;">正解数: ${score} / ${TOTAL_QUESTIONS}</p>
+          <p style="font-size: 1.2em;">正答率: ${percentage.toFixed(0)}%</p>
+        </div>
+      `;
+
+      // ▼▼▼ 苦手分析と「苦手こくふくモード」のロジックは削除 ▼▼▼
+
+
+      // 解答履歴のレビュー
+      quizHistory.forEach((result, index) => {
+        resultHtml += `
+          <div class="result-card">
+            <h3>問題 ${index + 1}</h3>
+            <p class="result-status ${result.isCorrect ? 'correct' : 'incorrect'}">
+              ${result.isCorrect ? '正解' : '不正解'}
+            </p>
+            <p><strong>問題の時刻:</strong> ${result.correctAnswer}</p>
+            <p><strong>あなたの回答:</strong> ${result.selected}</p>
+            ${!result.isCorrect ? `<p><strong>正解:</strong> ${result.correctAnswer}</p>` : ''}
+          </div>
+        `;
+      });
+
+      resultHtml += `<button class="nav-button" onclick="restartQuiz()">もう一度ちょうせんする</button>`;
+      
+      // ▼▼ 苦手克服ボタンのHTMLは削除 ▼▼
+
+      resultContainer.innerHTML = resultHtml;
+
+      const attendanceLink = document.getElementById('attendance-link');
+      if (percentage === 100) {
+        attendanceLink.style.display = 'block';
+        attendanceLink.innerHTML = `
+          <p style="font-size: 1.2em; font-weight: bold;">おめでとう！全問正解です！ 🎉</p>
+        `;
+      } else {
+          attendanceLink.style.display = 'none';
+      }
+    }
+
+    function restartQuiz() {
+      document.getElementById('quiz-container').style.display = 'none';
+      document.getElementById('result-container').innerHTML = '';
+      document.getElementById('attendance-link').style.display = 'none';
+      document.getElementById('selection-container').style.display = 'block';
+    }
+
+    // ▼▼▼ 九九の表モーダル用JSは不要なので削除 ▼▼▼
+    
+  </script>
+</body>
+</html>
