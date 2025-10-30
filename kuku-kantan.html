@@ -4,7 +4,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@700&display=swap" rel="stylesheet">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>九九れんしゅう（あやめ用）</title>
+  <title>九九れんしゅう（確認テスト）</title>
   <style>
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
@@ -40,7 +40,7 @@
     }
     .dan-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr); /* 3列 */
+      grid-template-columns: repeat(3, 1fr);
       gap: 15px;
       margin-top: 20px;
       margin-bottom: 20px;
@@ -61,16 +61,15 @@
       background: linear-gradient(135deg, #005bb5, #4aa0d3);
       transform: translateY(-2px);
     }
-    /* ▼▼ ここから追加・変更 ▼▼ */
-    .select-button.chart { /* 九九の表ボタン */
+    .select-button.chart {
        background: linear-gradient(135deg, #ffc107, #ff8f0a);
        width: 100%;
-       margin-bottom: 15px; /* 下に間隔 */
+       margin-bottom: 15px;
     }
     .select-button.chart:hover {
        background: linear-gradient(135deg, #e0a800, #e67e00);
     }
-    .select-button.random { /* ランダムボタン */
+    .select-button.random {
        background: linear-gradient(135deg, #34c759, #a8e6cf);
        width: 100%;
     }
@@ -78,10 +77,8 @@
        background: linear-gradient(135deg, #28a745, #82d4b2);
     }
     .quiz-container, .result-container {
-        display: none; /* クイズと結果は最初は非表示 */
+        display: none;
     }
-    /* ▲▲ ここまで追加・変更 ▲▲ */
-
     .quiz-container, .result-card {
       background-color: rgba(255, 255, 255, 0.2);
       backdrop-filter: blur(10px);
@@ -91,6 +88,41 @@
       margin-bottom: 20px;
       border: 1px solid rgba(255, 255, 255, 0.3);
     }
+    /* ▼▼ ここから追加 ▼▼ */
+    /* 分析カードのスタイル */
+    .analysis-card {
+        background-color: rgba(255, 255, 224, 0.3); /* 少し黄色みがかった背景 */
+        border: 2px solid rgba(255, 193, 7, 0.5); /* オレンジ色の枠線 */
+    }
+    .analysis-card h2 {
+        color: #d84315; /* 濃いオレンジ */
+        margin-top: 0;
+    }
+    .analysis-card ul {
+        display: flex;
+        flex-wrap: wrap;
+        padding-left: 0;
+        list-style: none;
+        gap: 10px;
+    }
+    .analysis-card li {
+        background-color: rgba(255, 87, 34, 0.7); /* 赤系のタグ */
+        color: white;
+        padding: 5px 15px;
+        border-radius: 20px;
+        font-size: 1.1em;
+        font-weight: bold;
+    }
+    /* 苦手克服ボタンのスタイル（randomボタンを流用） */
+    .nav-button.random {
+       background: linear-gradient(135deg, #34c759, #a8e6cf);
+       margin-top: 10px;
+    }
+    .nav-button.random:hover {
+        background: linear-gradient(135deg, #28a745, #82d4b2);
+    }
+    /* ▲▲ ここまで追加 ▲▲ */
+
     .question {
       margin-bottom: 20px;
       color: #1d1d1f;
@@ -233,93 +265,50 @@
       padding: 0;
     }
 
-    /* --- ▼▼ モーダル・アコーディオン用CSS (ここから) ▼▼ --- */
-    /* モーダル背景 */
+    /* モーダル・アコーディオン用CSS (省略なし) */
     .modal-bg {
-      display: none; /* 通常は非表示 */
-      position: fixed; /* 画面全体を覆う */
-      z-index: 100;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0,0,0,0.5); /* 半透明の黒 */
-      justify-content: center;
-      align-items: center;
+      display: none; position: fixed; z-index: 100;
+      left: 0; top: 0; width: 100%; height: 100%;
+      background-color: rgba(0,0,0,0.5);
+      justify-content: center; align-items: center;
     }
-    /* モーダル本体 */
     .modal-content {
-      background: linear-gradient(135deg, #e0f7fa, #fce4ec); /* 本体背景 */
-      padding: 25px;
-      border-radius: 16px;
+      background: linear-gradient(135deg, #e0f7fa, #fce4ec);
+      padding: 25px; border-radius: 16px;
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
-      width: 90%; /* スマホ用に幅を広めに */
-      max-width: 500px;
-      max-height: 80vh; /* 高さを制限 */
-      overflow-y: auto; /* 内容が多ければスクロール */
+      width: 90%; max-width: 500px;
+      max-height: 80vh; overflow-y: auto;
       position: relative;
     }
-    /* 閉じるボタン */
     .modal-close-btn {
-      position: absolute;
-      top: 10px;
-      right: 20px;
-      color: #555;
-      font-size: 32px;
-      font-weight: bold;
-      cursor: pointer;
+      position: absolute; top: 10px; right: 20px;
+      color: #555; font-size: 32px; font-weight: bold; cursor: pointer;
     }
-    .modal-close-btn:hover {
-      color: #000;
-    }
-    .modal-content h2 {
-        text-align: center;
-        margin-top: 10px;
-    }
-
-    /* アコーディオン (details / summary) */
+    .modal-close-btn:hover { color: #000; }
+    .modal-content h2 { text-align: center; margin-top: 10px; }
     .kuku-chart-container details {
       background-color: rgba(255, 255, 255, 0.7);
-      border-radius: 12px;
-      margin-bottom: 10px;
+      border-radius: 12px; margin-bottom: 10px;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
     .kuku-chart-container summary {
-      padding: 15px;
-      font-size: 1.2em;
-      font-weight: bold;
-      cursor: pointer;
-      list-style: none; /* 三角マークを消す */
-      position: relative;
+      padding: 15px; font-size: 1.2em; font-weight: bold;
+      cursor: pointer; list-style: none; position: relative;
     }
-    .kuku-chart-container summary::-webkit-details-marker {
-      display: none; /* 三角マークを消す (Chrome/Safari) */
-    }
-    /* 疑似要素で開閉マークを自作 */
+    .kuku-chart-container summary::-webkit-details-marker { display: none; }
     .kuku-chart-container summary::after {
-      content: '＋';
-      position: absolute;
-      right: 20px;
-      font-weight: bold;
+      content: '＋'; position: absolute; right: 20px; font-weight: bold;
     }
-    .kuku-chart-container details[open] summary::after {
-      content: '－';
-    }
+    .kuku-chart-container details[open] summary::after { content: '－'; }
     .kuku-items {
-      padding: 0 20px 15px 20px;
-      border-top: 1px solid rgba(0,0,0,0.1);
+      padding: 0 20px 15px 20px; border-top: 1px solid rgba(0,0,0,0.1);
     }
-    .kuku-items p {
-      margin: 8px 0;
-      font-size: 1.1em;
-    }
-    /* --- ▲▲ モーダル・アコーディオン用CSS (ここまで) ▲▲ --- */
-
+    .kuku-items p { margin: 8px 0; font-size: 1.1em; }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1 style="text-align: center;">九九れんしゅう（あやめ用）</h1>
+    <h1 style="text-align: center;">九九れんしゅう（確認テスト・改）</h1>
 
     <div id="selection-container">
       <h2>どの段をれんしゅうする？</h2>
@@ -354,148 +343,24 @@
   
   
   <div id="kuku-modal-bg" class="modal-bg" onclick="closeKukuTable()">
-    <div class="modal-content" onclick="event.stopPropagation()"> <span class="modal-close-btn" onclick="closeKukuTable()">&times;</span>
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <span class="modal-close-btn" onclick="closeKukuTable()">&times;</span>
       <h2>九九のひょう</h2>
       <div class="kuku-chart-container">
-        
-        <details>
-          <summary>1のだん (いち)</summary>
-          <div class="kuku-items">
-            <p>1×1= 1 (いんいちが いち)</p>
-            <p>1×2= 2 (いんにが に)</p>
-            <p>1×3= 3 (いんさんが さん)</p>
-            <p>1×4= 4 (いんしが し)</p>
-            <p>1×5= 5 (いんごが ご)</p>
-            <p>1×6= 6 (いんろくが ろく)</p>
-            <p>1×7= 7 (いんしちが しち)</p>
-            <p>1×8= 8 (いんはちが はち)</p>
-            <p>1×9= 9 (いんくが く)</p>
-          </div>
-        </details>
-        
-        <details>
-          <summary>2のだん (に)</summary>
-          <div class="kuku-items">
-            <p>2×1= 2 (にいちが に)</p>
-            <p>2×2= 4 (ににんが し)</p>
-            <p>2×3= 6 (にさんが ろく)</p>
-            <p>2×4= 8 (にしが はち)</p>
-            <p>2×5=10 (にご じゅう)</p>
-            <p>2×6=12 (にろく じゅうに)</p>
-            <p>2×7=14 (にしち じゅうし)</p>
-            <p>2×8=16 (にはち じゅうろく)</p>
-            <p>2×9=18 (にく じゅうはち)</p>
-          </div>
-        </details>
-
-        <details>
-          <summary>3のだん (さん)</summary>
-          <div class="kuku-items">
-            <p>3×1= 3 (さんいちが さん)</p>
-            <p>3×2= 6 (さんにが ろく)</p>
-            <p>3×3= 9 (さざんが く)</p>
-            <p>3×4=12 (さんし じゅうに)</p>
-            <p>3×5=15 (さんご じゅうご)</p>
-            <p>3×6=18 (さぶろく じゅうはち)</p>
-            <p>3×7=21 (さんしち にじゅういち)</p>
-            <p>3×8=24 (さんぱ にじゅうし)</p>
-            <p>3×9=27 (さんく にじゅうしち)</p>
-          </div>
-        </details>
-
-        <details>
-          <summary>4のだん (し)</summary>
-          <div class="kuku-items">
-            <p>4×1= 4 (しいちが し)</p>
-            <p>4×2= 8 (しにが はち)</p>
-            <p>4×3=12 (しさん じゅうに)</p>
-            <p>4×4=16 (しし じゅうろく)</p>
-            <p>4×5=20 (しご にじゅう)</p>
-            <p>4×6=24 (しろく にじゅうし)</p>
-            <p>4×7=28 (ししち にじゅうはち)</p>
-            <p>4×8=32 (しは さんじゅうに)</p>
-            <p>4×9=36 (しく さんじゅうろく)</p>
-          </div>
-        </details>
-
-        <details>
-          <summary>5のだん (ご)</summary>
-          <div class="kuku-items">
-            <p>5×1= 5 (ごいちが ご)</p>
-            <p>5×2=10 (ごに じゅう)</p>
-            <p>5×3=15 (ごさん じゅうご)</p>
-            <p>5×4=20 (ごし にじゅう)</p>
-            <p>5×5=25 (ごご にじゅうご)</p>
-            <p>5×6=30 (ごろく さんじゅう)</p>
-            <p>5×7=35 (ごしち さんじゅうご)</p>
-            <p>5×8=40 (ごは しじゅう)</p>
-            <p>5×9=45 (ごっく しじゅうご)</p>
-          </div>
-        </details>
-
-        <details>
-          <summary>6のだん (ろく)</summary>
-          <div class="kuku-items">
-            <p>6×1= 6 (ろくいちが ろく)</p>
-            <p>6×2=12 (ろくに じゅうに)</p>
-            <p>6×3=18 (ろくさん じゅうはち)</p>
-            <p>6×4=24 (ろくし にじゅうし)</p>
-            <p>6×5=30 (ろくご さんじゅう)</p>
-            <p>6×6=36 (ろくろく さんじゅうろく)</p>
-            <p>6×7=42 (ろくしち しじゅうに)</p>
-            <p>6×8=48 (ろくは しじゅうはち)</p>
-            <p>6×9=54 (ろっく ごじゅうし)</p>
-          </div>
-        </details>
-
-        <details>
-          <summary>7のだん (しち)</summary>
-          <div class="kuku-items">
-            <p>7×1= 7 (しちいちが しち)</p>
-            <p>7×2=14 (しちに じゅうし)</p>
-            <p>7×3=21 (しちさん にじゅういち)</p>
-            <p>7×4=28 (しちし にじゅうはち)</p>
-            <p>7×5=35 (しちご さんじゅうご)</p>
-            <p>7×6=42 (しちろく しじゅうに)</p>
-            <p>7×7=49 (しちしち しじゅうく)</p>
-            <p>7×8=56 (しちは ごじゅうろく)</p>
-            <p>7×9=63 (しちく ろくじゅうさん)</p>
-          </div>
-        </details>
-
-        <details>
-          <summary>8のだん (はち)</summary>
-          <div class="kuku-items">
-            <p>8×1= 8 (はちいちが はち)</p>
-            <p>8×2=16 (はちに じゅうろく)</p>
-            <p>8×3=24 (はちさん にじゅうし)</p>
-            <p>8×4=32 (はちし さんじゅうに)</p>
-            <p>8×5=40 (はちご しじゅう)</p>
-            <p>8×6=48 (はちろく しじゅうはち)</p>
-            <p>8×7=56 (はちしち ごじゅうろく)</p>
-            <p>8×8=64 (はっぱ ろくじゅうし)</p>
-            <p>8×9=72 (はっく しちじゅうに)</p>
-          </div>
-        </details>
-
-        <details>
-          <summary>9のだん (く)</summary>
-          <div class="kuku-items">
-            <p>9×1= 9 (くいちが く)</p>
-            <p>9×2=18 (くにく じゅうはち)</p>
-            <p>9×3=27 (くさん にじゅうしち)</p>
-            <p>9×4=36 (くし さんじゅうろく)</p>
-            <p>9×5=45 (くご しじゅうご)</p>
-            <p>9×6=54 (くろく ごじゅうし)</p>
-            <p>9×7=63 (くしち ろくじゅうさん)</p>
-            <p>9×8=72 (くはち しちじゅうに)</p>
-            <p>9×9=81 (くく はちじゅういち)</p>
-          </div>
-        </details>
-        
+        <details><summary>1のだん (いち)</summary><div class="kuku-items"><p>1×1= 1 (いんいちが いち)</p><p>1×2= 2 (いんにが に)</p><p>1×3= 3 (いんさんが さん)</p><p>1×4= 4 (いんしが し)</p><p>1×5= 5 (いんごが ご)</p><p>1×6= 6 (いんろくが ろく)</p><p>1×7= 7 (いんしちが しち)</p><p>1×8= 8 (いんはちが はち)</p><p>1×9= 9 (いんくが く)</p></div></details>
+        <details><summary>2のだん (に)</summary><div class="kuku-items"><p>2×1= 2 (にいちが に)</p><p>2×2= 4 (ににんが し)</p><p>2×3= 6 (にさんが ろく)</p><p>2×4= 8 (にしが はち)</p><p>2×5=10 (にご じゅう)</p><p>2×6=12 (にろく じゅうに)</p><p>2×7=14 (にしち じゅうし)</p><p>2×8=16 (にはち じゅうろく)</p><p>2×9=18 (にく じゅうはち)</p></div></details>
+        <details><summary>3のだん (さん)</summary><div class="kuku-items"><p>3×1= 3 (さんいちが さん)</p><p>3×2= 6 (さんにが ろく)</p><p>3×3= 9 (さざんが く)</p><p>3×4=12 (さんし じゅうに)</p><p>3×5=15 (さんご じゅうご)</p><p>3×6=18 (さぶろく じゅうはち)</p><p>3×7=21 (さんしち にじゅういち)</p><p>3×8=24 (さんぱ にじゅうし)</p><p>3×9=27 (さんく にじゅうしち)</p></div></details>
+        <details><summary>4のだん (し)</summary><div class="kuku-items"><p>4×1= 4 (しいちが し)</p><p>4×2= 8 (しにが はち)</p><p>4×3=12 (しさん じゅうに)</p><p>4×4=16 (しし じゅうろく)</p><p>4×5=20 (しご にじゅう)</p><p>4×6=24 (しろく にじゅうし)</p><p>4×7=28 (ししち にじゅうはち)</p><p>4×8=32 (しは さんじゅうに)</p><p>4×9=36 (しく さんじゅうろく)</p></div></details>
+        <details><summary>5のだん (ご)</summary><div class="kuku-items"><p>5×1= 5 (ごいちが ご)</p><p>5×2=10 (ごに じゅう)</p><p>5×3=15 (ごさん じゅうご)</p><p>5×4=20 (ごし にじゅう)</p><p>5×5=25 (ごご にじゅうご)</p><p>5×6=30 (ごろく さんじゅう)</p><p>5×7=35 (ごしち さんじゅうご)</p><p>5×8=40 (ごは しじゅう)</p><p>5×9=45 (ごっく しじゅうご)</p></div></details>
+        <details><summary>6のだん (ろく)</summary><div class="kuku-items"><p>6×1= 6 (ろくいちが ろく)</p><p>6×2=12 (ろくに じゅうに)</p><p>6×3=18 (ろくさん じゅうはち)</p><p>6×4=24 (ろくし にじゅうし)</p><p>6×5=30 (ろくご さんじゅう)</p><p>6×6=36 (ろくろく さんじゅうろく)</p><p>6×7=42 (ろくしち しじゅうに)</p><p>6×8=48 (ろくは しじゅうはち)</p><p>6×9=54 (ろっく ごじゅうし)</p></div></details>
+        <details><summary>7のだん (しち)</summary><div class="kuku-items"><p>7×1= 7 (しちいちが しち)</p><p>7×2=14 (しちに じゅうし)</p><p>7×3=21 (しちさん にじゅういち)</p><p>7×4=28 (しちし にじゅうはち)</p><p>7×5=35 (しちご さんじゅうご)</p><p>7×6=42 (しちろく しじゅうに)</p><p>7×7=49 (しちしち しじゅうく)</p><p>7×8=56 (しちは ごじゅうろく)</p><p>7×9=63 (しちく ろくじゅうさん)</p></div></details>
+        <details><summary>8のだん (はち)</summary><div class="kuku-items"><p>8×1= 8 (はちいちが はち)</p><p>8×2=16 (はちに じゅうろく)</p><p>8×3=24 (はちさん にじゅうし)</p><p>8×4=32 (はちし さんじゅうに)</p><p>8×5=40 (はちご しじゅう)</p><p>8×6=48 (はちろく しじゅうはち)</p><p>8×7=56 (はちしち ごじゅうろく)</p><p>8×8=64 (はっぱ ろくじゅうし)</p><p>8×9=72 (はっく しちじゅうに)</p></div></details>
+        <details><summary>9のだん (く)</summary><div class="kuku-items"><p>9×1= 9 (くいちが く)</p><p>9×2=18 (くにく じゅうはち)</p><p>9×3=27 (くさん にじゅうしち)</p><p>9×4=36 (くし さんじゅうろく)</p><p>9×5=45 (くご しじゅうご)</p><p>9×6=54 (くろく ごじゅうし)</p><p>9×7=63 (くしち ろくじゅうさん)</p><p>9×8=72 (くはち しちじゅうに)</p><p>9×9=81 (くく はちじゅういち)</p></div></details>
       </div>
     </div>
   </div>
+
+  
   <script>
     const TOTAL_QUESTIONS = 10;
     let currentQuestionIndex = 0;
@@ -505,9 +370,8 @@
     let shuffledOptions = [];
     let selectedDan; 
 
-    // クイズを開始する
     function startQuiz(dan) {
-      selectedDan = dan;
+      selectedDan = dan; // 'random', 1-9, または [3, 7] のような配列
       currentQuestionIndex = 0;
       score = 0;
       quizHistory = [];
@@ -520,7 +384,6 @@
       loadQuestion();
     }
     
-    // 配列をシャッフルする
     function shuffleArray(array) {
       for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -529,13 +392,26 @@
       return array;
     }
 
-    // 問題を生成する
     function generateKukuProblem() {
       let num1, num2;
+
+      // --- ▼▼ ここのロジックを変更 ▼▼ ---
       if (selectedDan === 'random') {
+        // 1. ランダムモード
         num1 = Math.floor(Math.random() * 9) + 1;
         num2 = Math.floor(Math.random() * 9) + 1;
+      } else if (Array.isArray(selectedDan)) {
+        // 2. 苦手克服モード (selectedDan が [3, 7] などの配列)
+        const dan = selectedDan[Math.floor(Math.random() * selectedDan.length)];
+        if (Math.random() > 0.5) {
+          num1 = dan;
+          num2 = Math.floor(Math.random() * 9) + 1;
+        } else {
+          num1 = Math.floor(Math.random() * 9) + 1;
+          num2 = dan;
+        }
       } else {
+        // 3. 通常の段選択モード
         if (Math.random() > 0.5) {
           num1 = selectedDan;
           num2 = Math.floor(Math.random() * 9) + 1;
@@ -544,6 +420,7 @@
           num2 = selectedDan;
         }
       }
+      // --- ▲▲ ここまで変更 ▲▲ ---
 
       const correctAnswer = num1 * num2;
       let options = [correctAnswer]; 
@@ -562,6 +439,9 @@
       }
 
       return {
+        // ▼▼ num1, num2 も返すように変更 ▼▼
+        num1: num1,
+        num2: num2,
         questionText: `${num1} × ${num2} = ?`,
         answer: correctAnswer,
         options: options,
@@ -569,7 +449,6 @@
       };
     }
 
-    // 問題を読み込む
     function loadQuestion() {
       currentProblem = generateKukuProblem();
       
@@ -591,7 +470,6 @@
       explanationEl.style.opacity = '0'; 
     }
 
-    // 選択肢を選ぶ
     function selectOption(index) {
       const options = document.querySelectorAll('.option');
       if (options[index].classList.contains('disabled')) {
@@ -605,13 +483,17 @@
       const selectedAnswer = shuffledOptions[index];
       const isCorrect = (selectedAnswer === currentProblem.answer);
 
+      // --- ▼▼ quizHistoryにnum1, num2も保存 ▼▼ ---
       quizHistory[currentQuestionIndex] = {
         question: currentProblem.questionText,
         selected: selectedAnswer,
         correctAnswer: currentProblem.answer,
         explanation: currentProblem.explanation,
-        isCorrect: isCorrect
+        isCorrect: isCorrect,
+        num1: currentProblem.num1, // 分析用に保存
+        num2: currentProblem.num2  // 分析用に保存
       };
+      // --- ▲▲ ここまで変更 ▲▲ ---
 
       if (isCorrect) {
         score++;
@@ -647,7 +529,6 @@
       }
     }
 
-    // 次の問題へ
     function nextQuestion() {
       const selectedOption = document.querySelector('.option.selected');
       if (selectedOption === null) {
@@ -663,7 +544,35 @@
       }
     }
 
-    // 結果の表示
+    // --- ▼▼ 苦手分析関数（新設） ▼▼ ---
+    function analyzeMistakes() {
+        const danStats = {};
+        for (let i = 1; i <= 9; i++) {
+            danStats[i] = { mistakes: 0 };
+        }
+        
+        let nigatanaDanList = [];
+
+        quizHistory.forEach(result => {
+            if (!result.isCorrect) { // 間違えた問題だけをチェック
+                danStats[result.num1].mistakes++;
+                if (result.num1 !== result.num2) { // 3x3などで二重カウントしない
+                    danStats[result.num2].mistakes++;
+                }
+            }
+        });
+
+        for (let i = 1; i <= 9; i++) {
+            if (danStats[i].mistakes > 0) {
+                nigatanaDanList.push(i); // 間違えた段をリストに追加
+            }
+        }
+        
+        return nigatanaDanList; // 苦手な段の配列 [3, 7] などを返す
+    }
+    // --- ▲▲ ここまで新設 ▲▲ ---
+
+
     function showResult() {
       const resultContainer = document.getElementById('result-container');
       const quizContainer = document.getElementById('quiz-container');
@@ -680,6 +589,37 @@
         </div>
       `;
 
+      // --- ▼▼ 苦手分析のロジックを追加 ▼▼ ---
+      let nigatanaButtonHtml = '';
+      if (selectedDan === 'random') { // ランダムモードの時だけ分析
+          const nigatanaDanList = analyzeMistakes();
+          
+          if (nigatanaDanList.length > 0) {
+              // 1. 分析結果カードのHTML
+              resultHtml += `
+                <div class="result-card analysis-card">
+                  <h2>苦手な段の分析</h2>
+                  <p>以下の段でまちがいがありました。<br>「苦手こくふくモード」で練習しよう！</p>
+                  <ul>
+                    ${nigatanaDanList.map(dan => `<li>${dan} のだん</li>`).join('')}
+                  </ul>
+                </div>
+              `;
+              
+              // 2. 苦手克服ボタンのHTML
+              // 配列をJSON文字列に変換してonclickに渡す
+              const listString = JSON.stringify(nigatanaDanList);
+              nigatanaButtonHtml = `
+                <button class="nav-button random" onclick='startQuiz(${listString})'>
+                  苦手こくふくモード（${nigatanaDanList.join(', ')}の段）
+                </button>
+              `;
+          }
+      }
+      // --- ▲▲ ここまで追加 ▲▲ ---
+
+
+      // 解答履歴のレビュー
       quizHistory.forEach((result, index) => {
         resultHtml += `
           <div class="result-card">
@@ -695,6 +635,10 @@
       });
 
       resultHtml += `<button class="nav-button" onclick="restartQuiz()">もう一度挑戦する</button>`;
+      
+      // 苦手克服ボタンを「もう一度」ボタンの下に追加
+      resultHtml += nigatanaButtonHtml; 
+
       resultContainer.innerHTML = resultHtml;
 
       const attendanceLink = document.getElementById('attendance-link');
@@ -708,27 +652,21 @@
       }
     }
 
-    // クイズをリスタート（段選択に戻る）
     function restartQuiz() {
       document.getElementById('quiz-container').style.display = 'none';
       document.getElementById('result-container').innerHTML = '';
       document.getElementById('attendance-link').style.display = 'none';
-      document.getElementById('selection-container').style.display = 'block'; // 段選択画面に戻る
+      document.getElementById('selection-container').style.display = 'block';
     }
 
-    // --- ▼▼ モーダル用JS (ここから) ▼▼ ---
+    // モーダル用JS
     const modal = document.getElementById('kuku-modal-bg');
-
-    // モーダルを表示
     function showKukuTable() {
       modal.style.display = 'flex';
     }
-
-    // モーダルを閉じる
     function closeKukuTable() {
       modal.style.display = 'none';
     }
-    // --- ▲▲ モーダル用JS (ここまで) ▲▲ ---
     
   </script>
 </body>
