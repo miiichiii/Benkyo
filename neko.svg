@@ -1,0 +1,33 @@
+<svg class/="cat" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    :root { --fur:#f2c28d; --fur-dark:#e1a765; --line:#333; --ear:#f7d8b7; }
+    
+    @keyframes blink {
+      0%,92%,100% { opacity:0; transform:translateY(-2px); }
+      95%,97%     { opacity:1; transform:translateY(0); }
+    }
+    .eyelid { animation: blink 6s infinite; transform-origin: 0 0; }
+
+    @keyframes wag {
+      0%,100% { transform: rotate(10deg); }
+      50%     { transform: rotate(-8deg); }
+    }
+    .tail { transform-origin: 340px 250px; animation: wag 3.5s ease-in-out infinite; }
+    
+    @keyframes whisk {
+      0%,100% { transform: translateX(0) }
+      50%     { transform: translateX(1.5px) }
+    }
+    .whisk { animation: whisk 4.2s ease-in-out infinite; }
+
+    .cat:hover .mouth { d: path("M 210 250 Q 230 262 250 250"); transition: d .2s; }
+  </style>
+
+  <title id="title">ねこ</title>
+  <desc id="desc">やさしい色の猫。まばたきして、しっぽが左右に揺れる。</desc>
+  <ellipse cx="200" cy="330" rx="110" ry="16" fill="#000" opacity=".08"/>
+  <g class="tail">
+    <path d="M 300 260 C 340 240, 360 230, 360 210 C 360 180, 320 180, 315 205 C 312 220, 335 225, 335 235 C 332 260, 310 255, 300 250 Z" fill="var(--fur)" stroke="var(--line)" stroke-width="3"/>
+    <path d="M 340 205 q 10 -8 15 0 M 330 220 q 12 -7 16 0 M 324 236 q 10 -6 14 0" stroke="var(--fur-dark)" stroke-width="4" fill="none" stroke-linecap="round" opacity=".7"/>
+  </g>
+  </svg>
