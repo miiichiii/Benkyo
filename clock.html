@@ -4,7 +4,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@700&display=swap" rel="stylesheet">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>とけいの れんしゅうver 0.1</title>
+  <title>とけいの れんしゅう ver 1.0</title>
   <style>
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
@@ -79,6 +79,24 @@
     .select-button.hard:hover {
         background: linear-gradient(135deg, #e62e2e, #f08070);
     }
+    .select-button.veryhard {
+        background: linear-gradient(135deg, #8e44ad, #c39bd3);
+    }
+    .select-button.veryhard:hover {
+        background: linear-gradient(135deg, #6c3483, #a569bd);
+    }
+    .select-button.challenge {
+        background: linear-gradient(135deg, #e74c3c, #f39c12);
+    }
+    .select-button.challenge:hover {
+        background: linear-gradient(135deg, #c0392b, #d68910);
+    }
+    .select-button.reallife {
+        background: linear-gradient(135deg, #3498db, #9b59b6);
+    }
+    .select-button.reallife:hover {
+        background: linear-gradient(135deg, #2874a6, #7d3c98);
+    }
 
     .quiz-container, .result-container {
         display: none;
@@ -93,7 +111,7 @@
       border: 1px solid rgba(255, 255, 255, 0.3);
     }
 
-    /* ▼▼▼ ここから時計のCSS (根本的に修正) ▼▼▼ */
+    /* 時計のCSS */
     .clock-container {
       width: 250px;
       height: 250px;
@@ -122,41 +140,32 @@
       z-index: 10;
     }
 
-    /* ★★★ 針のCSSを全面的に変更 ★★★ */
     .hand {
-      /* 針の太さ */
       width: 6px; 
-      /* 針の長さ（半径より短い） */
       height: 45%; 
       background-color: #333;
       position: absolute;
-      /* 針の下端を中央に */
       bottom: 50%; 
-      /* 針の左端を中央に */
       left: 50%; 
-      /* 針の太さの半分、中央揃え */
       margin-left: -3px; 
-      /* 下端（中央）を回転軸に */
       transform-origin: 50% 100%; 
-      /* 初期値（12時） */
       transform: rotate(0deg); 
       border-radius: 3px;
     }
     .hour-hand {
-      width: 8px; /* 太く */
-      height: 35%; /* 短く */
+      width: 8px;
+      height: 35%;
       background-color: #222;
       z-index: 8;
-      margin-left: -4px; /* 太さの半分 */
+      margin-left: -4px;
     }
     .minute-hand {
-      width: 6px; /* 細く */
-      height: 45%; /* 長く */
+      width: 6px;
+      height: 45%;
       background-color: #444;
       z-index: 9;
-      margin-left: -3px; /* 太さの半分 */
+      margin-left: -3px;
     }
-    /* ▲▲▲ 針のCSS変更ここまで ▲▲▲ */
 
     .number {
         position: absolute;
@@ -193,7 +202,6 @@
     .number11 span { transform: rotate(-330deg); display: inline-block; }
     .number12 { transform: rotate(0deg); }
     .number12 span { display: inline-block; }
-    /* ▲▲▲ 時計のCSSここまで ▲▲▲ */
 
     .question {
       margin-bottom: 20px;
@@ -338,25 +346,122 @@
       margin: 0;
       padding: 0;
     }
+
+    /* キャラクターアニメーション用CSS */
+    .character-popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      z-index: 1000;
+      animation: popIn 0.5s ease-out forwards;
+      pointer-events: none;
+    }
+    
+    @keyframes popIn {
+      0% {
+        transform: translate(-50%, -50%) scale(0) rotate(-180deg);
+        opacity: 0;
+      }
+      70% {
+        transform: translate(-50%, -50%) scale(1.2) rotate(10deg);
+      }
+      100% {
+        transform: translate(-50%, -50%) scale(1) rotate(0deg);
+        opacity: 1;
+      }
+    }
+    
+    @keyframes fadeOut {
+      from {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+      }
+      to {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.8);
+      }
+    }
+    
+    .character-small {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 80px;
+      height: 80px;
+      animation: bounce 1s ease-in-out;
+      z-index: 999;
+      pointer-events: none;
+    }
+    
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
+    }
+
+    @keyframes celebrate {
+      0% { transform: scale(1) rotate(0deg); }
+      25% { transform: scale(1.1) rotate(-5deg); }
+      50% { transform: scale(1) rotate(0deg); }
+      75% { transform: scale(1.1) rotate(5deg); }
+      100% { transform: scale(1) rotate(0deg); }
+    }
+
+    .celebration-character {
+      animation: celebrate 1s ease-in-out infinite;
+    }
+
+    /* デジタル時計表示用 */
+    .digital-clock {
+      background: linear-gradient(135deg, #2c3e50, #34495e);
+      color: #00ff00;
+      font-family: 'Courier New', monospace;
+      font-size: 3em;
+      font-weight: bold;
+      padding: 20px 40px;
+      border-radius: 12px;
+      text-align: center;
+      margin: 20px auto;
+      max-width: 300px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3), inset 0 2px 4px rgba(255,255,255,0.1);
+      letter-spacing: 0.1em;
+    }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1 style="text-align: center;">とけいの れんしゅう</h1>
+    <h1 style="text-align: center;">とけいの れんしゅう 🕐</h1>
 
     <div id="selection-container">
       <h2>どのレベルに ちょうせんする？</h2>
       <div class="dan-grid">
-        <button class="select-button easy" onclick="startQuiz('easy')">かんたん（なんじ ちょうど）</button>
-        <button class="select-button normal" onclick="startQuiz('normal')">ふつう（なんじ はん）</button>
-        <button class="select-button hard" onclick="startQuiz('hard')">むずかしい（なんぷん）</button>
+        <button class="select-button easy" onclick="startQuiz('easy')">
+          ⭐ かんたん（なんじ ちょうど）
+        </button>
+        <button class="select-button normal" onclick="startQuiz('normal')">
+          ⭐⭐ ふつう（なんじ はん）
+        </button>
+        <button class="select-button hard" onclick="startQuiz('hard')">
+          ⭐⭐⭐ むずかしい（5ふんきざみ）
+        </button>
+        <button class="select-button veryhard" onclick="startQuiz('veryhard')">
+          ⭐⭐⭐⭐ とても むずかしい（1ぷんきざみ）
+        </button>
+        <button class="select-button challenge" onclick="startQuiz('challenge')">
+          🎯 チャレンジ（デジタル→アナログ）
+        </button>
+        <button class="select-button reallife" onclick="startQuiz('reallife')">
+          🏫 じっさいもんだい（かんがえる もんだい）
+        </button>
       </div>
     </div>
 
     <div id="quiz-container" class="quiz-container">
       <div id="quiz-content">
 
-        <div class="clock-container">
+        <div id="digital-display" class="digital-clock" style="display: none;"></div>
+
+        <div class="clock-container" id="clock-display">
           <div class="clock-face">
             <div class="number number1"><span>1</span></div>
             <div class="number number2"><span>2</span></div>
@@ -387,7 +492,6 @@
     <div id="attendance-link"></div>
   </div>
   
-
   <script>
     const TOTAL_QUESTIONS = 10;
     let currentQuestionIndex = 0;
@@ -396,6 +500,78 @@
     let currentProblem = {}; 
     let shuffledOptions = [];
     let selectedDifficulty; 
+
+    // キャラクターSVGデータ
+    const characters = {
+      dog: `<svg width="150" height="150" viewBox="0 0 150 150" xmlns="http://www.w3.org/2000/svg">
+        <!-- ビーグル犬 -->
+        <ellipse cx="75" cy="85" rx="35" ry="40" fill="#D2691E"/>
+        <circle cx="75" cy="65" r="30" fill="#F4A460"/>
+        <ellipse cx="50" cy="50" rx="12" ry="25" fill="#8B4513"/>
+        <ellipse cx="100" cy="50" rx="12" ry="25" fill="#8B4513"/>
+        <circle cx="65" cy="65" r="5" fill="#000"/>
+        <circle cx="85" cy="65" r="5" fill="#000"/>
+        <ellipse cx="75" cy="75" rx="8" ry="6" fill="#000"/>
+        <path d="M 75 75 Q 70 85 65 83 M 75 75 Q 80 85 85 83" stroke="#000" stroke-width="2" fill="none"/>
+        <circle cx="120" cy="110" r="8" fill="#FFD700"/>
+        <circle cx="120" cy="110" r="5" fill="#FFA500"/>
+      </svg>`,
+      
+      cat: `<svg width="150" height="150" viewBox="0 0 150 150" xmlns="http://www.w3.org/2000/svg">
+        <!-- ネコ -->
+        <circle cx="75" cy="80" r="35" fill="#FFB6C1"/>
+        <ellipse cx="45" cy="50" rx="15" ry="30" fill="#FFB6C1"/>
+        <ellipse cx="105" cy="50" rx="15" ry="30" fill="#FFB6C1"/>
+        <ellipse cx="48" cy="55" rx="8" ry="15" fill="#FFC0CB"/>
+        <ellipse cx="102" cy="55" rx="8" ry="15" fill="#FFC0CB"/>
+        <circle cx="65" cy="75" r="6" fill="#000"/>
+        <circle cx="85" cy="75" r="6" fill="#000"/>
+        <circle cx="65" cy="75" r="3" fill="#FFF"/>
+        <circle cx="85" cy="75" r="3" fill="#FFF"/>
+        <ellipse cx="75" cy="85" rx="6" ry="8" fill="#FFB6C1" stroke="#000" stroke-width="1"/>
+        <path d="M 75 85 L 75 92" stroke="#000" stroke-width="2"/>
+        <path d="M 75 92 Q 65 95 60 93 M 75 92 Q 85 95 90 93" stroke="#000" stroke-width="2" fill="none"/>
+        <line x1="45" y1="85" x2="20" y2="80" stroke="#000" stroke-width="1.5"/>
+        <line x1="45" y1="90" x2="20" y2="90" stroke="#000" stroke-width="1.5"/>
+        <line x1="105" y1="85" x2="130" y2="80" stroke="#000" stroke-width="1.5"/>
+        <line x1="105" y1="90" x2="130" y2="90" stroke="#000" stroke-width="1.5"/>
+      </svg>`,
+      
+      rabbit: `<svg width="150" height="150" viewBox="0 0 150 150" xmlns="http://www.w3.org/2000/svg">
+        <!-- ウサギ -->
+        <ellipse cx="55" cy="40" rx="8" ry="35" fill="#FFF" stroke="#FFB6C1" stroke-width="2"/>
+        <ellipse cx="95" cy="40" rx="8" ry="35" fill="#FFF" stroke="#FFB6C1" stroke-width="2"/>
+        <ellipse cx="55" cy="45" rx="5" ry="25" fill="#FFB6C1"/>
+        <ellipse cx="95" cy="45" rx="5" ry="25" fill="#FFB6C1"/>
+        <circle cx="75" cy="85" r="32" fill="#FFF"/>
+        <circle cx="65" cy="80" r="5" fill="#000"/>
+        <circle cx="85" cy="80" r="5" fill="#000"/>
+        <circle cx="65" cy="80" r="2" fill="#FFF"/>
+        <circle cx="85" cy="80" r="2" fill="#FFF"/>
+        <ellipse cx="75" cy="90" rx="4" ry="6" fill="#FFB6C1"/>
+        <path d="M 75 90 L 75 95" stroke="#000" stroke-width="2"/>
+        <path d="M 75 95 Q 68 98 65 96 M 75 95 Q 82 98 85 96" stroke="#000" stroke-width="2" fill="none"/>
+        <circle cx="50" cy="95" r="6" fill="#FFB6C1"/>
+        <circle cx="100" cy="95" r="6" fill="#FFB6C1"/>
+      </svg>`,
+      
+      bear: `<svg width="150" height="150" viewBox="0 0 150 150" xmlns="http://www.w3.org/2000/svg">
+        <!-- くま（サンリオ風）-->
+        <circle cx="50" cy="50" r="18" fill="#F0E68C"/>
+        <circle cx="100" cy="50" r="18" fill="#F0E68C"/>
+        <circle cx="75" cy="80" r="35" fill="#F0E68C"/>
+        <circle cx="50" cy="50" r="12" fill="#FFE4B5"/>
+        <circle cx="100" cy="50" r="12" fill="#FFE4B5"/>
+        <circle cx="65" cy="75" r="5" fill="#000"/>
+        <circle cx="85" cy="75" r="5" fill="#000"/>
+        <ellipse cx="75" cy="88" rx="10" ry="8" fill="#FFE4B5"/>
+        <ellipse cx="75" cy="90" rx="6" ry="5" fill="#000"/>
+        <path d="M 75 90 Q 68 98 62 96 M 75 90 Q 82 98 88 96" stroke="#000" stroke-width="2" fill="none"/>
+        <circle cx="120" cy="95" r="10" fill="#FF69B4"/>
+        <circle cx="120" cy="95" r="6" fill="#FFF"/>
+        <path d="M 116 93 L 124 97 M 116 97 L 124 93" stroke="#FF1493" stroke-width="2"/>
+      </svg>`
+    };
 
     function startQuiz(difficulty) {
       selectedDifficulty = difficulty; 
@@ -419,84 +595,230 @@
       return array;
     }
 
-    /** 選択肢のテキストを生成するヘルパー関数 */
     function generateTimeText(h, m) {
         if (m === 0) return `${h}じ ちょうど`;
         if (m === 30) return `${h}じ はん`;
         return `${h}じ ${m}ふん`;
     }
 
+    function padZero(num) {
+      return num < 10 ? '0' + num : num;
+    }
+
     function generateClockProblem() {
-      let hour, minute;
+      let hour, minute, questionText, correctAnswerText, options = [], explanation;
 
       if (selectedDifficulty === 'easy') { 
         hour = Math.floor(Math.random() * 12) + 1;
         minute = 0;
+        questionText = 'いま、なんじ？';
+        correctAnswerText = generateTimeText(hour, minute);
+        options = [correctAnswerText];
+        
+        while (options.length < 4) {
+          let dummyHour = Math.floor(Math.random() * 12) + 1;
+          if(dummyHour === hour) continue;
+          const dummyText = generateTimeText(dummyHour, 0);
+          if (!options.includes(dummyText)) options.push(dummyText);
+        }
+        explanation = `せいかいは ${correctAnswerText} です。みじかいはりが ${hour} を さしています。`;
+
       } else if (selectedDifficulty === 'normal') {
         hour = Math.floor(Math.random() * 12) + 1;
         minute = 30;
-      } else { // 'hard' - 5分きざみ
+        questionText = 'いま、なんじ？';
+        correctAnswerText = generateTimeText(hour, minute);
+        options = [correctAnswerText];
+        
+        while (options.length < 4) {
+          let dummyHour = Math.floor(Math.random() * 12) + 1;
+          if(dummyHour === hour) continue;
+          const dummyText = generateTimeText(dummyHour, 30);
+          if (!options.includes(dummyText)) options.push(dummyText);
+        }
+        explanation = `せいかいは ${correctAnswerText} です。ながいはりが 6 を さしているので「はん」です。`;
+
+      } else if (selectedDifficulty === 'hard') {
         hour = Math.floor(Math.random() * 12) + 1;
         minute = (Math.floor(Math.random() * 12)) * 5;
-      }
-      
-      const correctAnswerText = generateTimeText(hour, minute);
-      
-      let options = [correctAnswerText];
-      
-      while (options.length < 4) {
+        questionText = 'いま、なんじ なんぷん？';
+        correctAnswerText = generateTimeText(hour, minute);
+        options = [correctAnswerText];
+        
+        while (options.length < 4) {
           let dummyHour = Math.floor(Math.random() * 12) + 1;
-          let dummyMinute;
-          
-          if (selectedDifficulty === 'easy') {
-              dummyMinute = 0;
-          } else if (selectedDifficulty === 'normal') {
-              dummyMinute = 30;
-          } else {
-              dummyMinute = (Math.floor(Math.random() * 12)) * 5;
-          }
-          
-          if(dummyHour === hour && dummyMinute === minute) {
-              continue;
-          }
-
+          let dummyMinute = (Math.floor(Math.random() * 12)) * 5;
+          if(dummyHour === hour && dummyMinute === minute) continue;
           const dummyText = generateTimeText(dummyHour, dummyMinute);
-          if (!options.includes(dummyText)) {
-              options.push(dummyText);
+          if (!options.includes(dummyText)) options.push(dummyText);
+        }
+        explanation = `せいかいは ${correctAnswerText} です。ながいはりが ${minute/5} を さしているので ${minute}ふん です。`;
+
+      } else if (selectedDifficulty === 'veryhard') {
+        hour = Math.floor(Math.random() * 12) + 1;
+        minute = Math.floor(Math.random() * 60);
+        questionText = 'いま、なんじ なんぷん？';
+        correctAnswerText = generateTimeText(hour, minute);
+        options = [correctAnswerText];
+        
+        while (options.length < 4) {
+          let dummyHour = Math.floor(Math.random() * 12) + 1;
+          let dummyMinute = Math.floor(Math.random() * 60);
+          if(dummyHour === hour && dummyMinute === minute) continue;
+          const dummyText = generateTimeText(dummyHour, dummyMinute);
+          if (!options.includes(dummyText)) options.push(dummyText);
+        }
+        explanation = `せいかいは ${correctAnswerText} です。ながいはりを よく みて かぞえましょう。`;
+
+      } else if (selectedDifficulty === 'challenge') {
+        hour = Math.floor(Math.random() * 12) + 1;
+        minute = Math.floor(Math.random() * 12) * 5;
+        
+        questionText = `デジタルとけいが ${padZero(hour)}:${padZero(minute)} を しめしています。アナログとけいは どれ？`;
+        
+        options = [];
+        const correctOption = {hour: hour, minute: minute, text: `${hour}じ ${minute}ふん`};
+        options.push(correctOption);
+        
+        while (options.length < 4) {
+          let dummyHour = Math.floor(Math.random() * 12) + 1;
+          let dummyMinute = Math.floor(Math.random() * 12) * 5;
+          if(options.some(o => o.hour === dummyHour && o.minute === dummyMinute)) continue;
+          options.push({hour: dummyHour, minute: dummyMinute, text: `${dummyHour}じ ${dummyMinute}ふん`});
+        }
+        
+        correctAnswerText = correctOption.text;
+        explanation = `せいかいは ${correctAnswerText} です。デジタルとけいの じかんと おなじ アナログとけいを えらびます。`;
+
+      } else if (selectedDifficulty === 'reallife') {
+        const scenarios = [
+          {
+            setup: () => {
+              const startHour = Math.floor(Math.random() * 3) + 8; // 8-10時
+              const startMinute = [0, 15, 20, 30][Math.floor(Math.random() * 4)];
+              const duration = [15, 20, 30][Math.floor(Math.random() * 3)];
+              const endMinute = startMinute + duration;
+              const endHour = startHour + Math.floor(endMinute / 60);
+              const finalMinute = endMinute % 60;
+              
+              return {
+                hour: endHour,
+                minute: finalMinute,
+                question: `がっこうは ${startHour}じ${startMinute}ふんに はじまります。いまは ${startHour}じ ちょうど です。あと なんぷんで はじまる？`,
+                answer: `${duration}ふん`,
+                explanation: `${startHour}じ${startMinute}ふん - ${startHour}じ = ${duration}ふん です。`
+              };
+            }
+          },
+          {
+            setup: () => {
+              const nowHour = Math.floor(Math.random() * 2) + 7; // 7-8時
+              const nowMinute = [0, 10, 15][Math.floor(Math.random() * 3)];
+              const targetHour = nowHour + 1;
+              const targetMinute = [0, 30][Math.floor(Math.random() * 2)];
+              const diffMinute = (targetHour * 60 + targetMinute) - (nowHour * 60 + nowMinute);
+              
+              return {
+                hour: nowHour,
+                minute: nowMinute,
+                question: `いまは ${nowHour}じ${nowMinute}ふん です。バスは ${targetHour}じ${targetMinute === 0 ? 'ちょうど' : targetMinute + 'ふん'} に でます。あと なんぷん？`,
+                answer: `${diffMinute}ふん`,
+                explanation: `${targetHour}じ${targetMinute}ふん - ${nowHour}じ${nowMinute}ふん = ${diffMinute}ふん です。`
+              };
+            }
+          },
+          {
+            setup: () => {
+              const startHour = Math.floor(Math.random() * 2) + 3; // 3-4時
+              const duration = [30, 45, 60][Math.floor(Math.random() * 3)];
+              const endTotalMinutes = startHour * 60 + duration;
+              const endHour = Math.floor(endTotalMinutes / 60);
+              const endMinute = endTotalMinutes % 60;
+              
+              return {
+                hour: endHour,
+                minute: endMinute,
+                question: `${startHour}じ から ${duration}ふんかん べんきょうしました。おわったのは なんじ？`,
+                answer: endMinute === 0 ? `${endHour}じ ちょうど` : `${endHour}じ${endMinute}ふん`,
+                explanation: `${startHour}じ + ${duration}ふん = ${endMinute === 0 ? endHour + 'じ ちょうど' : endHour + 'じ' + endMinute + 'ふん'} です。`
+              };
+            }
           }
+        ];
+        
+        const scenario = scenarios[Math.floor(Math.random() * scenarios.length)].setup();
+        hour = scenario.hour;
+        minute = scenario.minute;
+        questionText = scenario.question;
+        correctAnswerText = scenario.answer;
+        explanation = scenario.explanation;
+        
+        options = [correctAnswerText];
+        const correctNum = parseInt(correctAnswerText);
+        while (options.length < 4) {
+          const offset = (Math.floor(Math.random() * 6) - 3) * 5;
+          if (offset === 0) continue;
+          const dummyNum = correctNum + offset;
+          if (dummyNum <= 0 || dummyNum > 120) continue;
+          const dummyText = `${dummyNum}ふん`;
+          if (!options.includes(dummyText)) options.push(dummyText);
+        }
       }
 
       return {
         hour: hour,
         minute: minute,
-        questionText: `いま、なんじ？`, 
+        questionText: questionText, 
         answer: correctAnswerText,
         options: options,
-        explanation: `せいかいは ${correctAnswerText} です。`
+        explanation: explanation,
+        optionsData: selectedDifficulty === 'challenge' ? options : null
       };
     }
 
-    /* ★★★ JavaScriptの修正箇所 ★★★ */
+    function showCharacter(type, size = 'small') {
+      const characterTypes = ['dog', 'cat', 'rabbit', 'bear'];
+      const randomChar = characterTypes[Math.floor(Math.random() * characterTypes.length)];
+      
+      const div = document.createElement('div');
+      div.className = size === 'small' ? 'character-small' : 'character-popup';
+      div.innerHTML = characters[randomChar];
+      
+      document.body.appendChild(div);
+      
+      setTimeout(() => {
+        div.style.animation = 'fadeOut 0.5s ease-out forwards';
+        setTimeout(() => div.remove(), 500);
+      }, size === 'small' ? 1500 : 2000);
+    }
+
     function loadQuestion() {
       currentProblem = generateClockProblem();
       
-      const hourHand = document.getElementById('hour-hand');
-      const minuteHand = document.getElementById('minute-hand');
-
-      // 1. 角度を計算 (12時 = 0度 基準)
-      const minuteDeg = currentProblem.minute * 6;
-
-      // 2. 12時のバグを修正
-      // 12時(hour=12)のとき、12 % 12 = 0 になってしまうのを防ぐ
-      let hourForCalc = currentProblem.hour % 12;
+      // 表示モードの切り替え
+      const clockDisplay = document.getElementById('clock-display');
+      const digitalDisplay = document.getElementById('digital-display');
       
-      const hourDeg = hourForCalc * 30 + currentProblem.minute * 0.5;
-
-      // 3. 針の適用が逆だったバグを修正
-      // CSSの基準が12時(0deg)なので、補正（+90など）は不要。
-      hourHand.style.transform = `rotate(${hourDeg}deg)`;
-      minuteHand.style.transform = `rotate(${minuteDeg}deg)`;
-
+      if (selectedDifficulty === 'challenge') {
+        clockDisplay.style.display = 'none';
+        digitalDisplay.style.display = 'block';
+        digitalDisplay.textContent = `${padZero(currentProblem.hour)}:${padZero(currentProblem.minute)}`;
+      } else if (selectedDifficulty === 'reallife') {
+        clockDisplay.style.display = 'none';
+        digitalDisplay.style.display = 'none';
+      } else {
+        clockDisplay.style.display = 'block';
+        digitalDisplay.style.display = 'none';
+        
+        const hourHand = document.getElementById('hour-hand');
+        const minuteHand = document.getElementById('minute-hand');
+        const minuteDeg = currentProblem.minute * 6;
+        let hourForCalc = currentProblem.hour % 12;
+        const hourDeg = hourForCalc * 30 + currentProblem.minute * 0.5;
+        
+        hourHand.style.transform = `rotate(${hourDeg}deg)`;
+        minuteHand.style.transform = `rotate(${minuteDeg}deg)`;
+      }
 
       const questionEl = document.getElementById('question');
       questionEl.innerHTML = `
@@ -504,12 +826,38 @@
         <span class="question-text">${currentProblem.questionText}</span>
       `;
 
-      shuffledOptions = shuffleArray([...currentProblem.options]);
-      const optionsHtml = shuffledOptions.map((option, index) => `
-        <div class="option" onclick="selectOption(${index})">${option}</div>
-      `).join('');
-
-      document.getElementById('options').innerHTML = optionsHtml;
+      if (selectedDifficulty === 'challenge') {
+        // チャレンジモード: 各選択肢にミニ時計を表示
+        const optionsHtml = shuffleArray([...currentProblem.optionsData]).map((option, index) => {
+          const optionId = `option-${index}`;
+          return `
+            <div class="option" onclick="selectOption(${index})" style="padding: 10px;">
+              <div style="margin: 0 auto; width: 100px; height: 100px; position: relative;">
+                <svg width="100" height="100" viewBox="0 0 100 100">
+                  <circle cx="50" cy="50" r="45" fill="#fff" stroke="#333" stroke-width="2"/>
+                  <circle cx="50" cy="50" r="3" fill="#333"/>
+                  ${Array.from({length: 12}, (_, i) => {
+                    const angle = (i + 1) * 30;
+                    const x = 50 + 35 * Math.sin(angle * Math.PI / 180);
+                    const y = 50 - 35 * Math.cos(angle * Math.PI / 180);
+                    return `<text x="${x}" y="${y}" text-anchor="middle" dominant-baseline="middle" font-size="10" font-weight="bold">${i + 1}</text>`;
+                  }).join('')}
+                  <line x1="50" y1="50" x2="${50 + 25 * Math.sin((option.hour % 12 * 30 + option.minute * 0.5) * Math.PI / 180)}" y2="${50 - 25 * Math.cos((option.hour % 12 * 30 + option.minute * 0.5) * Math.PI / 180)}" stroke="#222" stroke-width="3" stroke-linecap="round"/>
+                  <line x1="50" y1="50" x2="${50 + 35 * Math.sin(option.minute * 6 * Math.PI / 180)}" y2="${50 - 35 * Math.cos(option.minute * 6 * Math.PI / 180)}" stroke="#444" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+              </div>
+            </div>
+          `;
+        }).join('');
+        document.getElementById('options').innerHTML = optionsHtml;
+        shuffledOptions = currentProblem.optionsData;
+      } else {
+        shuffledOptions = shuffleArray([...currentProblem.options]);
+        const optionsHtml = shuffledOptions.map((option, index) => `
+          <div class="option" onclick="selectOption(${index})">${option}</div>
+        `).join('');
+        document.getElementById('options').innerHTML = optionsHtml;
+      }
 
       const explanationEl = document.getElementById('explanation');
       explanationEl.style.display = 'none'; 
@@ -526,11 +874,23 @@
       });
       options[index].classList.add('selected');
 
-      const selectedAnswer = shuffledOptions[index];
-      const isCorrect = (selectedAnswer === currentProblem.answer);
+      let selectedAnswer, isCorrect;
+      
+      if (selectedDifficulty === 'challenge') {
+        selectedAnswer = shuffledOptions[index].text;
+        isCorrect = (shuffledOptions[index].hour === currentProblem.hour && 
+                     shuffledOptions[index].minute === currentProblem.minute);
+      } else {
+        selectedAnswer = shuffledOptions[index];
+        isCorrect = (selectedAnswer === currentProblem.answer);
+      }
 
       quizHistory[currentQuestionIndex] = {
-        question: `[${currentProblem.hour}時 ${currentProblem.minute}分]`, 
+        question: selectedDifficulty === 'challenge' 
+          ? `デジタル ${padZero(currentProblem.hour)}:${padZero(currentProblem.minute)}` 
+          : selectedDifficulty === 'reallife'
+          ? currentProblem.questionText
+          : `[${currentProblem.hour}時 ${currentProblem.minute}分]`, 
         selected: selectedAnswer,
         correctAnswer: currentProblem.answer,
         explanation: currentProblem.explanation,
@@ -541,6 +901,7 @@
 
       if (isCorrect) {
         score++;
+        showCharacter('correct', 'small');
       }
 
       const explanationEl = document.getElementById('explanation');
@@ -566,7 +927,13 @@
         options[index].classList.add('incorrect');
         
         shuffledOptions.forEach((option, i) => {
-          if (option === currentProblem.answer) {
+          let isCorrectOption;
+          if (selectedDifficulty === 'challenge') {
+            isCorrectOption = (option.hour === currentProblem.hour && option.minute === currentProblem.minute);
+          } else {
+            isCorrectOption = (option === currentProblem.answer);
+          }
+          if (isCorrectOption) {
             options[i].classList.add('correct');
           }
         });
@@ -596,9 +963,20 @@
       resultContainer.style.display = 'block'; 
 
       const percentage = (score / TOTAL_QUESTIONS) * 100;
+      
+      let difficultyName = '';
+      switch(selectedDifficulty) {
+        case 'easy': difficultyName = 'かんたん'; break;
+        case 'normal': difficultyName = 'ふつう'; break;
+        case 'hard': difficultyName = 'むずかしい'; break;
+        case 'veryhard': difficultyName = 'とても むずかしい'; break;
+        case 'challenge': difficultyName = 'チャレンジ'; break;
+        case 'reallife': difficultyName = 'じっさいもんだい'; break;
+      }
+      
       let resultHtml = `
         <div class="result-card">
-          <h2>クイズ結果</h2>
+          <h2>クイズ結果 - ${difficultyName}</h2>
           <p style="font-size: 1.5em; font-weight: bold;">正解数: ${score} / ${TOTAL_QUESTIONS}</p>
           <p style="font-size: 1.2em;">正答率: ${percentage.toFixed(0)}%</p>
         </div>
@@ -609,11 +987,12 @@
           <div class="result-card">
             <h3>問題 ${index + 1}</h3>
             <p class="result-status ${result.isCorrect ? 'correct' : 'incorrect'}">
-              ${result.isCorrect ? '正解' : '不正解'}
+              ${result.isCorrect ? '✅ 正解' : '❌ 不正解'}
             </p>
-            <p><strong>問題の時刻:</strong> ${result.correctAnswer}</p>
+            <p><strong>問題:</strong> ${result.question}</p>
             <p><strong>あなたの回答:</strong> ${result.selected}</p>
             ${!result.isCorrect ? `<p><strong>正解:</strong> ${result.correctAnswer}</p>` : ''}
+            <p style="font-size: 0.9em; color: #666;">${result.explanation}</p>
           </div>
         `;
       });
@@ -624,12 +1003,21 @@
 
       const attendanceLink = document.getElementById('attendance-link');
       if (percentage === 100) {
+        showCharacter('celebration', 'large');
         attendanceLink.style.display = 'block';
         attendanceLink.innerHTML = `
-          <p style="font-size: 1.2em; font-weight: bold;">おめでとう！全問正解です！ 🎉</p>
+          <p style="font-size: 1.5em; font-weight: bold;">🎊 おめでとう！全問正解です！ 🎊</p>
+          <p style="font-size: 1.1em; margin-top: 10px;">すごい！とけいが よめるように なったね！</p>
+        `;
+      } else if (percentage >= 80) {
+        showCharacter('good', 'large');
+        attendanceLink.style.display = 'block';
+        attendanceLink.innerHTML = `
+          <p style="font-size: 1.3em; font-weight: bold;">🌟 よく できました！</p>
+          <p>もう すこしで かんぺき！</p>
         `;
       } else {
-          attendanceLink.style.display = 'none';
+        attendanceLink.style.display = 'none';
       }
     }
 
