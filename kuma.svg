@@ -1,0 +1,26 @@
+<svg class="bear" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+<style>
+  :root {
+    --fur:#a67c52;
+    --line:#333;
+  }
+</style>
+
+<ellipse cx="200" cy="330" rx="110" ry="16" fill="#000" opacity=".08"/>
+
+<circle cx="200" cy="200" r="95" fill="var(--fur)" stroke="var(--line)" stroke-width="3"/>
+<circle cx="155" cy="150" r="30" fill="var(--fur)" stroke="var(--line)" stroke-width="3"/>
+<circle cx="245" cy="150" r="30" fill="var(--fur)" stroke="var(--line)" stroke-width="3"/>
+
+<ellipse cx="170" cy="200" rx="13" ry="11" fill="#fff" stroke="var(--line)" stroke-width="2"/>
+<ellipse cx="230" cy="200" rx="13" ry="11" fill="#fff" stroke="var(--line)" stroke-width="2"/>
+<circle cx="170" cy="200" r="4.5"/>
+<circle cx="230" cy="200" r="4.5"/>
+
+<circle cx="200" cy="225" r="14" fill="#fff" stroke="var(--line)" stroke-width="2"/>
+<circle cx="200" cy="225" r="7" fill="#333"/>
+
+<path d="M190 245 Q200 255 210 245"
+      stroke="var(--line)" stroke-width="3" fill="none" stroke-linecap="round"/>
+
+</svg>
