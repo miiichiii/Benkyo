@@ -4,7 +4,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@700&display=swap" rel="stylesheet">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>とけいの れんしゅう ver 1.0</title>
+  <title>とけいの れんしゅう ver 1.1</title>
   <style>
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
@@ -500,6 +500,7 @@
     let currentProblem = {}; 
     let shuffledOptions = [];
     let selectedDifficulty; 
+    let correctAnswerIndex = -1; // 正解のインデックスを保存
 
     // キャラクターSVGデータ
     const characters = {
@@ -588,11 +589,12 @@
     }
     
     function shuffleArray(array) {
-      for (let i = array.length - 1; i > 0; i--) {
+      const newArray = [...array];
+      for (let i = newArray.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
+        [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
       }
-      return array;
+      return newArray;
     }
 
     function generateTimeText(h, m) {
@@ -652,7 +654,7 @@
           const dummyText = generateTimeText(dummyHour, dummyMinute);
           if (!options.includes(dummyText)) options.push(dummyText);
         }
-        explanation = `せいかいは ${correctAnswerText} です。ながいはりが ${minute/5} を さしているので ${minute}ふん です。`;
+        explanation = `せいかいは ${correctAnswerText} です。ながいはりが ${minute/5 === 0 ? 12 : minute/5} を さしているので ${minute}ふん です。`;
 
       } else if (selectedDifficulty === 'veryhard') {
         hour = Math.floor(Math.random() * 12) + 1;
@@ -677,70 +679,72 @@
         questionText = `デジタルとけいが ${padZero(hour)}:${padZero(minute)} を しめしています。アナログとけいは どれ？`;
         
         options = [];
-        const correctOption = {hour: hour, minute: minute, text: `${hour}じ ${minute}ふん`};
+        const correctOption = {hour: hour, minute: minute, text: `${hour}時 ${minute}分`, isCorrect: true};
         options.push(correctOption);
         
         while (options.length < 4) {
           let dummyHour = Math.floor(Math.random() * 12) + 1;
           let dummyMinute = Math.floor(Math.random() * 12) * 5;
           if(options.some(o => o.hour === dummyHour && o.minute === dummyMinute)) continue;
-          options.push({hour: dummyHour, minute: dummyMinute, text: `${dummyHour}じ ${dummyMinute}ふん`});
+          options.push({hour: dummyHour, minute: dummyMinute, text: `${dummyHour}時 ${dummyMinute}分`, isCorrect: false});
         }
         
-        correctAnswerText = correctOption.text;
-        explanation = `せいかいは ${correctAnswerText} です。デジタルとけいの じかんと おなじ アナログとけいを えらびます。`;
+        correctAnswerText = `${hour}時 ${minute}分`;
+        explanation = `せいかいは ${hour}時${minute}分 です。デジタルとけいの じかんと おなじ アナログとけいを えらびます。`;
 
       } else if (selectedDifficulty === 'reallife') {
         const scenarios = [
           {
+            // 学校開始まであと何分？
             setup: () => {
               const startHour = Math.floor(Math.random() * 3) + 8; // 8-10時
-              const startMinute = [0, 15, 20, 30][Math.floor(Math.random() * 4)];
-              const duration = [15, 20, 30][Math.floor(Math.random() * 3)];
-              const endMinute = startMinute + duration;
-              const endHour = startHour + Math.floor(endMinute / 60);
-              const finalMinute = endMinute % 60;
+              const startMinute = [20, 30, 45][Math.floor(Math.random() * 3)];
+              const nowMinute = [0, 5, 10][Math.floor(Math.random() * 3)];
+              const duration = startMinute - nowMinute;
               
               return {
-                hour: endHour,
-                minute: finalMinute,
-                question: `がっこうは ${startHour}じ${startMinute}ふんに はじまります。いまは ${startHour}じ ちょうど です。あと なんぷんで はじまる？`,
-                answer: `${duration}ふん`,
-                explanation: `${startHour}じ${startMinute}ふん - ${startHour}じ = ${duration}ふん です。`
+                hour: startHour,
+                minute: nowMinute,
+                question: `がっこうは ${startHour}時${startMinute}分に はじまります。いまは ${startHour}時${nowMinute}分 です。あと なん分で はじまる？`,
+                answer: `${duration}分`,
+                explanation: `${startHour}時${startMinute}分 - ${startHour}時${nowMinute}分 = ${duration}分 です。`
               };
             }
           },
           {
+            // バス出発まであと何分？
             setup: () => {
               const nowHour = Math.floor(Math.random() * 2) + 7; // 7-8時
               const nowMinute = [0, 10, 15][Math.floor(Math.random() * 3)];
-              const targetHour = nowHour + 1;
-              const targetMinute = [0, 30][Math.floor(Math.random() * 2)];
-              const diffMinute = (targetHour * 60 + targetMinute) - (nowHour * 60 + nowMinute);
+              const targetHour = nowHour;
+              const targetMinute = nowMinute + [20, 30, 40][Math.floor(Math.random() * 3)];
+              const diffMinute = targetMinute - nowMinute;
               
               return {
                 hour: nowHour,
                 minute: nowMinute,
-                question: `いまは ${nowHour}じ${nowMinute}ふん です。バスは ${targetHour}じ${targetMinute === 0 ? 'ちょうど' : targetMinute + 'ふん'} に でます。あと なんぷん？`,
-                answer: `${diffMinute}ふん`,
-                explanation: `${targetHour}じ${targetMinute}ふん - ${nowHour}じ${nowMinute}ふん = ${diffMinute}ふん です。`
+                question: `いまは ${nowHour}時${nowMinute}分 です。バスは ${targetHour}時${targetMinute}分 に でます。あと なん分？`,
+                answer: `${diffMinute}分`,
+                explanation: `${targetHour}時${targetMinute}分 - ${nowHour}時${nowMinute}分 = ${diffMinute}分 です。`
               };
             }
           },
           {
+            // 勉強終了時刻は？
             setup: () => {
               const startHour = Math.floor(Math.random() * 2) + 3; // 3-4時
-              const duration = [30, 45, 60][Math.floor(Math.random() * 3)];
-              const endTotalMinutes = startHour * 60 + duration;
+              const startMinute = [0, 15, 30][Math.floor(Math.random() * 3)];
+              const duration = [30, 45][Math.floor(Math.random() * 2)];
+              const endTotalMinutes = startHour * 60 + startMinute + duration;
               const endHour = Math.floor(endTotalMinutes / 60);
               const endMinute = endTotalMinutes % 60;
               
               return {
                 hour: endHour,
                 minute: endMinute,
-                question: `${startHour}じ から ${duration}ふんかん べんきょうしました。おわったのは なんじ？`,
-                answer: endMinute === 0 ? `${endHour}じ ちょうど` : `${endHour}じ${endMinute}ふん`,
-                explanation: `${startHour}じ + ${duration}ふん = ${endMinute === 0 ? endHour + 'じ ちょうど' : endHour + 'じ' + endMinute + 'ふん'} です。`
+                question: `${startHour}時${startMinute}分 から ${duration}分かん べんきょうしました。おわったのは なん時 なん分？`,
+                answer: endMinute === 0 ? `${endHour}時ちょうど` : `${endHour}時${endMinute}分`,
+                explanation: `${startHour}時${startMinute}分 + ${duration}分 = ${endMinute === 0 ? endHour + '時ちょうど' : endHour + '時' + endMinute + '分'} です。`
               };
             }
           }
@@ -754,14 +758,43 @@
         explanation = scenario.explanation;
         
         options = [correctAnswerText];
-        const correctNum = parseInt(correctAnswerText);
-        while (options.length < 4) {
-          const offset = (Math.floor(Math.random() * 6) - 3) * 5;
-          if (offset === 0) continue;
+        
+        // 正解から±10, ±15, ±20分の選択肢を生成
+        const correctNum = parseInt(correctAnswerText.replace(/[^0-9]/g, ''));
+        const offsets = [-20, -15, -10, 10, 15, 20];
+        const shuffledOffsets = shuffleArray(offsets);
+        
+        for (let offset of shuffledOffsets) {
+          if (options.length >= 4) break;
           const dummyNum = correctNum + offset;
           if (dummyNum <= 0 || dummyNum > 120) continue;
-          const dummyText = `${dummyNum}ふん`;
-          if (!options.includes(dummyText)) options.push(dummyText);
+          
+          let dummyText;
+          if (correctAnswerText.includes('ちょうど')) {
+            const hour = parseInt(correctAnswerText);
+            const newHour = hour + Math.floor(offset / 60);
+            const newMinute = (60 + offset) % 60;
+            if (newMinute === 0) {
+              dummyText = `${newHour}時ちょうど`;
+            } else {
+              dummyText = `${newHour}時${newMinute}分`;
+            }
+          } else {
+            dummyText = `${dummyNum}分`;
+          }
+          
+          if (!options.includes(dummyText)) {
+            options.push(dummyText);
+          }
+        }
+        
+        // まだ4つ揃っていない場合、追加生成
+        while (options.length < 4) {
+          const dummyNum = Math.floor(Math.random() * 60) + 1;
+          const dummyText = `${dummyNum}分`;
+          if (!options.includes(dummyText) && dummyNum !== correctNum) {
+            options.push(dummyText);
+          }
         }
       }
 
@@ -827,9 +860,14 @@
       `;
 
       if (selectedDifficulty === 'challenge') {
-        // チャレンジモード: 各選択肢にミニ時計を表示
-        const optionsHtml = shuffleArray([...currentProblem.optionsData]).map((option, index) => {
-          const optionId = `option-${index}`;
+        // チャレンジモード: シャッフルして正解インデックスを記録
+        const originalOptions = [...currentProblem.optionsData];
+        shuffledOptions = shuffleArray(originalOptions);
+        
+        // 正解のインデックスを見つける
+        correctAnswerIndex = shuffledOptions.findIndex(opt => opt.isCorrect === true);
+        
+        const optionsHtml = shuffledOptions.map((option, index) => {
           return `
             <div class="option" onclick="selectOption(${index})" style="padding: 10px;">
               <div style="margin: 0 auto; width: 100px; height: 100px; position: relative;">
@@ -850,9 +888,14 @@
           `;
         }).join('');
         document.getElementById('options').innerHTML = optionsHtml;
-        shuffledOptions = currentProblem.optionsData;
       } else {
-        shuffledOptions = shuffleArray([...currentProblem.options]);
+        // 通常モード: シャッフルして正解インデックスを記録
+        const originalOptions = [...currentProblem.options];
+        shuffledOptions = shuffleArray(originalOptions);
+        
+        // 正解のインデックスを見つける
+        correctAnswerIndex = shuffledOptions.findIndex(opt => opt === currentProblem.answer);
+        
         const optionsHtml = shuffledOptions.map((option, index) => `
           <div class="option" onclick="selectOption(${index})">${option}</div>
         `).join('');
@@ -874,15 +917,14 @@
       });
       options[index].classList.add('selected');
 
-      let selectedAnswer, isCorrect;
+      // 正解判定は保存された正解インデックスと比較
+      const isCorrect = (index === correctAnswerIndex);
       
+      let selectedAnswer;
       if (selectedDifficulty === 'challenge') {
         selectedAnswer = shuffledOptions[index].text;
-        isCorrect = (shuffledOptions[index].hour === currentProblem.hour && 
-                     shuffledOptions[index].minute === currentProblem.minute);
       } else {
         selectedAnswer = shuffledOptions[index];
-        isCorrect = (selectedAnswer === currentProblem.answer);
       }
 
       quizHistory[currentQuestionIndex] = {
@@ -926,17 +968,8 @@
         explanationEl.style.borderLeftColor = '#f44336';
         options[index].classList.add('incorrect');
         
-        shuffledOptions.forEach((option, i) => {
-          let isCorrectOption;
-          if (selectedDifficulty === 'challenge') {
-            isCorrectOption = (option.hour === currentProblem.hour && option.minute === currentProblem.minute);
-          } else {
-            isCorrectOption = (option === currentProblem.answer);
-          }
-          if (isCorrectOption) {
-            options[i].classList.add('correct');
-          }
-        });
+        // 正解の選択肢をハイライト
+        options[correctAnswerIndex].classList.add('correct');
       }
     }
 
