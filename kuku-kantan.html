@@ -276,7 +276,7 @@
       height: 200px;
       z-index: 5;
     }
-    .svg-cat-wrap svg { /* imgタグではなくsvgタグに */
+    .svg-cat-wrap svg {
       width: 100%;
       height: 100%;
     }
@@ -421,25 +421,39 @@
     // --- ▼▼ 修正（音声の定義方法を変更） ▼▼ ---
     let correctSound = null;
     let selectSound = null;
+    let soundsInitialized = false; // 音声が準備完了したかどうかのフラグ
 
+    // ユーザーの最初の操作で音声を準備する関数
+    function initSounds() {
+        if (soundsInitialized) return; // 既に準備済みなら何もしない
+        try {
+            correctSound = new Audio('piroin.mp3');
+            selectSound = new Audio('kati.mp3');
+            // .load() を呼んでおくことで、ブラウザに「使うよ」と伝えます
+            correctSound.load();
+            selectSound.load();
+            soundsInitialized = true;
+        } catch (e) {
+            console.error("音声の初期化に失敗:", e);
+        }
+    }
+    
     // 音を再生する専用の関数
     function playSound(type) {
+        // もし音声がまだ準備されていなかったら（startQuizより先に押された場合など）
+        if (!soundsInitialized) {
+            initSounds(); // ここで準備する
+        }
+        
         try {
-            if (type === 'correct') {
-                if (!correctSound) {
-                    correctSound = new Audio('piroin.mp3');
-                }
+            if (type === 'correct' && correctSound) {
                 correctSound.currentTime = 0;
                 correctSound.play();
-            } else if (type === 'select') {
-                if (!selectSound) {
-                    selectSound = new Audio('kati.mp3');
-                }
+            } else if (type === 'select' && selectSound) {
                 selectSound.currentTime = 0;
                 selectSound.play();
             }
         } catch (e) {
-            // もし音声ファイルの読み込みに失敗しても、クイズは止まらないようにする
             console.error("音声の再生に失敗しました:", e);
         }
     }
@@ -465,6 +479,7 @@
 
 
     function setSelectedDan(dan) {
+      initSounds(); // ★修正：最初の操作（段の選択）で音を準備
       selectedDan = dan;
       const buttons = document.querySelectorAll('.dan-button, .select-button.random');
       buttons.forEach(btn => btn.classList.remove('selected'));
@@ -475,9 +490,8 @@
       }
     }
 
-    // --- ▼▼ 修正（startQuizから音声読み込みを削除） ▼▼ ---
     function startQuiz(mode) {
-      // 最初のクリックでは音を読み込まない
+      initSounds(); // ★修正：最初の操作（スタート）で音を準備
       
       if (Array.isArray(mode)) {
           selectedDan = mode;
@@ -500,7 +514,6 @@
       document.getElementById('attendance-link').style.display = 'none';
       loadQuestion();
     }
-    // --- ▲▲ 修正 ▲▲ ---
     
     function startReviewQuiz() {
         if (reviewSet.length === 0) return;
@@ -576,7 +589,7 @@
         optionsEl.innerHTML = '';
         optionsEl.style.display = 'none';
         tenkeyEl.style.display = 'block';
-        clearDisplay(true); // 音を鳴らさずにクリア
+        clearDisplay(true);
       }
       const explanationEl = document.getElementById('explanation');
       explanationEl.style.display = 'none'; 
@@ -622,10 +635,9 @@
       answerSubmitted = true;
       const userAnswer = parseInt(tenkeyInput);
       const isCorrect = (userAnswer === currentProblem.answer);
-      showAnswerFeedback(isCorrect, userAnswer, null); // 答え合わせ時に音を鳴らす
+      showAnswerFeedback(isCorrect, userAnswer, null);
     }
 
-    // --- ▼▼ 修正（音の鳴り分け） ▼▼ ---
     function showAnswerFeedback(isCorrect, selectedAnswer, selectedOptionEl) {
       quizHistory[currentQuestionIndex] = {
         problem: currentProblem,
@@ -680,7 +692,6 @@
           }
       }
     }
-    // --- ▲▲ 修正（音の鳴り分け） ▲▲ ---
 
     function nextQuestion() {
       if (!answerSubmitted) {
@@ -801,12 +812,10 @@
         attendanceLink.style.display = 'block';
         
         const praiseIndex = Math.floor(Math.random() * praiseMessages.length);
-        document.getElementById('praise-message').textContent = praiseMessages[praiseIndex];
+        document.getElementById('praise-message').textContent = praiseMessages[randomIndex];
         
         // --- ▼▼ 修正（SVGは埋め込みなのでファイル指定を削除） ▼▼ ---
-        // const animalIndex = ...
-        // const animalFile = ...
-        // document.getElementById('celebration-animal').src = animalFile;
+        // imgタグのsrcを操作する部分は不要になりました
         // --- ▲▲ 修正 ▲▲ ---
         
       } else {
@@ -826,7 +835,10 @@
     }
 
     const modal = document.getElementById('kuku-modal-bg');
-    function showKukuTable() { modal.style.display = 'flex'; }
+    function showKukuTable() { 
+        initSounds(); // ★修正：九九の表を見る操作でも音を準備
+        modal.style.display = 'flex'; 
+    }
     function closeKukuTable() { modal.style.display = 'none'; }
     
   </script>
