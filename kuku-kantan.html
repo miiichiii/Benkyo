@@ -6,7 +6,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>九九れんしゅう（確認テスト）</title>
   <style>
-    /* --- ▼▼ ネコちゃん用のCSS変数を追加 ▼▼ --- */
     :root { 
       --fur:#f2c28d; 
       --fur-dark:#e1a765; 
@@ -14,7 +13,6 @@
       --ear:#f7d8b7; 
       --bg:#fffaf2; 
     }
-    /* --- ▲▲ ネコちゃん用のCSS変数を追加 ▲▲ --- */
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
       line-height: 1.6;
@@ -249,7 +247,6 @@
       color: white;
     }
     
-    /* --- ▼▼ SVGネコちゃん用 CSS (HTMLに埋め込み) ▼▼ --- */
     @keyframes blink {
       0%,92%,100% { opacity:0; transform:translateY(-2px); }
       95%,97%     { opacity:1; transform:translateY(0); }
@@ -279,8 +276,30 @@
     .svg-cat-wrap svg {
       width: 100%;
       height: 100%;
+      display: none; /* デフォルトで非表示 */
     }
-    /* --- ▲▲ SVGネコちゃん用 CSS ▲▲ --- */
+    .svg-cat-wrap svg.active {
+      display: block; /* activeクラスが付いたら表示 */
+    }
+
+    .beagle-svg-style {
+      --fur:#e5c29f;
+      --fur-dark:#b5763d;
+      --fur-black:#333;
+    }
+    .beagle-svg-style .eyelid { animation: blink 6s infinite; transform-origin: 0 0; }
+    @keyframes wag-beagle {
+      0%,100% { transform: rotate(15deg); }
+      50%     { transform: rotate(-10deg); }
+    }
+    .beagle-svg-style .tail { transform-origin: 300px 260px; animation: wag-beagle 2.6s ease-in-out infinite; }
+    
+    @keyframes ear {
+      0%,100% { transform: rotate(4deg); }
+      50%     { transform: rotate(-6deg); }
+    }
+    .beagle-svg-style .ear-left { transform-origin: 150px 150px; animation: ear 3.4s infinite ease-in-out; }
+    .beagle-svg-style .ear-right{ transform-origin: 250px 150px; animation: ear 3.6s infinite ease-in-out; }
 
   </style>
 </head>
@@ -342,9 +361,10 @@
         <p id="praise-message"></p>
         
         <div class="svg-cat-wrap">
-          <svg class="cat" viewBox="0 0 400 400" role="img" aria-labelledby="title desc">
-            <title id="title">ねこ</title>
-            <desc id="desc">やさしい色の猫。まばたきして、しっぽが左右に揺れる。</desc>
+          
+          <svg id="cat-svg" class="cat" viewBox="0 0 400 400" role="img" aria-labelledby="title-cat desc-cat">
+            <title id="title-cat">ねこ</title>
+            <desc id="desc-cat">やさしい色の猫。まばたきして、しっぽが左右に揺れる。</desc>
             <ellipse cx="200" cy="330" rx="110" ry="16" fill="#000" opacity=".08"/>
             <g class="tail">
               <path d="M 300 260 C 340 240, 360 230, 360 210 C 360 180, 320 180, 315 205 C 312 220, 335 225, 335 235 C 332 260, 310 255, 300 250 Z" fill="var(--fur)" stroke="var(--line)" stroke-width="3"/>
@@ -380,6 +400,33 @@
               </g>
             </g>
             <path d="M175 200 q -8 10 -20 12 M225 200 q 8 10 20 12" stroke="var(--fur-dark)" stroke-width="4" fill="none" opacity=".6" stroke-linecap="round"/>
+          </svg>
+
+          <svg id="beagle-svg" class="beagle beagle-svg-style" viewBox="0 0 400 400" role="img" aria-labelledby="title-beagle desc-beagle">
+            <title id="title-beagle">ビーグル犬</title>
+            <desc id="desc-beagle">愛らしいビーグル犬。まばたきして、しっぽと耳が揺れる。</desc>
+            <ellipse cx="200" cy="330" rx="110" ry="16" fill="#000" opacity=".08"/>
+            <g class="tail">
+              <path d="M 290 270 C 330 250, 350 235, 345 215 C 338 190, 305 205, 300 240 Z" fill="var(--fur-dark)" stroke="var(--line)" stroke-width="3"/>
+            </g>
+            <path d="M 120 300 C 90 260, 95 200, 165 185 L 235 185 C 305 200, 310 260, 280 300 Z" fill="var(--fur)" stroke="var(--line)" stroke-width="3"/>
+            <path d="M160 210 C 200 190 240 190 260 230 C230 220 170 235 160 210 Z" fill="var(--fur-black)" opacity=".8"/>
+            <ellipse cx="200" cy="255" rx="46" ry="52" fill="#fff" opacity=".8"/>
+            <g>
+              <path d="M 140 120 Q 200 60 260 120 Q 295 160 260 190 Q 200 215 140 190 Q 105 160 140 120 Z" fill="var(--fur)" stroke="var(--line)" stroke-width="3"/>
+              <path class="ear-left" d="M140 120 C 110 150 115 210 150 220 C 170 200 165 160 160 130 Z" fill="var(--fur-dark)" stroke="var(--line)" stroke-width="3"/>
+              <path class="ear-right" d="M260 120 C 290 150 285 210 250 220 C 230 200 235 160 240 130 Z" fill="var(--fur-dark)" stroke="var(--line)" stroke-width="3"/>
+              <ellipse cx="175" cy="165" rx="12" ry="10" fill="#fff" stroke="var(--line)" stroke-width="2"/>
+              <ellipse cx="225" cy="165" rx="12" ry="10" fill="#fff" stroke="var(--line)" stroke-width="2"/>
+              <circle cx="175" cy="165" r="4.5" fill="#222"/>
+              <circle cx="225" cy="165" r="4.5" fill="#222"/>
+              <g class="eyelid">
+                <path d="M163 160 Q175 150 187 160" fill="var(--fur)" stroke="var(--line)" stroke-width="2"/>
+                <path d="M213 160 Q225 150 237 160" fill="var(--fur)" stroke="var(--line)" stroke-width="2"/>
+              </g>
+              <polygon points="198,180 202,180 200,185" fill="#333"/>
+              <path d="M190 195 Q200 205 210 195" fill="none" stroke="var(--line)" stroke-width="2" stroke-linecap="round"/>
+            </g>
           </svg>
         </div>
     </div>
@@ -419,42 +466,37 @@
     let reviewSet = [];
 
     // --- ▼▼ 修正（音声の定義方法を変更） ▼▼ ---
-    let correctSound = null;
-    let selectSound = null;
-    let soundsInitialized = false; // 音声が準備完了したかどうかのフラグ
+    let soundsInitialized = false; 
 
-    // ユーザーの最初の操作で音声を準備する関数
     function initSounds() {
-        if (soundsInitialized) return; // 既に準備済みなら何もしない
-        try {
-            correctSound = new Audio('piroin.mp3');
-            selectSound = new Audio('kati.mp3');
-            // .load() を呼んでおくことで、ブラウザに「使うよ」と伝えます
-            correctSound.load();
-            selectSound.load();
-            soundsInitialized = true;
-        } catch (e) {
-            console.error("音声の初期化に失敗:", e);
-        }
+        if (soundsInitialized) return;
+        soundsInitialized = true;
+        // この関数は、スタートボタンや段選択ボタンが押されたときに呼ばれる
+        // この時点では、まだ読み込まない（ブラウザにブロックされるため）
     }
     
-    // 音を再生する専用の関数
     function playSound(type) {
-        // もし音声がまだ準備されていなかったら（startQuizより先に押された場合など）
-        if (!soundsInitialized) {
-            initSounds(); // ここで準備する
-        }
+        if (!soundsInitialized) return; // 最初の操作前なら何もしない
         
         try {
-            if (type === 'correct' && correctSound) {
-                correctSound.currentTime = 0;
-                correctSound.play();
-            } else if (type === 'select' && selectSound) {
-                selectSound.currentTime = 0;
-                selectSound.play();
+            let soundFile = '';
+            if (type === 'correct') {
+                soundFile = 'pirorin.mp3'; // ★ファイル名を pirorin に修正★
+            } else if (type === 'select') {
+                soundFile = 'kati.mp3';
+            }
+            
+            if (soundFile) {
+                // ★修正：毎回新しいAudioオブジェクトを作って再生する★
+                const sound = new Audio(soundFile);
+                sound.play().catch(function(error) {
+                    // iPhone/Safariでは、2回目以降の再生も「ユーザー操作」が必要な場合がある
+                    // エラーは出るかもしれないが、クイズは止めない
+                    console.error("音声の再生に失敗:", error);
+                });
             }
         } catch (e) {
-            console.error("音声の再生に失敗しました:", e);
+            console.error("Audioオブジェクトの作成に失敗:", e);
         }
     }
     // --- ▲▲ 修正 ▲▲ ---
@@ -473,8 +515,11 @@
       "最強の九九マスターだ！おめでとう！"
     ];
 
-    // --- ▼▼ 修正（SVGファイルリストは不要になったので削除） ▼▼ ---
-    // const animalFiles = [ ... ]; // この行を削除
+    // --- ▼▼ 修正（SVGのIDリストに変更） ▼▼ ---
+    const animalIds = [
+      'cat-svg',
+      'beagle-svg'
+    ];
     // --- ▲▲ 修正 ▲▲ ---
 
 
@@ -647,7 +692,7 @@
       
       if (isCorrect) {
         score++;
-        playSound('correct'); // 正解音 (piroin.mp3)
+        playSound('correct'); // 正解音 (pirorin.mp3)
       } else {
         playSound('select'); // 不正解音 (kati.mp3)
       }
@@ -808,25 +853,42 @@
       resultContainer.innerHTML = resultHtml;
 
       const attendanceLink = document.getElementById('attendance-link');
+      
+      // --- ▼▼ 修正 (ランダム表示) ▼▼ ---
+      // まずは全キャラを隠す
+      document.getElementById('cat-svg').style.display = 'none';
+      document.getElementById('beagle-svg').style.display = 'none';
+      
       if (percentage === 100 && !isReview) {
         attendanceLink.style.display = 'block';
         
+        // 1. 褒め言葉をランダムに選ぶ
         const praiseIndex = Math.floor(Math.random() * praiseMessages.length);
-        document.getElementById('praise-message').textContent = praiseMessages[randomIndex];
+        document.getElementById('praise-message').textContent = praiseMessages[praiseIndex];
         
-        // --- ▼▼ 修正（SVGは埋め込みなのでファイル指定を削除） ▼▼ ---
-        // imgタグのsrcを操作する部分は不要になりました
-        // --- ▲▲ 修正 ▲▲ ---
+        // 2. 動物をランダムに選ぶ
+        const animalIndex = Math.floor(Math.random() * animalIds.length);
+        const animalId = animalIds[animalIndex]; // 'cat-svg' または 'beagle-svg'
+        
+        // 3. 選ばれた動物だけを表示する
+        document.getElementById(animalId).style.display = 'block';
         
       } else {
          attendanceLink.style.display = 'none';
       }
+      // --- ▲▲ 修正 (ランダム表示) ▲▲ ---
     }
 
     function restartQuiz() {
       document.getElementById('quiz-container').style.display = 'none';
       document.getElementById('result-container').innerHTML = '';
+      
+      // --- ▼▼ 修正 (キャラを非表示に戻す) ▼▼ ---
       document.getElementById('attendance-link').style.display = 'none';
+      document.getElementById('cat-svg').style.display = 'none';
+      document.getElementById('beagle-svg').style.display = 'none';
+      // --- ▲▲ 修正 ▲▲ ---
+      
       document.getElementById('selection-container').style.display = 'block';
       selectedDan = null;
       reviewSet = [];
