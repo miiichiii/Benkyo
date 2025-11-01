@@ -281,4 +281,486 @@
     </div>
 
     <div id="quiz-container" class="quiz-container">
-      <div id="
+      <div id="quiz-content">
+        <div id="question" class="question"></div> 
+        <div id="options" class="options"></div>
+        <div id="tenkey-container">
+          <div id="tenkey-display"></div>
+          <div class="tenkey-grid">
+            <button class="tenkey-btn" onclick="pressKey('1')">1</button>
+            <button class="tenkey-btn" onclick="pressKey('2')">2</button>
+            <button class="tenkey-btn" onclick="pressKey('3')">3</button>
+            <button class="tenkey-btn" onclick="pressKey('4')">4</button>
+            <button class="tenkey-btn" onclick="pressKey('5')">5</button>
+            <button class="tenkey-btn" onclick="pressKey('6')">6</button>
+            <button class="tenkey-btn" onclick="pressKey('7')">7</button>
+            <button class="tenkey-btn" onclick="pressKey('8')">8</button>
+            <button class="tenkey-btn" onclick="pressKey('9')">9</button>
+            <button class="tenkey-btn clear" onclick="clearDisplay()">C</button>
+            <button class="tenkey-btn" onclick="pressKey('0')">0</button>
+            <button class="tenkey-btn ok" onclick="checkTenkeyAnswer()">OK</button>
+          </div>
+        </div>
+        <div id="explanation" class="explanation"></div>
+      </div>
+      <button id="next" class="nav-button" onclick="nextQuestion()">次の問題</button>
+    </div>
+
+    <div id="result-container" class="result-container"></div>
+    
+    <div id="attendance-link">
+        <p>おめでとう！全問正解です！ 🎉</p>
+        <p id="praise-message"></p>
+        <div class="svg-cat-wrap">
+          <img id="celebration-animal" src="" alt="お祝いのキャラクター" />
+        </div>
+    </div>
+    
+  </div>
+  
+  
+  <div id="kuku-modal-bg" class="modal-bg" onclick="closeKukuTable()">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <span class="modal-close-btn" onclick="closeKukuTable()">&times;</span>
+      <h2>九九のひょう</h2>
+      <div class="kuku-chart-container">
+        <details><summary>1のだん (いち)</summary><div class="kuku-items"><p>1×1= 1 (いんいちが いち)</p><p>1×2= 2 (いんにが に)</p><p>1×3= 3 (いんさんが さん)</p><p>1×4= 4 (いんしが し)</p><p>1×5= 5 (いんごが ご)</p><p>1×6= 6 (いんろくが ろく)</p><p>1×7= 7 (いんしちが しち)</p><p>1×8= 8 (いんはちが はち)</p><p>1×9= 9 (いんくが く)</p></div></details>
+        <details><summary>2のだん (に)</summary><div class="kuku-items"><p>2×1= 2 (にいちが に)</p><p>2×2= 4 (ににんが し)</p><p>2×3= 6 (にさんが ろく)</p><p>2×4= 8 (にしが はち)</p><p>2×5=10 (にご じゅう)</p><p>2×6=12 (にろく じゅうに)</p><p>2×7=14 (にしち じゅうし)</p><p>2×8=16 (にはち じゅうろく)</p><p>2×9=18 (にく じゅうはち)</p></div></details>
+        <details><summary>3のだん (さん)</summary><div class="kuku-items"><p>3×1= 3 (さんいちが さん)</p><p>3×2= 6 (さんにが ろく)</p><p>3×3= 9 (さざんが く)</p><p>3×4=12 (さんし じゅうに)</p><p>3×5=15 (さんご じゅうご)</p><p>3×6=18 (さぶろく じゅうはち)</p><p>3×7=21 (さんしち にじゅういち)</p><p>3×8=24 (さんぱ にじゅうし)</p><p>3×9=27 (さんく にじゅうしち)</p></div></details>
+        <details><summary>4のだん (し)</summary><div class="kuku-items"><p>4×1= 4 (しいちが し)</p><p>4×2= 8 (しにが はち)</p><p>4×3=12 (しさん じゅうに)</p><p>4×4=16 (しし じゅうろく)</p><p>4×5=20 (しご にじゅう)</p><p>4×6=24 (しろく にじゅうし)</p><p>4×7=28 (ししち にじゅうはち)</p><p>4×8=32 (しは さんじゅうに)</p><p>4×9=36 (しく さんじゅうろく)</p></div></details>
+        <details><summary>5のだん (ご)</summary><div class="kuku-items"><p>5×1= 5 (ごいちが ご)</p><p>5×2=10 (ごに じゅう)</p><p>5×3=15 (ごさん じゅうご)</p><p>5×4=20 (ごし にじゅう)</p><p>5×5=25 (ごご にじゅうご)</p><p>5×6=30 (ごろく さんじゅう)</p><p>5×7=35 (ごしち さんじゅうご)</p><p>5×8=40 (ごは しじゅう)</p><p>5×9=45 (ごっく しじゅうご)</p></div></details>
+        <details><summary>6のだん (ろく)</summary><div class="kuku-items"><p>6×1= 6 (ろくいちが ろく)</p><p>6×2=12 (ろくに じゅうに)</p><p>6×3=18 (ろくさん じゅうはち)</p><p>6×4=24 (ろくし にじゅうし)</p><p>6×5=30 (ろくご さんじゅう)</p><p>6×6=36 (ろくろく さんじゅうろく)</p><p>6×7=42 (ろくしち しじゅうに)</p><p>6×8=48 (ろくは しじゅうはち)</p><p>6×9=54 (ろっく ごじゅうし)</p></div></details>
+        <details><summary>7のだん (しち)</summary><div class="kuku-items"><p>7×1= 7 (しちいちが しち)</p><p>7×2=14 (しちに じゅうし)</p><p>7×3=21 (しちさん にじゅういち)</p><p>7×4=28 (ししち にじゅうはち)</p><p>7×5=35 (しちご さんじゅうご)</p><p>7×6=42 (しちろく しじゅうに)</p><p>7×7=49 (しちしち しじゅうく)</p><p>7×8=56 (しちは ごじゅうろく)</p><p>7×9=63 (しちく ろくじゅうさん)</p></div></details>
+        <details><summary>8のだん (はち)</summary><div class="kuku-items"><p>8×1= 8 (はちいちが はち)</p><p>8×2=16 (はちに じゅうろく)</p><p>8×3=24 (はちさん にじゅうし)</p><p>8×4=32 (はちし さんじゅうに)</p><p>8×5=40 (はちご しじゅう)</p><p>8×6=48 (はちろく しじゅうはち)</p><p>8×7=56 (はちしち ごじゅうろく)</p><p>8×8=64 (はっぱ ろくじゅうし)</p><p>8×9=72 (はっく しちじゅうに)</p></div></details>
+        <details><summary>9のだん (く)</summary><div class="kuku-items"><p>9×1= 9 (くいちが く)</p><p>9×2=18 (くにく じゅうはち)</p><p>9×3=27 (くさん にじゅうしち)</p><p>9×4=36 (くし さんじゅうろく)</p><p>9×5=45 (くご しじゅうご)</p><p>9×6=54 (くろく ごじゅうし)</p><p>9×7=63 (くしち ろくじゅうさん)</p><p>9×8=72 (くはち しちじゅうに)</p><p>9×9=81 (くく はちじゅういち)</p></div></details>
+      </div>
+    </div>
+  </div>
+
+  
+  <script>
+    const TOTAL_QUESTIONS = 10;
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let quizHistory = []; 
+    let currentProblem = {}; 
+    let shuffledOptions = [];
+    let selectedDan = null;
+    let currentMode = 'choice';
+    let tenkeyInput = '';
+    let answerSubmitted = false;
+    let reviewSet = [];
+
+    // --- ▼▼ 修正（変数の準備） ▼▼ ---
+    let correctSound = null;
+    let selectSound = null;
+    // --- ▲▲ 修正（変数の準備） ▲▲ ---
+
+
+    const praiseMessages = [
+      "あやめちゃん、すごい！天才だね！",
+      "やったね！全問正解、お見事！",
+      "素晴らしい！集中力バッチリだね！",
+      "全問クリア！完璧だね、あやめちゃん！",
+      "きらきら輝く才能だね！よく頑張った！",
+      "すごい力だ！自信をもってね！",
+      "あやめちゃん、できる子だね！すごいぞ！",
+      "ナイスファイト！全問正解は努力の証だね！",
+      "感動したよ！とってもよくできたね！",
+      "最強の九九マスターだ！おめでとう！"
+    ];
+
+    const animalFiles = [
+      'neko.svg'
+    ];
+
+    function setSelectedDan(dan) {
+      selectedDan = dan;
+      const buttons = document.querySelectorAll('.dan-button, .select-button.random');
+      buttons.forEach(btn => btn.classList.remove('selected'));
+      if (dan === 'random') {
+        document.getElementById('dan-btn-random').classList.add('selected');
+      } else {
+        document.getElementById(`dan-btn-${dan}`).classList.add('selected');
+      }
+    }
+
+    // --- ▼▼ 修正（音声の読み込みタイミング） ▼▼ ---
+    function startQuiz(mode) {
+      // ユーザー操作の瞬間に音声を準備（ブラウザのブロック回避）
+      // まだ準備されていなければ、新しく作る
+      if (!correctSound) {
+          correctSound = new Audio('piroin.mp3');
+      }
+      if (!selectSound) {
+          selectSound = new Audio('kati.mp3');
+      }
+      
+      if (Array.isArray(mode)) {
+          selectedDan = mode;
+          currentMode = 'choice';
+      } else if (mode === 'review') {
+          selectedDan = 'review';
+      } else {
+          if (selectedDan === null) {
+              alert('1. どの段をれんしゅうするか選んでください');
+              return;
+          }
+          currentMode = mode;
+      }
+      currentQuestionIndex = 0;
+      score = 0;
+      quizHistory = [];
+      document.getElementById('selection-container').style.display = 'none';
+      document.getElementById('quiz-container').style.display = 'block';
+      document.getElementById('result-container').innerHTML = '';
+      document.getElementById('attendance-link').style.display = 'none';
+      loadQuestion();
+    }
+    // --- ▲▲ 修正（音声の読み込みタイミング） ▲▲ ---
+    
+    function startReviewQuiz() {
+        if (reviewSet.length === 0) return;
+        startQuiz('review');
+    }
+
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    function generateKukuProblem() {
+      let num1, num2;
+      if (selectedDan === 'random') {
+        num1 = Math.floor(Math.random() * 9) + 1;
+        num2 = Math.floor(Math.random() * 9) + 1;
+      } else if (Array.isArray(selectedDan)) {
+        const dan = selectedDan[Math.floor(Math.random() * selectedDan.length)];
+        if (Math.random() > 0.5) { num1 = dan; num2 = Math.floor(Math.random() * 9) + 1; }
+        else { num1 = Math.floor(Math.random() * 9) + 1; num2 = dan; }
+      } else {
+        if (Math.random() > 0.5) { num1 = selectedDan; num2 = Math.floor(Math.random() * 9) + 1; }
+        else { num1 = Math.floor(Math.random() * 9) + 1; num2 = selectedDan; }
+      }
+      const correctAnswer = num1 * num2;
+      let options = [correctAnswer]; 
+      while (options.length < 4) {
+        let dummyAnswer;
+        if (correctAnswer <= 10) { dummyAnswer = correctAnswer + (Math.floor(Math.random() * 11) - 5); }
+        else { dummyAnswer = correctAnswer + (Math.floor(Math.random() * 21) - 10); }
+        if (dummyAnswer === correctAnswer || dummyAnswer <= 0 || options.includes(dummyAnswer)) { continue; }
+        options.push(dummyAnswer);
+      }
+      return {
+        num1: num1, num2: num2,
+        questionText: `${num1} × ${num2} = ?`,
+        answer: correctAnswer,
+        options: options,
+        explanation: `${num1} × ${num2} = ${correctAnswer} です。`
+      };
+    }
+
+    function loadQuestion() {
+      answerSubmitted = false;
+      
+      if (selectedDan === 'review') {
+          currentProblem = reviewSet[currentQuestionIndex];
+      } else {
+          currentProblem = generateKukuProblem();
+      }
+      
+      const questionEl = document.getElementById('question');
+      questionEl.innerHTML = `
+        <span class="question-number">問題 ${currentQuestionIndex + 1}:</span>
+        <span class="question-text">${currentProblem.questionText}</span>
+      `;
+      
+      const optionsEl = document.getElementById('options');
+      const tenkeyEl = document.getElementById('tenkey-container');
+      
+      if (currentMode === 'choice') {
+        shuffledOptions = shuffleArray([...currentProblem.options]);
+        const optionsHtml = shuffledOptions.map((option, index) => `
+          <div class="option" onclick="selectOption(${index})">${option}</div>
+        `).join('');
+        optionsEl.innerHTML = optionsHtml;
+        optionsEl.style.display = 'grid';
+        tenkeyEl.style.display = 'none';
+      } else {
+        optionsEl.innerHTML = '';
+        optionsEl.style.display = 'none';
+        tenkeyEl.style.display = 'block';
+        clearDisplay(true); // 音を鳴らさずにクリア
+      }
+      const explanationEl = document.getElementById('explanation');
+      explanationEl.style.display = 'none'; 
+      explanationEl.style.opacity = '0'; 
+    }
+
+    // --- ▼▼ 修正 (音を鳴らすタイミングを移動) ▼▼ ---
+    function selectOption(index) {
+      if (answerSubmitted) return;
+      // selectSound.play(); // ここでは鳴らさない
+      answerSubmitted = true;
+      const options = document.querySelectorAll('.option');
+      options.forEach(option => {
+        option.classList.add('disabled');
+      });
+      options[index].classList.add('selected');
+      const selectedAnswer = shuffledOptions[index];
+      const isCorrect = (selectedAnswer === currentProblem.answer);
+      showAnswerFeedback(isCorrect, selectedAnswer, options[index]);
+    }
+    // --- ▲▲ 修正 ▲▲ ---
+
+    // --- ▼▼ 修正 (クリアボタンの音の調整) ▼▼ ---
+    function pressKey(num) {
+      if (answerSubmitted) return;
+      if (tenkeyInput.length >= 3) return;
+      
+      if (selectSound) { // 音声が準備できていれば
+        selectSound.currentTime = 0;
+        selectSound.play(); // 数字キーの音
+      }
+      
+      tenkeyInput += num;
+      updateDisplay();
+    }
+    // 'silent'フラグを追加して、loadQuestion時は音が鳴らないようにする
+    function clearDisplay(silent = false) {
+      if (!silent && selectSound) { // 音声が準備できていれば
+        selectSound.currentTime = 0;
+        selectSound.play(); // Cボタンの音
+      }
+      tenkeyInput = '';
+      updateDisplay();
+    }
+    // --- ▲▲ 修正 ▲▲ ---
+    
+    function updateDisplay() {
+      document.getElementById('tenkey-display').textContent = tenkeyInput || ' ';
+    }
+    
+    function checkTenkeyAnswer() {
+      if (answerSubmitted) return;
+      if (tenkeyInput === '') return;
+      answerSubmitted = true;
+      const userAnswer = parseInt(tenkeyInput);
+      const isCorrect = (userAnswer === currentProblem.answer);
+      showAnswerFeedback(isCorrect, userAnswer, null); // 答え合わせ時に音を鳴らす
+    }
+
+    // --- ▼▼ 修正（音の鳴り分け） ▼▼ ---
+    function showAnswerFeedback(isCorrect, selectedAnswer, selectedOptionEl) {
+      quizHistory[currentQuestionIndex] = {
+        problem: currentProblem,
+        selected: selectedAnswer,
+        isCorrect: isCorrect
+      };
+      
+      if (isCorrect) {
+        score++;
+        if (correctSound) { // 音声が準備できていれば
+          correctSound.currentTime = 0;
+          correctSound.play(); // 正解音 (piroin.mp3)
+        }
+      } else {
+        if (selectSound) { // 音声が準備できていれば
+          selectSound.currentTime = 0;
+          selectSound.play(); // 不正解音 (kati.mp3)
+        }
+      }
+      
+      const explanationEl = document.getElementById('explanation');
+      explanationEl.innerHTML = `
+        <div class="explanation-header">
+          <span class="explanation-icon">${isCorrect ? '🎉' : '💡'}</span>
+          ${isCorrect ? 'せいかい！' : 'おしい！'}
+        </div>
+        ${currentProblem.explanation}
+      `;
+      explanationEl.style.display = 'block';
+      setTimeout(() => {
+        explanationEl.style.opacity = '1';
+      }, 100); 
+
+      if (currentMode === 'choice' && selectedOptionEl) {
+          if (isCorrect) {
+            explanationEl.style.backgroundColor = 'rgba(232, 245, 233, 0.8)';
+            explanationEl.style.borderLeftColor = '#4caf50';
+            selectedOptionEl.classList.add('correct');
+          } else {
+            explanationEl.style.backgroundColor = 'rgba(255, 235, 238, 0.8)';
+            explanationEl.style.borderLeftColor = '#f44336';
+            selectedOptionEl.classList.add('incorrect');
+            shuffledOptions.forEach((option, i) => {
+              if (option === currentProblem.answer) {
+                document.querySelectorAll('.option')[i].classList.add('correct');
+              }
+            });
+          }
+      } else {
+         if (isCorrect) {
+            explanationEl.style.backgroundColor = 'rgba(232, 245, 233, 0.8)';
+            explanationEl.style.borderLeftColor = '#4caf50';
+            document.getElementById('tenkey-display').style.borderColor = '#4caf50';
+          } else {
+            explanationEl.style.backgroundColor = 'rgba(255, 235, 238, 0.8)';
+            explanationEl.style.borderLeftColor = '#f44336';
+            document.getElementById('tenkey-display').style.borderColor = '#f44336';
+          }
+      }
+    }
+    // --- ▲▲ 修正（音の鳴り分け） ▲▲ ---
+
+    function nextQuestion() {
+      if (!answerSubmitted) {
+        alert('答えを選んでください');
+        return;
+      }
+      
+      const isReview = (selectedDan === 'review');
+      const total = isReview ? reviewSet.length : TOTAL_QUESTIONS;
+
+      if (currentQuestionIndex < total - 1) {
+        currentQuestionIndex++;
+        loadQuestion();
+      } else {
+        showResult();
+      }
+    }
+    
+    function analyzeMistakes() {
+        const danStats = {};
+        for (let i = 1; i <= 9; i++) { danStats[i] = { mistakes: 0 }; }
+        let nigatanaDanList = [];
+        quizHistory.forEach(result => {
+            if (!result.isCorrect) {
+                danStats[result.problem.num1].mistakes++;
+                if (result.problem.num1 !== result.problem.num2) {
+                    danStats[result.problem.num2].mistakes++;
+                }
+            }
+        });
+        for (let i = 1; i <= 9; i++) {
+            if (danStats[i].mistakes > 0) { nigatanaDanList.push(i); }
+        }
+        return nigatanaDanList;
+    }
+
+    function showResult() {
+      const resultContainer = document.getElementById('result-container');
+      const quizContainer = document.getElementById('quiz-container');
+      quizContainer.style.display = 'none';
+      resultContainer.style.display = 'block'; 
+
+      const isReview = (selectedDan === 'review');
+      const total = isReview ? reviewSet.length : TOTAL_QUESTIONS;
+      const percentage = (score / total) * 100;
+      
+      let resultHtml = `
+        <div class="result-card">
+          <h2>${isReview ? '復習結果' : 'クイズ結果'}</h2>
+          <p style="font-size: 1.5em; font-weight: bold;">正解数: ${score} / ${total}</p>
+          <p style="font-size: 1.2em;">正答率: ${percentage.toFixed(0)}%</p>
+        </div>
+      `;
+
+      let nigatanaButtonHtml = '';
+      let reviewButtonHtml = '';
+
+      if (!isReview) {
+          if (selectedDan === 'random') {
+              const nigatanaDanList = analyzeMistakes();
+              if (nigatanaDanList.length > 0) {
+                  resultHtml += `
+                    <div class="result-card analysis-card">
+                      <h2>苦手な段の分析</h2>
+                      <p>以下の段でまちがいがありました。<br>「苦手こくふくモード」で練習しよう！</p>
+                      <ul>
+                        ${nigatanaDanList.map(dan => `<li>${dan} のだん</li>`).join('')}
+                      </ul>
+                    </div>
+                  `;
+                  const listString = JSON.stringify(nigatanaDanList);
+                  nigatanaButtonHtml = `
+                    <button class="nav-button random" onclick='startQuiz(${listString})'>
+                      苦手こくふくモード（${nigatanaDanList.join(', ')}の段）
+                    </button>
+                  `;
+              }
+          }
+
+          let incorrectProblems = [];
+          quizHistory.forEach(result => {
+              if (!result.isCorrect) {
+                  incorrectProblems.push(result.problem);
+              }
+          });
+
+          if (incorrectProblems.length > 0) {
+              reviewSet = incorrectProblems;
+              reviewButtonHtml = `
+                <button class="nav-button tenkey-mode" onclick='startReviewQuiz()'>
+                  まちがえた問題だけ復習する (${reviewSet.length}問)
+                </button>
+              `;
+          }
+      }
+
+      quizHistory.forEach((result, index) => {
+        resultHtml += `
+          <div class="result-card">
+            <h3>問題 ${index + 1}</h3>
+            <p class="result-status ${result.isCorrect ? 'correct' : 'incorrect'}">
+              ${result.isCorrect ? '正解' : '不正解'}
+            </p>
+            <p><strong>問題:</strong> ${result.problem.questionText}</p>
+            <p><strong>あなたの回答:</strong> ${result.selected}</p>
+            <p><strong>正解:</strong> ${result.problem.answer}</p>
+          </div>
+        `;
+      });
+      
+      resultHtml += `<button class="nav-button" onclick="restartQuiz()">もう一度挑戦する</button>`;
+      resultHtml += nigatanaButtonHtml;
+      resultHtml += reviewButtonHtml;
+      resultContainer.innerHTML = resultHtml;
+
+      const attendanceLink = document.getElementById('attendance-link');
+      if (percentage === 100 && !isReview) {
+        attendanceLink.style.display = 'block';
+        
+        const praiseIndex = Math.floor(Math.random() * praiseMessages.length);
+        document.getElementById('praise-message').textContent = praiseMessages[randomIndex];
+        
+        const animalIndex = Math.floor(Math.random() * animalFiles.length);
+        const animalFile = animalFiles[animalIndex];
+        
+        document.getElementById('celebration-animal').src = animalFile;
+      } else {
+         attendanceLink.style.display = 'none';
+      }
+    }
+
+    function restartQuiz() {
+      document.getElementById('quiz-container').style.display = 'none';
+      document.getElementById('result-container').innerHTML = '';
+      document.getElementById('attendance-link').style.display = 'none';
+      document.getElementById('selection-container').style.display = 'block';
+      selectedDan = null;
+      reviewSet = [];
+      const buttons = document.querySelectorAll('.dan-button, .select-button.random');
+      buttons.forEach(btn => btn.classList.remove('selected'));
+    }
+
+    const modal = document.getElementById('kuku-modal-bg');
+    function showKukuTable() { modal.style.display = 'flex'; }
+    function closeKukuTable() { modal.style.display = 'none'; }
+    
+  </script>
+</body>
+</html>
