@@ -1,0 +1,50 @@
+<svg class="rabbit" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+<style>
+  :root {
+    --fur:#f5f5f5;
+    --fur-dark:#e0e0e0;
+    --line:#333;
+  }
+
+  @keyframes ear {
+    0%,100% { transform: rotate(6deg); }
+    50%     { transform: rotate(-5deg); }
+  }
+  .ear-left { transform-origin: 160px 60px; animation: ear 3.5s ease-in-out infinite; }
+  .ear-right { transform-origin: 240px 60px; animation: ear 3.8s ease-in-out infinite; }
+
+  @keyframes blink {
+    0%,92%,100% { opacity:0; transform:translateY(-2px); }
+    95%,97%     { opacity:1; transform:translateY(0); }
+  }
+  .eyelid { animation: blink 6s infinite; }
+</style>
+
+<ellipse cx="200" cy="330" rx="110" ry="16" fill="#000" opacity=".08"/>
+
+<g class="ear-left">
+  <path d="M150 120 Q140 60 165 40 Q180 65 185 120 Z"
+        fill="var(--fur)" stroke="var(--line)" stroke-width="3"/>
+</g>
+<g class="ear-right">
+  <path d="M250 120 Q260 60 235 40 Q220 65 215 120 Z"
+        fill="var(--fur)" stroke="var(--line)" stroke-width="3"/>
+</g>
+
+<circle cx="200" cy="200" r="90" fill="var(--fur)" stroke="var(--line)" stroke-width="3"/>
+
+<ellipse cx="170" cy="200" rx="13" ry="11" fill="#fff" stroke="var(--line)" stroke-width="2"/>
+<ellipse cx="230" cy="200" rx="13" ry="11" fill="#fff" stroke="var(--line)" stroke-width="2"/>
+<circle cx="170" cy="200" r="4.5"/>
+<circle cx="230" cy="200" r="4.5"/>
+
+<g class="eyelid">
+  <path d="M158 196 Q170 188 182 196" fill="var(--fur)" stroke="var(--line)" stroke-width="2"/>
+  <path d="M218 196 Q230 188 242 196" fill="var(--fur)" stroke="var(--line)" stroke-width="2"/>
+</g>
+
+<polygon points="198,218 202,218 200,222" fill="#ffb3b3"/>
+<path d="M190 230 Q200 238 210 230"
+      stroke="var(--line)" stroke-width="2" fill="none" stroke-linecap="round"/>
+
+</svg>
