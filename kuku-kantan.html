@@ -6,15 +6,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>九九れんしゅう（確認テスト）</title>
   <style>
-    /* --- ▼▼ ネコちゃん用のCSS変数を追加 ▼▼ --- */
+    /* --- CSS変数を調整 --- */
     :root { 
-      --fur:#f2c28d; 
-      --fur-dark:#e1a765; 
-      --line:#333; 
-      --ear:#f7d8b7; 
       --bg:#fffaf2; 
     }
-    /* --- ▲▲ ネコちゃん用のCSS変数を追加 ▲▲ --- */
+    /* --- CSS変数を調整 --- */
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
       line-height: 1.6;
@@ -38,7 +34,8 @@
       background-color: rgba(255, 255, 255, 0.2);
       backdrop-filter: blur(10px);
       border-radius: 16px;
-      padding: 20px 30px;
+      padding: 20px 30px 170px 30px;
+      position: relative;
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
       margin-bottom: 20px;
       border: 1px solid rgba(255, 255, 255, 0.3);
@@ -170,7 +167,7 @@
     #attendance-link {
         background-color: #34c759;
         color: white;
-        padding: 15px 15px 150px 15px;
+        padding: 15px 15px 180px 15px;
         border-radius: 12px;
         margin-top: 20px;
         text-align: center;
@@ -248,26 +245,116 @@
       background-color: #ff3b30;
       color: white;
     }
+
+    /* --- SVGビーグル用 CSS --- */
+    .svg-beagle-wrap {
+      --fur: #e5c29f;
+      --fur-dark: #b5763d;
+      --fur-black: #333;
+      --line: #333;
+      --tongue: #ff6f92;
+
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 180px;
+      height: 180px;
+      z-index: 5;
+      cursor: pointer;
+    }
+    .svg-beagle-wrap svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* ぺろぺろ */
+    @keyframes pero {
+      0%, 90%, 100% { transform: translateY(0) scaleY(0); opacity:0; }
+      30%, 60%     { transform: translateY(2px) scaleY(1); opacity:1; }
+    }
+    .beagle-full .tongue {
+      transform-origin: 200px 198px;
+      animation: pero 1.8s ease-in-out infinite;
+      transition: transform .15s;
+    }
+    .beagle-full:hover .tongue {
+      transform: translateY(4px) scaleY(1.5) !important;
+    }
+
+    /* まばたき */
+    .beagle-full .eyelid { animation: blink 6s infinite; }
+
+    /* しっぽ */
+    @keyframes wag-beagle {
+      0%,100% { transform: rotate(16deg); }
+      50%     { transform: rotate(-12deg); }
+    }
+    .beagle-full .tail { transform-origin: 300px 260px; animation: wag-beagle .9s ease-in-out infinite; }
+
+    /* 耳 */
+    @keyframes ear {
+      0%,100% { transform: rotate(4deg); }
+      50%     { transform: rotate(-6deg); }
+    }
+    .beagle-full .ear-left { transform-origin:150px 150px; animation: ear 1.8s infinite ease-in-out; }
+    .beagle-full .ear-right{ transform-origin:250px 150px; animation: ear 1.9s infinite ease-in-out; }
+
+    /* 歩行 */
+    .beagle-full .leg { transform-box: fill-box; transform-origin: 50% 0%; }
+    @keyframes walkA {
+      0%,100% { transform: rotate(12deg);}
+      50%     { transform: rotate(-14deg);}
+    }
+    @keyframes walkB {
+      0%,100% { transform: rotate(-12deg);}
+      50%     { transform: rotate(14deg);}
+    }
+    .beagle-full .walk-a { animation: walkA .9s ease-in-out infinite; }
+    .beagle-full .walk-b { animation: walkB .9s ease-in-out infinite; }
+
+    /* 歩行に合わせて体が揺れる */
+    @keyframes bob {
+      0%,100% { transform: translateY(0); }
+      50%     { transform: translateY(2.2px); }
+    }
+    .beagle-full .dog { animation: bob .9s ease-in-out infinite; transition: transform .25s; }
+
+    /* クリックで首かしげ */
+    .beagle-full:active .dog {
+      transform: rotate(8deg);
+    }
+
+    /* ホバーでニコッ */
+    .beagle-full:hover .mouth {
+      d: path("M 188 198 Q 200 212 212 198");
+      transition: d .18s;
+    }
     
-    /* --- ▼▼ SVGネコちゃん用 CSS (HTMLに埋め込み) ▼▼ --- */
+    /* --- SVGネコちゃん用 CSS --- */
     @keyframes blink {
       0%,92%,100% { opacity:0; transform:translateY(-2px); }
       95%,97%     { opacity:1; transform:translateY(0); }
     }
-    .eyelid { animation: blink 6s infinite; transform-origin: 0 0; }
+    .cat .eyelid { animation: blink 6s infinite; transform-origin: 0 0; }
     @keyframes wag {
       0%,100% { transform: rotate(10deg); }
       50%     { transform: rotate(-8deg); }
     }
-    .tail { transform-origin: 340px 250px; animation: wag 3.5s ease-in-out infinite; }
+    .cat .tail { transform-origin: 340px 250px; animation: wag 3.5s ease-in-out infinite; }
     @keyframes whisk {
       0%,100% { transform: translateX(0) }
       50%     { transform: translateX(1.5px) }
     }
-    .whisk { animation: whisk 4.2s ease-in-out infinite; }
+    .cat .whisk { animation: whisk 4.2s ease-in-out infinite; }
     .cat:hover .mouth { d: path("M 210 250 Q 230 262 250 250"); transition: d .2s; }
     
     .svg-cat-wrap {
+      --fur:#f2c28d; 
+      --fur-dark:#e1a765; 
+      --line:#333; 
+      --ear:#f7d8b7; 
+      
       position: absolute;
       bottom: -20px;
       left: 50%;
@@ -280,7 +367,6 @@
       width: 100%;
       height: 100%;
     }
-    /* --- ▲▲ SVGネコちゃん用 CSS ▲▲ --- */
 
   </style>
 </head>
@@ -307,6 +393,62 @@
       <h2 style="margin-top: 30px;">2. どのやり方でれんしゅうする？</h2>
       <button class="select-button" onclick="startQuiz('choice')">4択モードでスタート</button>
       <button class="select-button tenkey-mode" onclick="startQuiz('tenkey')">テンキーモードでスタート</button>
+
+      <div class="svg-beagle-wrap">
+        <svg class="beagle-full" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="200" cy="330" rx="110" ry="16" fill="#000" opacity=".08"/>
+          <g class="dog">
+            <g class="tail">
+              <path d="M 290 270 C 330 250, 350 235, 345 215 C 338 190, 305 205, 300 240 Z"
+                    fill="var(--fur-dark)" stroke="var(--line)" stroke-width="3"/>
+            </g>
+            <g class="leg walk-b" opacity="0.9">
+              <rect x="145" y="242" width="16" height="62" rx="7" fill="var(--fur-dark)" stroke="var(--line)" stroke-width="3"/>
+              <ellipse cx="153" cy="306" rx="10" ry="5" fill="#fff" opacity=".9" stroke="var(--line)" stroke-width="2"/>
+            </g>
+            <g class="leg walk-a" opacity="0.9">
+              <rect x="235" y="242" width="16" height="62" rx="7" fill="var(--fur-dark)" stroke="var(--line)" stroke-width="3"/>
+              <ellipse cx="243" cy="306" rx="10" ry="5" fill="#fff" opacity=".9" stroke="var(--line)" stroke-width="2"/>
+            </g>
+            <path d="M 120 300 C 90 260, 95 200, 165 185 L 235 185 C 305 200, 310 260, 280 300 Z"
+                  fill="var(--fur)" stroke="var(--line)" stroke-width="3"/>
+            <path d="M160 210 C 200 190 240 190 260 230 C 232 218 178 238 160 210 Z"
+                  fill="var(--fur-black)" opacity=".8"/>
+            <ellipse cx="200" cy="255" rx="46" ry="52" fill="#fff" opacity=".85"/>
+            <g class="leg walk-a">
+              <rect x="165" y="240" width="16" height="64" rx="7" fill="var(--fur)" stroke="var(--line)" stroke-width="3"/>
+              <ellipse cx="173" cy="306" rx="10" ry="5" fill="#fff" opacity=".95" stroke="var(--line)" stroke-width="2"/>
+            </g>
+            <g class="leg walk-b">
+              <rect x="220" y="240" width="16" height="64" rx="7" fill="var(--fur)" stroke="var(--line)" stroke-width="3"/>
+              <ellipse cx="228" cy="306" rx="10" ry="5" fill="#fff" opacity=".95" stroke="var(--line)" stroke-width="2"/>
+            </g>
+            <g>
+              <path d="M 140 120 Q 200 60 260 120 Q 295 160 260 190 Q 200 215 140 190 Q 105 160 140 120 Z"
+                    fill="var(--fur)" stroke="var(--line)" stroke-width="3"/>
+              <path class="ear-left"
+                    d="M140 120 C 110 150 115 210 150 220 C 170 200 165 160 160 130 Z"
+                    fill="var(--fur-dark)" stroke="var(--line)" stroke-width="3"/>
+              <path class="ear-right"
+                    d="M260 120 C 290 150 285 210 250 220 C 230 200 235 160 240 130 Z"
+                    fill="var(--fur-dark)" stroke="var(--line)" stroke-width="3"/>
+              <ellipse cx="175" cy="165" rx="12" ry="10" fill="#fff" stroke="var(--line)" stroke-width="2"/>
+              <ellipse cx="225" cy="165" rx="12" ry="10" fill="#fff" stroke="var(--line)" stroke-width="2"/>
+              <circle cx="175" cy="165" r="4.5" fill="#222"/>
+              <circle cx="225" cy="165" r="4.5" fill="#222"/>
+              <g class="eyelid">
+                <path d="M163 160 Q175 150 187 160" fill="var(--fur)" stroke="var(--line)" stroke-width="2"/>
+                <path d="M213 160 Q225 150 237 160" fill="var(--fur)" stroke="var(--line)" stroke-width="2"/>
+              </g>
+              <circle cx="200" cy="182" r="4.2" fill="var(--fur-black)"/>
+              <path class="tongue" d="M196 200 Q200 210 204 200"
+                    stroke="none" fill="var(--tongue)"/>
+              <path class="mouth" d="M188 198 Q200 208 212 198"
+                    fill="none" stroke="var(--line)" stroke-width="2" stroke-linecap="round"/>
+            </g>
+          </g>
+        </svg>
+      </div>
     </div>
 
     <div id="quiz-container" class="quiz-container">
@@ -383,8 +525,7 @@
           </svg>
         </div>
     </div>
-    </div>
-  
+  </div>
   
   <div id="kuku-modal-bg" class="modal-bg" onclick="closeKukuTable()">
     <div class="modal-content" onclick="event.stopPropagation()">
@@ -404,7 +545,6 @@
     </div>
   </div>
 
-  
   <script>
     const TOTAL_QUESTIONS = 10;
     let currentQuestionIndex = 0;
@@ -418,18 +558,15 @@
     let answerSubmitted = false;
     let reviewSet = [];
 
-    // --- ▼▼ 修正（音声の定義方法を変更） ▼▼ ---
     let correctSound = null;
     let selectSound = null;
-    let soundsInitialized = false; // 音声が準備完了したかどうかのフラグ
+    let soundsInitialized = false;
 
-    // ユーザーの最初の操作で音声を準備する関数
     function initSounds() {
-        if (soundsInitialized) return; // 既に準備済みなら何もしない
+        if (soundsInitialized) return;
         try {
             correctSound = new Audio('pirorin.mp3');
             selectSound = new Audio('kati.mp3');
-            // .load() を呼んでおくことで、ブラウザに「使うよ」と伝えます
             correctSound.load();
             selectSound.load();
             soundsInitialized = true;
@@ -438,11 +575,9 @@
         }
     }
     
-    // 音を再生する専用の関数
     function playSound(type) {
-        // もし音声がまだ準備されていなかったら（startQuizより先に押された場合など）
         if (!soundsInitialized) {
-            initSounds(); // ここで準備する
+            initSounds();
         }
         
         try {
@@ -457,8 +592,6 @@
             console.error("音声の再生に失敗しました:", e);
         }
     }
-    // --- ▲▲ 修正 ▲▲ ---
-
 
     const praiseMessages = [
       "あやめちゃん、すごい！天才だね！",
@@ -473,13 +606,8 @@
       "最強の九九マスターだ！おめでとう！"
     ];
 
-    // --- ▼▼ 修正（SVGファイルリストは不要になったので削除） ▼▼ ---
-    // const animalFiles = [ ... ]; // この行を削除
-    // --- ▲▲ 修正 ▲▲ ---
-
-
     function setSelectedDan(dan) {
-      initSounds(); // ★修正：最初の操作（段の選択）で音を準備
+      initSounds();
       selectedDan = dan;
       const buttons = document.querySelectorAll('.dan-button, .select-button.random');
       buttons.forEach(btn => btn.classList.remove('selected'));
@@ -491,7 +619,7 @@
     }
 
     function startQuiz(mode) {
-      initSounds(); // ★修正：最初の操作（スタート）で音を準備
+      initSounds();
       
       if (Array.isArray(mode)) {
           selectedDan = mode;
@@ -612,14 +740,14 @@
     function pressKey(num) {
       if (answerSubmitted) return;
       if (tenkeyInput.length >= 3) return;
-      playSound('select'); // 数字キーの音
+      playSound('select');
       tenkeyInput += num;
       updateDisplay();
     }
     
     function clearDisplay(silent = false) {
       if (!silent) {
-        playSound('select'); // Cボタンの音
+        playSound('select');
       }
       tenkeyInput = '';
       updateDisplay();
@@ -647,9 +775,9 @@
       
       if (isCorrect) {
         score++;
-        playSound('correct'); // 正解音 (piroin.mp3)
+        playSound('correct');
       } else {
-        playSound('select'); // 不正解音 (kati.mp3)
+        playSound('select');
       }
       
       const explanationEl = document.getElementById('explanation');
@@ -681,7 +809,7 @@
             });
           }
       } else {
-         if (isCorrect) {
+          if (isCorrect) {
             explanationEl.style.backgroundColor = 'rgba(232, 245, 233, 0.8)';
             explanationEl.style.borderLeftColor = '#4caf50';
             document.getElementById('tenkey-display').style.borderColor = '#4caf50';
@@ -812,14 +940,10 @@
         attendanceLink.style.display = 'block';
         
         const praiseIndex = Math.floor(Math.random() * praiseMessages.length);
-        document.getElementById('praise-message').textContent = praiseMessages[randomIndex];
-        
-        // --- ▼▼ 修正（SVGは埋め込みなのでファイル指定を削除） ▼▼ ---
-        // imgタグのsrcを操作する部分は不要になりました
-        // --- ▲▲ 修正 ▲▲ ---
+        document.getElementById('praise-message').textContent = praiseMessages[praiseIndex];
         
       } else {
-         attendanceLink.style.display = 'none';
+        attendanceLink.style.display = 'none';
       }
     }
 
@@ -836,7 +960,7 @@
 
     const modal = document.getElementById('kuku-modal-bg');
     function showKukuTable() { 
-        initSounds(); // ★修正：九九の表を見る操作でも音を準備
+        initSounds();
         modal.style.display = 'flex'; 
     }
     function closeKukuTable() { modal.style.display = 'none'; }
