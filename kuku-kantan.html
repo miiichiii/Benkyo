@@ -1,101 +1,846 @@
-<svg class="beagle" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
-<style>
-  :root {
-    --fur:#e5c29f;      /* ベースの毛 */
-    --fur-dark:#b5763d; /* 茶色（ビーグル耳・模様） */
-    --fur-black:#333;   /* 黒（背中模様） */
-    --line:#333;
-  }
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>九九れんしゅう（確認テスト）</title>
+  <style>
+    /* --- ▼▼ ネコちゃん用のCSS変数を追加 ▼▼ --- */
+    :root { 
+      --fur:#f2c28d; 
+      --fur-dark:#e1a765; 
+      --line:#333; 
+      --ear:#f7d8b7; 
+      --bg:#fffaf2; 
+    }
+    /* --- ▲▲ ネコちゃん用のCSS変数を追加 ▲▲ --- */
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background: linear-gradient(135deg, #a8edea, #fed6e3);
+      background-size: cover;  
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      padding: 20px;
+      margin: 0;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    h1, h2 {
+      font-family: 'Noto Sans JP', sans-serif;
+      font-weight: 700;
+    }
+    #selection-container {
+      background-color: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      border-radius: 16px;
+      padding: 20px 30px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+      margin-bottom: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      text-align: center;
+    }
+    #selection-container h2 {
+      margin-top: 10px;
+      border-bottom: 2px solid rgba(0,0,0,0.1);
+      padding-bottom: 5px;
+    }
+    .dan-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+      margin-top: 20px;
+      margin-bottom: 20px;
+    }
+    .dan-button {
+      background-color: rgba(255, 255, 255, 0.7);
+      color: #333;
+      border: 2px solid rgba(0, 122, 255, 0.5);
+      border-radius: 12px;
+      padding: 12px 10px;
+      font-size: 1.1em;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .dan-button.selected {
+      background-color: #007aff;
+      color: white;
+      border-color: #007aff;
+      transform: scale(1.05);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+    .select-button {
+      background: linear-gradient(135deg, #007aff, #5ac8fa);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      padding: 12px 10px;
+      font-size: 1.1em;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s ease;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      margin-top: 10px;
+    }
+    .select-button:hover {
+      background: linear-gradient(135deg, #005bb5, #4aa0d3);
+      transform: translateY(-2px);
+    }
+    .select-button.tenkey-mode {
+        background: linear-gradient(135deg, #ff9500, #ffc107);
+    }
+    .select-button.tenkey-mode:hover {
+        background: linear-gradient(135deg, #e08500, #e0a800);
+    }
+    .select-button.chart {
+       background: linear-gradient(135deg, #ffc107, #ff8f0a);
+       width: 100%;
+       margin-bottom: 15px;
+    }
+    .select-button.random {
+       background: linear-gradient(135deg, #34c759, #a8e6cf);
+       width: 100%;
+    }
+    .select-button.random.selected {
+      background: linear-gradient(135deg, #28a745, #82d4b2);
+      color: white;
+      transform: scale(1.05);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+    .select-button.random:hover {
+       background: linear-gradient(135deg, #28a745, #82d4b2);
+    }
+    .quiz-container, .result-container {
+        display: none;
+    }
+    .quiz-container, .result-card {
+      background-color: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+      margin-bottom: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+    .analysis-card {
+        background-color: rgba(255, 255, 224, 0.3);
+        border: 2px solid rgba(255, 193, 7, 0.5);
+    }
+    .analysis-card h2 { color: #d84315; margin-top: 0; }
+    .analysis-card ul { display: flex; flex-wrap: wrap; padding-left: 0; list-style: none; gap: 10px; }
+    .analysis-card li { background-color: rgba(255, 87, 34, 0.7); color: white; padding: 5px 15px; border-radius: 20px; font-size: 1.1em; font-weight: bold; }
+    .nav-button.random { background: linear-gradient(135deg, #34c759, #a8e6cf); margin-top: 10px; }
+    .nav-button.random:hover { background: linear-gradient(135deg, #28a745, #82d4b2); }
+    .nav-button.tenkey-mode {
+        background: linear-gradient(135deg, #ff9500, #ffc107);
+        margin-top: 10px;
+    }
+    .nav-button.tenkey-mode:hover {
+        background: linear-gradient(135deg, #e08500, #e0a800);
+    }
+    .question { margin-bottom: 20px; color: #1d1d1f; display: flex; align-items: baseline; flex-wrap: wrap; }
+    .question-number { font-size: 1.2em; margin-right: 10px; font-weight: normal; }
+    .question-text { font-size: 2.0em; font-weight: bold; }
+    .options { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
+    .option { background-color: rgba(255, 255, 255, 0.7); border: none; border-radius: 16px; padding: 15px; font-size: 1em; cursor: pointer; transition: background 0.3s ease 0.1s, transform 0.3s ease; text-align: center; position: relative; overflow: hidden; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); }
+    .option:hover { background: linear-gradient(135deg, #a8edea, #fed6e3); box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); }
+    .option.selected { }
+    .option.disabled { background: linear-gradient(135deg, #a8edea, #fed6e3); box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); pointer-events: none; }
+    .option.correct { background: linear-gradient(135deg, #34c759, #a8e6cf); color: #fff; }
+    .option.incorrect { background: linear-gradient(135deg, #ff3b30, #ff9a8b); color: #fff; }
+    .option::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.1); opacity: 0; transition: opacity 0.3s; }
+    .option:active::after { transform: scale(0.98); }
+    .explanation { margin-top: 20px; font-size: 1em; color: #333; background-color: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); border-left: 5px solid #4caf50; border-radius: 12px; padding: 15px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); opacity: 0; display: none; transition: opacity 0.3s ease; }
+    .explanation-header { display: flex; align-items: center; margin-bottom: 10px; font-weight: bold; color: #4caf50; }
+    .explanation-icon { font-size: 1.5em; margin-right: 10px; }
+    .nav-button { background: linear-gradient(135deg, #007aff, #5ac8fa); color: #fff; border: none; border-radius: 12px; padding: 12px 24px; font-size: 1em; cursor: pointer; transition: background 0.3s ease, transform 0.2s ease; margin-top: 20px; width: 100%; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); }
+    .nav-button:hover { background: linear-gradient(135deg, #005bb5, #4aa0d3); box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); }
+    .nav-button:active { transform: scale(0.98); }
+    .result-card { margin-bottom: 20px; }
+    .result-card h3 { font-size: 1.2em; margin-bottom: 10px; }
+    .result-status { font-weight: bold; margin-bottom: 10px; }
+    .correct { color: #34c759; }
+    .incorrect { color: #ff3b30; }
+    #attendance-link {
+        background-color: #34c759;
+        color: white;
+        padding: 15px 15px 150px 15px;
+        border-radius: 12px;
+        margin-top: 20px;
+        text-align: center;
+        display: none;
+        position: relative; 
+        overflow: hidden; 
+    }
+    #attendance-link p {
+        margin: 0;
+        padding: 0;
+        font-size: 1.3em;
+        font-weight: bold;
+        z-index: 10; 
+        position: relative;
+    }
+    #praise-message {
+        font-size: 1.1em;
+        margin-top: 10px;
+        z-index: 10;
+        position: relative;
+    }
+    .modal-bg { display: none; position: fixed; z-index: 100; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); justify-content: center; align-items: center; }
+    .modal-content { background: linear-gradient(135deg, #e0f7fa, #fce4ec); padding: 25px; border-radius: 16px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3); width: 90%; max-width: 500px; max-height: 80vh; overflow-y: auto; position: relative; }
+    .modal-close-btn { position: absolute; top: 10px; right: 20px; color: #555; font-size: 32px; font-weight: bold; cursor: pointer; }
+    .modal-close-btn:hover { color: #000; }
+    .modal-content h2 { text-align: center; margin-top: 10px; }
+    .kuku-chart-container details { background-color: rgba(255, 255, 255, 0.7); border-radius: 12px; margin-bottom: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); }
+    .kuku-chart-container summary { padding: 15px; font-size: 1.2em; font-weight: bold; cursor: pointer; list-style: none; position: relative; }
+    .kuku-chart-container summary::-webkit-details-marker { display: none; }
+    .kuku-chart-container summary::after { content: '＋'; position: absolute; right: 20px; font-weight: bold; }
+    .kuku-chart-container details[open] summary::after { content: '－'; }
+    .kuku-items { padding: 0 20px 15px 20px; border-top: 1px solid rgba(0,0,0,0.1); }
+    .kuku-items p { margin: 8px 0; font-size: 1.1em; }
+    #tenkey-container {
+      display: none;
+      margin-top: 20px;
+    }
+    #tenkey-display {
+      background-color: rgba(255, 255, 255, 0.8);
+      border-radius: 12px;
+      border: 2px solid rgba(0,0,0,0.1);
+      padding: 12px;
+      font-size: 1.8em;
+      font-weight: bold;
+      text-align: right;
+      min-height: 1.5em;
+      color: #333;
+      margin-bottom: 15px;
+    }
+    .tenkey-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+    .tenkey-btn {
+      background-color: rgba(255, 255, 255, 0.7);
+      border: none;
+      border-radius: 16px;
+      padding: 15px;
+      font-size: 1.3em;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      transition: background-color 0.2s, transform 0.1s;
+    }
+    .tenkey-btn:active {
+      transform: scale(0.95);
+    }
+    .tenkey-btn.ok {
+      background-color: #007aff;
+      color: white;
+      grid-column: span 2;
+    }
+    .tenkey-btn.clear {
+      background-color: #ff3b30;
+      color: white;
+    }
+    
+    /* --- ▼▼ SVGネコちゃん用 CSS (HTMLに埋め込み) ▼▼ --- */
+    @keyframes blink {
+      0%,92%,100% { opacity:0; transform:translateY(-2px); }
+      95%,97%     { opacity:1; transform:translateY(0); }
+    }
+    .eyelid { animation: blink 6s infinite; transform-origin: 0 0; }
+    @keyframes wag {
+      0%,100% { transform: rotate(10deg); }
+      50%     { transform: rotate(-8deg); }
+    }
+    .tail { transform-origin: 340px 250px; animation: wag 3.5s ease-in-out infinite; }
+    @keyframes whisk {
+      0%,100% { transform: translateX(0) }
+      50%     { transform: translateX(1.5px) }
+    }
+    .whisk { animation: whisk 4.2s ease-in-out infinite; }
+    .cat:hover .mouth { d: path("M 210 250 Q 230 262 250 250"); transition: d .2s; }
+    
+    .svg-cat-wrap {
+      position: absolute;
+      bottom: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 200px; 
+      height: 200px;
+      z-index: 5;
+    }
+    .svg-cat-wrap svg {
+      width: 100%;
+      height: 100%;
+    }
+    /* --- ▲▲ SVGネコちゃん用 CSS ▲▲ --- */
 
-  /* まばたき */
-  @keyframes blink {
-    0%,92%,100% { opacity:0; transform:translateY(-2px); }
-    95%,97%     { opacity:1; transform:translateY(0); }
-  }
-  .eyelid { animation: blink 6s infinite; transform-origin: 0 0; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 style="text-align: center;">九九れんしゅう（確認テスト・改）</h1>
 
-  /* しっぽフリフリ */
-  @keyframes wag {
-    0%,100% { transform: rotate(15deg); }
-    50%     { transform: rotate(-10deg); }
-  }
-  .tail { transform-origin: 300px 260px; animation: wag 2.6s ease-in-out infinite; }
+    <div id="selection-container">
+      <h2>1. どの段をれんしゅうする？</h2>
+      <div class="dan-grid">
+        <button id="dan-btn-1" class="dan-button" onclick="setSelectedDan(1)">1のだん</button>
+        <button id="dan-btn-2" class="dan-button" onclick="setSelectedDan(2)">2のだん</button>
+        <button id="dan-btn-3" class="dan-button" onclick="setSelectedDan(3)">3のだん</button>
+        <button id="dan-btn-4" class="dan-button" onclick="setSelectedDan(4)">4のだん</button>
+        <button id="dan-btn-5" class="dan-button" onclick="setSelectedDan(5)">5のだん</button>
+        <button id="dan-btn-6" class="dan-button" onclick="setSelectedDan(6)">6のだん</button>
+        <button id="dan-btn-7" class="dan-button" onclick="setSelectedDan(7)">7のだん</button>
+        <button id="dan-btn-8" class="dan-button" onclick="setSelectedDan(8)">8のだん</button>
+        <button id="dan-btn-9" class="dan-button" onclick="setSelectedDan(9)">9のだん</button>
+      </div>
+      <button id="dan-btn-random" class="select-button random" onclick="setSelectedDan('random')">ぜんぶ（ランダム）</button>
+      <button class="select-button chart" onclick="showKukuTable()">九九のひょうをみる</button>
 
-  /* 耳ふわっ */
-  @keyframes ear {
-    0%,100% { transform: rotate(4deg); }
-    50%     { transform: rotate(-6deg); }
-  }
-  .ear-left { transform-origin: 150px 150px; animation: ear 3.4s infinite ease-in-out; }
-  .ear-right{ transform-origin: 250px 150px; animation: ear 3.6s infinite ease-in-out; }
-</style>
+      <h2 style="margin-top: 30px;">2. どのやり方でれんしゅうする？</h2>
+      <button class="select-button" onclick="startQuiz('choice')">4択モードでスタート</button>
+      <button class="select-button tenkey-mode" onclick="startQuiz('tenkey')">テンキーモードでスタート</button>
+    </div>
 
-<!-- 影 -->
-<ellipse cx="200" cy="330" rx="110" ry="16" fill="#000" opacity=".08"/>
+    <div id="quiz-container" class="quiz-container">
+      <div id="quiz-content">
+        <div id="question" class="question"></div> 
+        <div id="options" class="options"></div>
+        <div id="tenkey-container">
+          <div id="tenkey-display"></div>
+          <div class="tenkey-grid">
+            <button class="tenkey-btn" onclick="pressKey('1')">1</button>
+            <button class="tenkey-btn" onclick="pressKey('2')">2</button>
+            <button class="tenkey-btn" onclick="pressKey('3')">3</button>
+            <button class="tenkey-btn" onclick="pressKey('4')">4</button>
+            <button class="tenkey-btn" onclick="pressKey('5')">5</button>
+            <button class="tenkey-btn" onclick="pressKey('6')">6</button>
+            <button class="tenkey-btn" onclick="pressKey('7')">7</button>
+            <button class="tenkey-btn" onclick="pressKey('8')">8</button>
+            <button class="tenkey-btn" onclick="pressKey('9')">9</button>
+            <button class="tenkey-btn clear" onclick="clearDisplay()">C</button>
+            <button class="tenkey-btn" onclick="pressKey('0')">0</button>
+            <button class="tenkey-btn ok" onclick="checkTenkeyAnswer()">OK</button>
+          </div>
+        </div>
+        <div id="explanation" class="explanation"></div>
+      </div>
+      <button id="next" class="nav-button" onclick="nextQuestion()">次の問題</button>
+    </div>
 
-<!-- しっぽ -->
-<g class="tail">
-  <path d="M 290 270
-           C 330 250, 350 235, 345 215
-           C 338 190, 305 205, 300 240
-           Z"
-        fill="var(--fur-dark)" stroke="var(--line)" stroke-width="3"/>
-</g>
+    <div id="result-container" class="result-container"></div>
+    
+    <div id="attendance-link">
+        <p>おめでとう！全問正解です！ 🎉</p>
+        <p id="praise-message"></p>
+        
+        <div class="svg-cat-wrap">
+          <svg class="cat" viewBox="0 0 400 400" role="img" aria-labelledby="title desc">
+            <title id="title">ねこ</title>
+            <desc id="desc">やさしい色の猫。まばたきして、しっぽが左右に揺れる。</desc>
+            <ellipse cx="200" cy="330" rx="110" ry="16" fill="#000" opacity=".08"/>
+            <g class="tail">
+              <path d="M 300 260 C 340 240, 360 230, 360 210 C 360 180, 320 180, 315 205 C 312 220, 335 225, 335 235 C 332 260, 310 255, 300 250 Z" fill="var(--fur)" stroke="var(--line)" stroke-width="3"/>
+              <path d="M 340 205 q 10 -8 15 0 M 330 220 q 12 -7 16 0 M 324 236 q 10 -6 14 0" stroke="var(--fur-dark)" stroke-width="4" fill="none" stroke-linecap="round" opacity=".7"/>
+            </g>
+            <path d="M 120 300 C 90 260, 90 200, 160 180 L 240 180 C 310 200, 310 260, 280 300 Z" fill="var(--fur)" stroke="var(--line)" stroke-width="3"/>
+            <ellipse cx="200" cy="250" rx="46" ry="54" fill="#fff" opacity=".7"/>
+            <g>
+              <path d="M 140 110 L 160 70  180 105 Q 200 90 220 105 L 240 70  260 110 Q 280 125 280 150 Q 280 190 200 190 Q 120 190 120 150 Q 120 125 140 110 Z" fill="var(--fur)" stroke="var(--line)" stroke-width="3" stroke-linejoin="round"/>
+              <path d="M160 80 L 175 105 L150 112 Z" fill="var(--ear)" opacity=".9"/>
+              <path d="M240 80 L 225 105 L250 112 Z" fill="var(--ear)" opacity=".9"/>
+              <g>
+                <ellipse cx="170" cy="145" rx="12" ry="10" fill="#fff" stroke="var(--line)" stroke-width="2"/>
+                <ellipse cx="230" cy="145" rx="12" ry="10" fill="#fff" stroke="var(--line)" stroke-width="2"/>
+                <circle cx="170" cy="145" r="4.5" fill="#222"/>
+                <circle cx="230" cy="145" r="4.5" fill="#222"/>
+                <g class="eyelid">
+                  <path d="M158 140 Q170 132 182 140" fill="#000" opacity=".1"/>
+                  <path d="M218 140 Q230 132 242 140" fill="#000" opacity=".1"/>
+                  <path d="M158 140 Q170 134 182 140" fill="var(--fur)" stroke="var(--line)" stroke-width="2"/>
+                  <path d="M218 140 Q230 134 242 140" fill="var(--fur)" stroke="var(--line)" stroke-width="2"/>
+                </g>
+              </g>
+              <polygon points="198,158 202,158 200,162" fill="#e07a7a"/>
+              <path class="mouth" d="M 190 170 Q 200 178 210 170" fill="none" stroke="var(--line)" stroke-width="2" stroke-linecap="round"/>
+              <g class="whisk" stroke="var(--line)" stroke-width="2" stroke-linecap="round">
+                <path d="M150 165 H115"/>
+                <path d="M152 170 H112"/>
+                <path d="M150 175 H118"/>
+                <path d="M250 165 H285"/>
+                <path d="M248 170 H288"/>
+                <path d="M250 175 H282"/>
+              </g>
+            </g>
+            <path d="M175 200 q -8 10 -20 12 M225 200 q 8 10 20 12" stroke="var(--fur-dark)" stroke-width="4" fill="none" opacity=".6" stroke-linecap="round"/>
+          </svg>
+        </div>
+    </div>
+    </div>
+  
+  
+  <div id="kuku-modal-bg" class="modal-bg" onclick="closeKukuTable()">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <span class="modal-close-btn" onclick="closeKukuTable()">&times;</span>
+      <h2>九九のひょう</h2>
+      <div class="kuku-chart-container">
+        <details><summary>1のだん (いち)</summary><div class="kuku-items"><p>1×1= 1 (いんいちが いち)</p><p>1×2= 2 (いんにが に)</p><p>1×3= 3 (いんさんが さん)</p><p>1×4= 4 (いんしが し)</p><p>1×5= 5 (いんごが ご)</p><p>1×6= 6 (いんろくが ろく)</p><p>1×7= 7 (いんしちが しち)</p><p>1×8= 8 (いんはちが はち)</p><p>1×9= 9 (いんくが く)</p></div></details>
+        <details><summary>2のだん (に)</summary><div class="kuku-items"><p>2×1= 2 (にいちが に)</p><p>2×2= 4 (ににんが し)</p><p>2×3= 6 (にさんが ろく)</p><p>2×4= 8 (にしが はち)</p><p>2×5=10 (にご じゅう)</p><p>2×6=12 (にろく じゅうに)</p><p>2×7=14 (にしち じゅうし)</p><p>2×8=16 (にはち じゅうろく)</p><p>2×9=18 (にく じゅうはち)</p></div></details>
+        <details><summary>3のだん (さん)</summary><div class="kuku-items"><p>3×1= 3 (さんいちが さん)</p><p>3×2= 6 (さんにが ろく)</p><p>3×3= 9 (さざんが く)</p><p>3×4=12 (さんし じゅうに)</p><p>3×5=15 (さんご じゅうご)</p><p>3×6=18 (さぶろく じゅうはち)</p><p>3×7=21 (さんしち にじゅういち)</p><p>3×8=24 (さんぱ にじゅうし)</p><p>3×9=27 (さんく にじゅうしち)</p></div></details>
+        <details><summary>4のだん (し)</summary><div class="kuku-items"><p>4×1= 4 (しいちが し)</p><p>4×2= 8 (しにが はち)</p><p>4×3=12 (しさん じゅうに)</p><p>4×4=16 (しし じゅうろく)</p><p>4×5=20 (しご にじゅう)</p><p>4×6=24 (しろく にじゅうし)</p><p>4×7=28 (ししち にじゅうはち)</p><p>4×8=32 (しは さんじゅうに)</p><p>4×9=36 (しく さんじゅうろく)</p></div></details>
+        <details><summary>5のだん (ご)</summary><div class="kuku-items"><p>5×1= 5 (ごいちが ご)</p><p>5×2=10 (ごに じゅう)</p><p>5×3=15 (ごさん じゅうご)</p><p>5×4=20 (ごし にじゅう)</p><p>5×5=25 (ごご にじゅうご)</p><p>5×6=30 (ごろく さんじゅう)</p><p>5×7=35 (ごしち さんじゅうご)</p><p>5×8=40 (ごは しじゅう)</p><p>5×9=45 (ごっく しじゅうご)</p></div></details>
+        <details><summary>6のだん (ろく)</summary><div class="kuku-items"><p>6×1= 6 (ろくいちが ろく)</p><p>6×2=12 (ろくに じゅうに)</p><p>6×3=18 (ろくさん じゅうはち)</p><p>6×4=24 (ろくし にじゅうし)</p><p>6×5=30 (ろくご さんじゅう)</p><p>6×6=36 (ろくろく さんじゅうろく)</p><p>6×7=42 (ろくしち しじゅうに)</p><p>6×8=48 (ろくは しじゅうはち)</p><p>6×9=54 (ろっく ごじゅうし)</p></div></details>
+        <details><summary>7のだん (しち)</summary><div class="kuku-items"><p>7×1= 7 (しちいちが しち)</p><p>7×2=14 (しちに じゅうし)</p><p>7×3=21 (しちさん にじゅういち)</p><p>7×4=28 (ししち にじゅうはち)</p><p>7×5=35 (しちご さんじゅうご)</p><p>7×6=42 (しちろく しじゅうに)</p><p>7×7=49 (しちしち しじゅうく)</p><p>7×8=56 (しちは ごじゅうろく)</p><p>7×9=63 (しちく ろくじゅうさん)</p></div></details>
+        <details><summary>8のだん (はち)</summary><div class="kuku-items"><p>8×1= 8 (はちいちが はち)</p><p>8×2=16 (はちに じゅうろく)</p><p>8×3=24 (はちさん にじゅうし)</p><p>8×4=32 (はちし さんじゅうに)</p><p>8×5=40 (はちご しじゅう)</p><p>8×6=48 (はちろく しじゅうはち)</p><p>8×7=56 (はちしち ごじゅうろく)</p><p>8×8=64 (はっぱ ろくじゅうし)</p><p>8×9=72 (はっく しちじゅうに)</p></div></details>
+        <details><summary>9のだん (く)</summary><div class="kuku-items"><p>9×1= 9 (くいちが く)</p><p>9×2=18 (くにく じゅうはち)</p><p>9×3=27 (くさん にじゅうしち)</p><p>9×4=36 (くし さんじゅうろく)</p><p>9×5=45 (くご しじゅうご)</p><p>9×6=54 (くろく ごじゅうし)</p><p>9×7=63 (くしち ろくじゅうさん)</p><p>9×8=72 (くはち しちじゅうに)</p><p>9×9=81 (くく はちじゅういち)</p></div></details>
+      </div>
+    </div>
+  </div>
 
-<!-- 胴体 -->
-<path d="M 120 300
-         C 90 260, 95 200, 165 185
-         L 235 185
-         C 305 200, 310 260, 280 300
-         Z"
-      fill="var(--fur)" stroke="var(--line)" stroke-width="3"/>
+  
+  <script>
+    const TOTAL_QUESTIONS = 10;
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let quizHistory = []; 
+    let currentProblem = {}; 
+    let shuffledOptions = [];
+    let selectedDan = null;
+    let currentMode = 'choice';
+    let tenkeyInput = '';
+    let answerSubmitted = false;
+    let reviewSet = [];
 
-<!-- 背中の黒い模様 -->
-<path d="M160 210 C 200 190 240 190 260 230
-         C230 220 170 235 160 210 Z"
-      fill="var(--fur-black)" opacity=".8"/>
+    // --- ▼▼ 修正（音声の定義方法を変更） ▼▼ ---
+    let correctSound = null;
+    let selectSound = null;
+    let soundsInitialized = false; // 音声が準備完了したかどうかのフラグ
 
-<!-- 白胸毛 -->
-<ellipse cx="200" cy="255" rx="46" ry="52" fill="#fff" opacity=".8"/>
+    // ユーザーの最初の操作で音声を準備する関数
+    function initSounds() {
+        if (soundsInitialized) return; // 既に準備済みなら何もしない
+        try {
+            correctSound = new Audio('piroin.mp3');
+            selectSound = new Audio('kati.mp3');
+            // .load() を呼んでおくことで、ブラウザに「使うよ」と伝えます
+            correctSound.load();
+            selectSound.load();
+            soundsInitialized = true;
+        } catch (e) {
+            console.error("音声の初期化に失敗:", e);
+        }
+    }
+    
+    // 音を再生する専用の関数
+    function playSound(type) {
+        // もし音声がまだ準備されていなかったら（startQuizより先に押された場合など）
+        if (!soundsInitialized) {
+            initSounds(); // ここで準備する
+        }
+        
+        try {
+            if (type === 'correct' && correctSound) {
+                correctSound.currentTime = 0;
+                correctSound.play();
+            } else if (type === 'select' && selectSound) {
+                selectSound.currentTime = 0;
+                selectSound.play();
+            }
+        } catch (e) {
+            console.error("音声の再生に失敗しました:", e);
+        }
+    }
+    // --- ▲▲ 修正 ▲▲ ---
 
-<!-- 顔 -->
-<g>
-  <path d="M 140 120
-           Q 200 60 260 120
-           Q 295 160 260 190
-           Q 200 215 140 190
-           Q 105 160 140 120 Z"
-        fill="var(--fur)" stroke="var(--line)" stroke-width="3"/>
 
-  <!-- たれ耳 -->
-  <path class="ear-left"
-        d="M140 120 C 110 150 115 210 150 220
-            C 170 200 165 160 160 130 Z"
-        fill="var(--fur-dark)" stroke="var(--line)" stroke-width="3"/>
+    const praiseMessages = [
+      "あやめちゃん、すごい！天才だね！",
+      "やったね！全問正解、お見事！",
+      "素晴らしい！集中力バッチリだね！",
+      "全問クリア！完璧だね、あやめちゃん！",
+      "きらきら輝く才能だね！よく頑張った！",
+      "すごい力だ！自信をもってね！",
+      "あやめちゃん、できる子だね！すごいぞ！",
+      "ナイスファイト！全問正解は努力の証だね！",
+      "感動したよ！とってもよくできたね！",
+      "最強の九九マスターだ！おめでとう！"
+    ];
 
-  <path class="ear-right"
-        d="M260 120 C 290 150 285 210 250 220
-            C 230 200 235 160 240 130 Z"
-        fill="var(--fur-dark)" stroke="var(--line)" stroke-width="3"/>
+    // --- ▼▼ 修正（SVGファイルリストは不要になったので削除） ▼▼ ---
+    // const animalFiles = [ ... ]; // この行を削除
+    // --- ▲▲ 修正 ▲▲ ---
 
-  <!-- 目 -->
-  <ellipse cx="175" cy="165" rx="12" ry="10" fill="#fff" stroke="var(--line)" stroke-width="2"/>
-  <ellipse cx="225" cy="165" rx="12" ry="10" fill="#fff" stroke="var(--line)" stroke-width="2"/>
-  <circle cx="175" cy="165" r="4.5" fill="#222"/>
-  <circle cx="225" cy="165" r="4.5" fill="#222"/>
 
-  <!-- まぶた -->
-  <g class="eyelid">
-    <path d="M163 160 Q175 150 187 160" fill="var(--fur)" stroke="var(--line)" stroke-width="2"/>
-    <path d="M213 160 Q225 150 237 160" fill="var(--fur)" stroke="var(--line)" stroke-width="2"/>
-  </g>
+    function setSelectedDan(dan) {
+      initSounds(); // ★修正：最初の操作（段の選択）で音を準備
+      selectedDan = dan;
+      const buttons = document.querySelectorAll('.dan-button, .select-button.random');
+      buttons.forEach(btn => btn.classList.remove('selected'));
+      if (dan === 'random') {
+        document.getElementById('dan-btn-random').classList.add('selected');
+      } else {
+        document.getElementById(`dan-btn-${dan}`).classList.add('selected');
+      }
+    }
 
-  <!-- 鼻 -->
-  <polygon points="198,180 202,180 200,185" fill="#333"/>
+    function startQuiz(mode) {
+      initSounds(); // ★修正：最初の操作（スタート）で音を準備
+      
+      if (Array.isArray(mode)) {
+          selectedDan = mode;
+          currentMode = 'choice';
+      } else if (mode === 'review') {
+          selectedDan = 'review';
+      } else {
+          if (selectedDan === null) {
+              alert('1. どの段をれんしゅうするか選んでください');
+              return;
+          }
+          currentMode = mode;
+      }
+      currentQuestionIndex = 0;
+      score = 0;
+      quizHistory = [];
+      document.getElementById('selection-container').style.display = 'none';
+      document.getElementById('quiz-container').style.display = 'block';
+      document.getElementById('result-container').innerHTML = '';
+      document.getElementById('attendance-link').style.display = 'none';
+      loadQuestion();
+    }
+    
+    function startReviewQuiz() {
+        if (reviewSet.length === 0) return;
+        startQuiz('review');
+    }
 
-  <!-- 口 -->
-  <path d="M190 195 Q200 205 210 195"
-        fill="none" stroke="var(--line)" stroke-width="2" stroke-linecap="round"/>
-</g>
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
 
-</svg>
+    function generateKukuProblem() {
+      let num1, num2;
+      if (selectedDan === 'random') {
+        num1 = Math.floor(Math.random() * 9) + 1;
+        num2 = Math.floor(Math.random() * 9) + 1;
+      } else if (Array.isArray(selectedDan)) {
+        const dan = selectedDan[Math.floor(Math.random() * selectedDan.length)];
+        if (Math.random() > 0.5) { num1 = dan; num2 = Math.floor(Math.random() * 9) + 1; }
+        else { num1 = Math.floor(Math.random() * 9) + 1; num2 = dan; }
+      } else {
+        if (Math.random() > 0.5) { num1 = selectedDan; num2 = Math.floor(Math.random() * 9) + 1; }
+        else { num1 = Math.floor(Math.random() * 9) + 1; num2 = selectedDan; }
+      }
+      const correctAnswer = num1 * num2;
+      let options = [correctAnswer]; 
+      while (options.length < 4) {
+        let dummyAnswer;
+        if (correctAnswer <= 10) { dummyAnswer = correctAnswer + (Math.floor(Math.random() * 11) - 5); }
+        else { dummyAnswer = correctAnswer + (Math.floor(Math.random() * 21) - 10); }
+        if (dummyAnswer === correctAnswer || dummyAnswer <= 0 || options.includes(dummyAnswer)) { continue; }
+        options.push(dummyAnswer);
+      }
+      return {
+        num1: num1, num2: num2,
+        questionText: `${num1} × ${num2} = ?`,
+        answer: correctAnswer,
+        options: options,
+        explanation: `${num1} × ${num2} = ${correctAnswer} です。`
+      };
+    }
+
+    function loadQuestion() {
+      answerSubmitted = false;
+      
+      if (selectedDan === 'review') {
+          currentProblem = reviewSet[currentQuestionIndex];
+      } else {
+          currentProblem = generateKukuProblem();
+      }
+      
+      const questionEl = document.getElementById('question');
+      questionEl.innerHTML = `
+        <span class="question-number">問題 ${currentQuestionIndex + 1}:</span>
+        <span class="question-text">${currentProblem.questionText}</span>
+      `;
+      
+      const optionsEl = document.getElementById('options');
+      const tenkeyEl = document.getElementById('tenkey-container');
+      
+      if (currentMode === 'choice') {
+        shuffledOptions = shuffleArray([...currentProblem.options]);
+        const optionsHtml = shuffledOptions.map((option, index) => `
+          <div class="option" onclick="selectOption(${index})">${option}</div>
+        `).join('');
+        optionsEl.innerHTML = optionsHtml;
+        optionsEl.style.display = 'grid';
+        tenkeyEl.style.display = 'none';
+      } else {
+        optionsEl.innerHTML = '';
+        optionsEl.style.display = 'none';
+        tenkeyEl.style.display = 'block';
+        clearDisplay(true);
+      }
+      const explanationEl = document.getElementById('explanation');
+      explanationEl.style.display = 'none'; 
+      explanationEl.style.opacity = '0'; 
+    }
+
+    function selectOption(index) {
+      if (answerSubmitted) return;
+      answerSubmitted = true;
+      const options = document.querySelectorAll('.option');
+      options.forEach(option => {
+        option.classList.add('disabled');
+      });
+      options[index].classList.add('selected');
+      const selectedAnswer = shuffledOptions[index];
+      const isCorrect = (selectedAnswer === currentProblem.answer);
+      showAnswerFeedback(isCorrect, selectedAnswer, options[index]);
+    }
+
+    function pressKey(num) {
+      if (answerSubmitted) return;
+      if (tenkeyInput.length >= 3) return;
+      playSound('select'); // 数字キーの音
+      tenkeyInput += num;
+      updateDisplay();
+    }
+    
+    function clearDisplay(silent = false) {
+      if (!silent) {
+        playSound('select'); // Cボタンの音
+      }
+      tenkeyInput = '';
+      updateDisplay();
+    }
+    
+    function updateDisplay() {
+      document.getElementById('tenkey-display').textContent = tenkeyInput || ' ';
+    }
+    
+    function checkTenkeyAnswer() {
+      if (answerSubmitted) return;
+      if (tenkeyInput === '') return;
+      answerSubmitted = true;
+      const userAnswer = parseInt(tenkeyInput);
+      const isCorrect = (userAnswer === currentProblem.answer);
+      showAnswerFeedback(isCorrect, userAnswer, null);
+    }
+
+    function showAnswerFeedback(isCorrect, selectedAnswer, selectedOptionEl) {
+      quizHistory[currentQuestionIndex] = {
+        problem: currentProblem,
+        selected: selectedAnswer,
+        isCorrect: isCorrect
+      };
+      
+      if (isCorrect) {
+        score++;
+        playSound('correct'); // 正解音 (piroin.mp3)
+      } else {
+        playSound('select'); // 不正解音 (kati.mp3)
+      }
+      
+      const explanationEl = document.getElementById('explanation');
+      explanationEl.innerHTML = `
+        <div class="explanation-header">
+          <span class="explanation-icon">${isCorrect ? '🎉' : '💡'}</span>
+          ${isCorrect ? 'せいかい！' : 'おしい！'}
+        </div>
+        ${currentProblem.explanation}
+      `;
+      explanationEl.style.display = 'block';
+      setTimeout(() => {
+        explanationEl.style.opacity = '1';
+      }, 100); 
+
+      if (currentMode === 'choice' && selectedOptionEl) {
+          if (isCorrect) {
+            explanationEl.style.backgroundColor = 'rgba(232, 245, 233, 0.8)';
+            explanationEl.style.borderLeftColor = '#4caf50';
+            selectedOptionEl.classList.add('correct');
+          } else {
+            explanationEl.style.backgroundColor = 'rgba(255, 235, 238, 0.8)';
+            explanationEl.style.borderLeftColor = '#f44336';
+            selectedOptionEl.classList.add('incorrect');
+            shuffledOptions.forEach((option, i) => {
+              if (option === currentProblem.answer) {
+                document.querySelectorAll('.option')[i].classList.add('correct');
+              }
+            });
+          }
+      } else {
+         if (isCorrect) {
+            explanationEl.style.backgroundColor = 'rgba(232, 245, 233, 0.8)';
+            explanationEl.style.borderLeftColor = '#4caf50';
+            document.getElementById('tenkey-display').style.borderColor = '#4caf50';
+          } else {
+            explanationEl.style.backgroundColor = 'rgba(255, 235, 238, 0.8)';
+            explanationEl.style.borderLeftColor = '#f44336';
+            document.getElementById('tenkey-display').style.borderColor = '#f44336';
+          }
+      }
+    }
+
+    function nextQuestion() {
+      if (!answerSubmitted) {
+        alert('答えを選んでください');
+        return;
+      }
+      
+      const isReview = (selectedDan === 'review');
+      const total = isReview ? reviewSet.length : TOTAL_QUESTIONS;
+
+      if (currentQuestionIndex < total - 1) {
+        currentQuestionIndex++;
+        loadQuestion();
+      } else {
+        showResult();
+      }
+    }
+    
+    function analyzeMistakes() {
+        const danStats = {};
+        for (let i = 1; i <= 9; i++) { danStats[i] = { mistakes: 0 }; }
+        let nigatanaDanList = [];
+        quizHistory.forEach(result => {
+            if (!result.isCorrect) {
+                danStats[result.problem.num1].mistakes++;
+                if (result.problem.num1 !== result.problem.num2) {
+                    danStats[result.problem.num2].mistakes++;
+                }
+            }
+        });
+        for (let i = 1; i <= 9; i++) {
+            if (danStats[i].mistakes > 0) { nigatanaDanList.push(i); }
+        }
+        return nigatanaDanList;
+    }
+
+    function showResult() {
+      const resultContainer = document.getElementById('result-container');
+      const quizContainer = document.getElementById('quiz-container');
+      quizContainer.style.display = 'none';
+      resultContainer.style.display = 'block'; 
+
+      const isReview = (selectedDan === 'review');
+      const total = isReview ? reviewSet.length : TOTAL_QUESTIONS;
+      const percentage = (score / total) * 100;
+      
+      let resultHtml = `
+        <div class="result-card">
+          <h2>${isReview ? '復習結果' : 'クイズ結果'}</h2>
+          <p style="font-size: 1.5em; font-weight: bold;">正解数: ${score} / ${total}</p>
+          <p style="font-size: 1.2em;">正答率: ${percentage.toFixed(0)}%</p>
+        </div>
+      `;
+
+      let nigatanaButtonHtml = '';
+      let reviewButtonHtml = '';
+
+      if (!isReview) {
+          if (selectedDan === 'random') {
+              const nigatanaDanList = analyzeMistakes();
+              if (nigatanaDanList.length > 0) {
+                  resultHtml += `
+                    <div class="result-card analysis-card">
+                      <h2>苦手な段の分析</h2>
+                      <p>以下の段でまちがいがありました。<br>「苦手こくふくモード」で練習しよう！</p>
+                      <ul>
+                        ${nigatanaDanList.map(dan => `<li>${dan} のだん</li>`).join('')}
+                      </ul>
+                    </div>
+                  `;
+                  const listString = JSON.stringify(nigatanaDanList);
+                  nigatanaButtonHtml = `
+                    <button class="nav-button random" onclick='startQuiz(${listString})'>
+                      苦手こくふくモード（${nigatanaDanList.join(', ')}の段）
+                    </button>
+                  `;
+              }
+          }
+
+          let incorrectProblems = [];
+          quizHistory.forEach(result => {
+              if (!result.isCorrect) {
+                  incorrectProblems.push(result.problem);
+              }
+          });
+
+          if (incorrectProblems.length > 0) {
+              reviewSet = incorrectProblems;
+              reviewButtonHtml = `
+                <button class="nav-button tenkey-mode" onclick='startReviewQuiz()'>
+                  まちがえた問題だけ復習する (${reviewSet.length}問)
+                </button>
+              `;
+          }
+      }
+
+      quizHistory.forEach((result, index) => {
+        resultHtml += `
+          <div class="result-card">
+            <h3>問題 ${index + 1}</h3>
+            <p class="result-status ${result.isCorrect ? 'correct' : 'incorrect'}">
+              ${result.isCorrect ? '正解' : '不正解'}
+            </p>
+            <p><strong>問題:</strong> ${result.problem.questionText}</p>
+            <p><strong>あなたの回答:</strong> ${result.selected}</p>
+            <p><strong>正解:</strong> ${result.problem.answer}</p>
+          </div>
+        `;
+      });
+      
+      resultHtml += `<button class="nav-button" onclick="restartQuiz()">もう一度挑戦する</button>`;
+      resultHtml += nigatanaButtonHtml;
+      resultHtml += reviewButtonHtml;
+      resultContainer.innerHTML = resultHtml;
+
+      const attendanceLink = document.getElementById('attendance-link');
+      if (percentage === 100 && !isReview) {
+        attendanceLink.style.display = 'block';
+        
+        const praiseIndex = Math.floor(Math.random() * praiseMessages.length);
+        document.getElementById('praise-message').textContent = praiseMessages[randomIndex];
+        
+        // --- ▼▼ 修正（SVGは埋め込みなのでファイル指定を削除） ▼▼ ---
+        // imgタグのsrcを操作する部分は不要になりました
+        // --- ▲▲ 修正 ▲▲ ---
+        
+      } else {
+         attendanceLink.style.display = 'none';
+      }
+    }
+
+    function restartQuiz() {
+      document.getElementById('quiz-container').style.display = 'none';
+      document.getElementById('result-container').innerHTML = '';
+      document.getElementById('attendance-link').style.display = 'none';
+      document.getElementById('selection-container').style.display = 'block';
+      selectedDan = null;
+      reviewSet = [];
+      const buttons = document.querySelectorAll('.dan-button, .select-button.random');
+      buttons.forEach(btn => btn.classList.remove('selected'));
+    }
+
+    const modal = document.getElementById('kuku-modal-bg');
+    function showKukuTable() { 
+        initSounds(); // ★修正：九九の表を見る操作でも音を準備
+        modal.style.display = 'flex'; 
+    }
+    function closeKukuTable() { modal.style.display = 'none'; }
+    
+  </script>
+</body>
+</html>
