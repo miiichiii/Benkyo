@@ -6,6 +6,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>九九れんしゅう（確認テスト）</title>
   <style>
+    /* --- ▼▼ ネコちゃん用のCSS変数を追加 ▼▼ --- */
+    :root { 
+      --fur:#f2c28d; 
+      --fur-dark:#e1a765; 
+      --line:#333; 
+      --ear:#f7d8b7; 
+      --bg:#fffaf2; 
+    }
+    /* --- ▲▲ ネコちゃん用のCSS変数を追加 ▲▲ --- */
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
       line-height: 1.6;
@@ -47,7 +56,6 @@
       margin-top: 20px;
       margin-bottom: 20px;
     }
-    
     .dan-button {
       background-color: rgba(255, 255, 255, 0.7);
       color: #333;
@@ -108,7 +116,6 @@
     .select-button.random:hover {
        background: linear-gradient(135deg, #28a745, #82d4b2);
     }
-
     .quiz-container, .result-container {
         display: none;
     }
@@ -130,7 +137,6 @@
     .analysis-card li { background-color: rgba(255, 87, 34, 0.7); color: white; padding: 5px 15px; border-radius: 20px; font-size: 1.1em; font-weight: bold; }
     .nav-button.random { background: linear-gradient(135deg, #34c759, #a8e6cf); margin-top: 10px; }
     .nav-button.random:hover { background: linear-gradient(135deg, #28a745, #82d4b2); }
-    /* --- ▼▼ 復習ボタン（tenkey-modeの色を流用） ▼▼ --- */
     .nav-button.tenkey-mode {
         background: linear-gradient(135deg, #ff9500, #ffc107);
         margin-top: 10px;
@@ -138,12 +144,9 @@
     .nav-button.tenkey-mode:hover {
         background: linear-gradient(135deg, #e08500, #e0a800);
     }
-    /* --- ▲▲ 復習ボタン ▲▲ --- */
-
     .question { margin-bottom: 20px; color: #1d1d1f; display: flex; align-items: baseline; flex-wrap: wrap; }
     .question-number { font-size: 1.2em; margin-right: 10px; font-weight: normal; }
     .question-text { font-size: 2.0em; font-weight: bold; }
-
     .options { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
     .option { background-color: rgba(255, 255, 255, 0.7); border: none; border-radius: 16px; padding: 15px; font-size: 1em; cursor: pointer; transition: background 0.3s ease 0.1s, transform 0.3s ease; text-align: center; position: relative; overflow: hidden; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); }
     .option:hover { background: linear-gradient(135deg, #a8edea, #fed6e3); box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); }
@@ -189,7 +192,6 @@
         z-index: 10;
         position: relative;
     }
-
     .modal-bg { display: none; position: fixed; z-index: 100; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); justify-content: center; align-items: center; }
     .modal-content { background: linear-gradient(135deg, #e0f7fa, #fce4ec); padding: 25px; border-radius: 16px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3); width: 90%; max-width: 500px; max-height: 80vh; overflow-y: auto; position: relative; }
     .modal-close-btn { position: absolute; top: 10px; right: 20px; color: #555; font-size: 32px; font-weight: bold; cursor: pointer; }
@@ -246,7 +248,8 @@
       background-color: #ff3b30;
       color: white;
     }
-
+    
+    /* --- ▼▼ SVGネコちゃん用 CSS (HTMLに埋め込み) ▼▼ --- */
     @keyframes blink {
       0%,92%,100% { opacity:0; transform:translateY(-2px); }
       95%,97%     { opacity:1; transform:translateY(0); }
@@ -263,6 +266,7 @@
     }
     .whisk { animation: whisk 4.2s ease-in-out infinite; }
     .cat:hover .mouth { d: path("M 210 250 Q 230 262 250 250"); transition: d .2s; }
+    
     .svg-cat-wrap {
       position: absolute;
       bottom: -20px;
@@ -272,10 +276,12 @@
       height: 200px;
       z-index: 5;
     }
-    .svg-cat-wrap svg {
+    .svg-cat-wrap svg { /* imgタグではなくsvgタグに */
       width: 100%;
-      height: auto;
+      height: 100%;
     }
+    /* --- ▲▲ SVGネコちゃん用 CSS ▲▲ --- */
+
   </style>
 </head>
 <body>
@@ -334,6 +340,7 @@
     <div id="attendance-link">
         <p>おめでとう！全問正解です！ 🎉</p>
         <p id="praise-message"></p>
+        
         <div class="svg-cat-wrap">
           <svg class="cat" viewBox="0 0 400 400" role="img" aria-labelledby="title desc">
             <title id="title">ねこ</title>
@@ -376,8 +383,7 @@
           </svg>
         </div>
     </div>
-    
-  </div>
+    </div>
   
   
   <div id="kuku-modal-bg" class="modal-bg" onclick="closeKukuTable()">
@@ -410,9 +416,35 @@
     let currentMode = 'choice';
     let tenkeyInput = '';
     let answerSubmitted = false;
-    
-    // --- ▼▼ 復習用の問題セット ▼▼ ---
     let reviewSet = [];
+
+    // --- ▼▼ 修正（音声の定義方法を変更） ▼▼ ---
+    let correctSound = null;
+    let selectSound = null;
+
+    // 音を再生する専用の関数
+    function playSound(type) {
+        try {
+            if (type === 'correct') {
+                if (!correctSound) {
+                    correctSound = new Audio('piroin.mp3');
+                }
+                correctSound.currentTime = 0;
+                correctSound.play();
+            } else if (type === 'select') {
+                if (!selectSound) {
+                    selectSound = new Audio('kati.mp3');
+                }
+                selectSound.currentTime = 0;
+                selectSound.play();
+            }
+        } catch (e) {
+            // もし音声ファイルの読み込みに失敗しても、クイズは止まらないようにする
+            console.error("音声の再生に失敗しました:", e);
+        }
+    }
+    // --- ▲▲ 修正 ▲▲ ---
+
 
     const praiseMessages = [
       "あやめちゃん、すごい！天才だね！",
@@ -427,6 +459,11 @@
       "最強の九九マスターだ！おめでとう！"
     ];
 
+    // --- ▼▼ 修正（SVGファイルリストは不要になったので削除） ▼▼ ---
+    // const animalFiles = [ ... ]; // この行を削除
+    // --- ▲▲ 修正 ▲▲ ---
+
+
     function setSelectedDan(dan) {
       selectedDan = dan;
       const buttons = document.querySelectorAll('.dan-button, .select-button.random');
@@ -438,26 +475,22 @@
       }
     }
 
+    // --- ▼▼ 修正（startQuizから音声読み込みを削除） ▼▼ ---
     function startQuiz(mode) {
-      // --- ▼▼ 復習モードの判定を変更 ▼▼ ---
+      // 最初のクリックでは音を読み込まない
+      
       if (Array.isArray(mode)) {
-          // 苦手克服モード
           selectedDan = mode;
-          currentMode = 'choice'; // 苦手克服は4択
+          currentMode = 'choice';
       } else if (mode === 'review') {
-          // 復習モード
           selectedDan = 'review';
-          // currentMode は変更しない（前回のモードを引き継ぐ）
       } else {
-          // 通常モード
           if (selectedDan === null) {
               alert('1. どの段をれんしゅうするか選んでください');
               return;
           }
           currentMode = mode;
       }
-      // --- ▲▲ 復習モードの判定を変更 ▲▲ ---
-
       currentQuestionIndex = 0;
       score = 0;
       quizHistory = [];
@@ -467,14 +500,12 @@
       document.getElementById('attendance-link').style.display = 'none';
       loadQuestion();
     }
+    // --- ▲▲ 修正 ▲▲ ---
     
-    // --- ▼▼ 復習モード用の関数を新設 ▼▼ ---
     function startReviewQuiz() {
-        // reviewSet は showResult で作成済
         if (reviewSet.length === 0) return;
         startQuiz('review');
     }
-    // --- ▲▲ 復習モード用の関数を新設 ▲▲ ---
 
     function shuffleArray(array) {
       for (let i = array.length - 1; i > 0; i--) {
@@ -515,11 +546,9 @@
       };
     }
 
-    // --- ▼▼ loadQuestion を修正 ▼▼ ---
     function loadQuestion() {
       answerSubmitted = false;
       
-      // 復習モードか判定
       if (selectedDan === 'review') {
           currentProblem = reviewSet[currentQuestionIndex];
       } else {
@@ -547,13 +576,12 @@
         optionsEl.innerHTML = '';
         optionsEl.style.display = 'none';
         tenkeyEl.style.display = 'block';
-        clearDisplay();
+        clearDisplay(true); // 音を鳴らさずにクリア
       }
       const explanationEl = document.getElementById('explanation');
       explanationEl.style.display = 'none'; 
       explanationEl.style.opacity = '0'; 
     }
-    // --- ▲▲ loadQuestion を修正 ▲▲ ---
 
     function selectOption(index) {
       if (answerSubmitted) return;
@@ -571,13 +599,19 @@
     function pressKey(num) {
       if (answerSubmitted) return;
       if (tenkeyInput.length >= 3) return;
+      playSound('select'); // 数字キーの音
       tenkeyInput += num;
       updateDisplay();
     }
-    function clearDisplay() {
+    
+    function clearDisplay(silent = false) {
+      if (!silent) {
+        playSound('select'); // Cボタンの音
+      }
       tenkeyInput = '';
       updateDisplay();
     }
+    
     function updateDisplay() {
       document.getElementById('tenkey-display').textContent = tenkeyInput || ' ';
     }
@@ -588,21 +622,24 @@
       answerSubmitted = true;
       const userAnswer = parseInt(tenkeyInput);
       const isCorrect = (userAnswer === currentProblem.answer);
-      showAnswerFeedback(isCorrect, userAnswer, null);
+      showAnswerFeedback(isCorrect, userAnswer, null); // 答え合わせ時に音を鳴らす
     }
 
-    // --- ▼▼ showAnswerFeedback を修正 (history登録内容) ▼▼ ---
+    // --- ▼▼ 修正（音の鳴り分け） ▼▼ ---
     function showAnswerFeedback(isCorrect, selectedAnswer, selectedOptionEl) {
       quizHistory[currentQuestionIndex] = {
-        problem: currentProblem, // 問題全体を保存
+        problem: currentProblem,
         selected: selectedAnswer,
         isCorrect: isCorrect
       };
-      // --- ▲▲ 修正 ▲▲ ---
-
+      
       if (isCorrect) {
         score++;
+        playSound('correct'); // 正解音 (piroin.mp3)
+      } else {
+        playSound('select'); // 不正解音 (kati.mp3)
       }
+      
       const explanationEl = document.getElementById('explanation');
       explanationEl.innerHTML = `
         <div class="explanation-header">
@@ -643,8 +680,8 @@
           }
       }
     }
+    // --- ▲▲ 修正（音の鳴り分け） ▲▲ ---
 
-    // --- ▼▼ nextQuestion を修正 (総問題数) ▼▼ ---
     function nextQuestion() {
       if (!answerSubmitted) {
         alert('答えを選んでください');
@@ -661,9 +698,7 @@
         showResult();
       }
     }
-    // --- ▲▲ nextQuestion を修正 ▲▲ ---
     
-    // --- ▼▼ analyzeMistakes を修正 (history参照) ▼▼ ---
     function analyzeMistakes() {
         const danStats = {};
         for (let i = 1; i <= 9; i++) { danStats[i] = { mistakes: 0 }; }
@@ -681,9 +716,7 @@
         }
         return nigatanaDanList;
     }
-    // --- ▲▲ analyzeMistakes を修正 ▲▲ ---
 
-    // --- ▼▼ showResult を修正 (ボタン表示ロジック) ▼▼ ---
     function showResult() {
       const resultContainer = document.getElementById('result-container');
       const quizContainer = document.getElementById('quiz-container');
@@ -705,9 +738,7 @@
       let nigatanaButtonHtml = '';
       let reviewButtonHtml = '';
 
-      // 通常クイズの時だけ分析と復習ボタンを出す
       if (!isReview) {
-          // 苦手分析 (ランダムモードのみ)
           if (selectedDan === 'random') {
               const nigatanaDanList = analyzeMistakes();
               if (nigatanaDanList.length > 0) {
@@ -729,7 +760,6 @@
               }
           }
 
-          // 復習ボタン（間違えた問題がある場合）
           let incorrectProblems = [];
           quizHistory.forEach(result => {
               if (!result.isCorrect) {
@@ -738,7 +768,7 @@
           });
 
           if (incorrectProblems.length > 0) {
-              reviewSet = incorrectProblems; // グローバルに保存
+              reviewSet = incorrectProblems;
               reviewButtonHtml = `
                 <button class="nav-button tenkey-mode" onclick='startReviewQuiz()'>
                   まちがえた問題だけ復習する (${reviewSet.length}問)
@@ -747,7 +777,6 @@
           }
       }
 
-      // 履歴の表示
       quizHistory.forEach((result, index) => {
         resultHtml += `
           <div class="result-card">
@@ -763,21 +792,27 @@
       });
       
       resultHtml += `<button class="nav-button" onclick="restartQuiz()">もう一度挑戦する</button>`;
-      resultHtml += nigatanaButtonHtml; // 苦手
-      resultHtml += reviewButtonHtml;   // 復習
+      resultHtml += nigatanaButtonHtml;
+      resultHtml += reviewButtonHtml;
       resultContainer.innerHTML = resultHtml;
 
-      // 全問正解の表示（復習モードの時は表示しない）
       const attendanceLink = document.getElementById('attendance-link');
       if (percentage === 100 && !isReview) {
         attendanceLink.style.display = 'block';
-        const randomIndex = Math.floor(Math.random() * praiseMessages.length);
-        document.getElementById('praise-message').textContent = praiseMessages[randomIndex];
+        
+        const praiseIndex = Math.floor(Math.random() * praiseMessages.length);
+        document.getElementById('praise-message').textContent = praiseMessages[praiseIndex];
+        
+        // --- ▼▼ 修正（SVGは埋め込みなのでファイル指定を削除） ▼▼ ---
+        // const animalIndex = ...
+        // const animalFile = ...
+        // document.getElementById('celebration-animal').src = animalFile;
+        // --- ▲▲ 修正 ▲▲ ---
+        
       } else {
          attendanceLink.style.display = 'none';
       }
     }
-    // --- ▲▲ showResult を修正 ▲▲ ---
 
     function restartQuiz() {
       document.getElementById('quiz-container').style.display = 'none';
@@ -785,7 +820,7 @@
       document.getElementById('attendance-link').style.display = 'none';
       document.getElementById('selection-container').style.display = 'block';
       selectedDan = null;
-      reviewSet = []; // 復習セットをクリア
+      reviewSet = [];
       const buttons = document.querySelectorAll('.dan-button, .select-button.random');
       buttons.forEach(btn => btn.classList.remove('selected'));
     }
