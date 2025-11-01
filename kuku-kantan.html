@@ -10,7 +10,6 @@
     :root { 
       --bg:#fffaf2; 
     }
-    /* --- CSS変数を調整 --- */
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
       line-height: 1.6;
@@ -246,14 +245,14 @@
       color: white;
     }
 
-    /* --- SVGビーグル用 CSS --- */
-    .svg-beagle-wrap {
-      --fur: #e5c29f;
-      --fur-dark: #b5763d;
-      --fur-black: #333;
-      --line: #333;
-      --tongue: #ff6f92;
+    /* --- 共通アニメーション --- */
+    @keyframes blink {
+      0%,92%,100% { opacity:0; transform:translateY(-2px); }
+      95%,97%     { opacity:1; transform:translateY(0); }
+    }
 
+    /* --- 動物コンテナ共通スタイル --- */
+    .svg-animal-wrap {
       position: absolute;
       bottom: 10px;
       left: 50%;
@@ -263,12 +262,19 @@
       z-index: 5;
       cursor: pointer;
     }
-    .svg-beagle-wrap svg {
+    .svg-animal-wrap svg {
       width: 100%;
       height: 100%;
     }
 
-    /* ぺろぺろ */
+    /* --- 選択画面用動物（ビーグル） --- */
+    .svg-beagle-wrap {
+      --fur: #e5c29f;
+      --fur-dark: #b5763d;
+      --fur-black: #333;
+      --line: #333;
+      --tongue: #ff6f92;
+    }
     @keyframes pero {
       0%, 90%, 100% { transform: translateY(0) scaleY(0); opacity:0; }
       30%, 60%     { transform: translateY(2px) scaleY(1); opacity:1; }
@@ -281,26 +287,18 @@
     .beagle-full:hover .tongue {
       transform: translateY(4px) scaleY(1.5) !important;
     }
-
-    /* まばたき */
     .beagle-full .eyelid { animation: blink 6s infinite; }
-
-    /* しっぽ */
     @keyframes wag-beagle {
       0%,100% { transform: rotate(16deg); }
       50%     { transform: rotate(-12deg); }
     }
     .beagle-full .tail { transform-origin: 300px 260px; animation: wag-beagle .9s ease-in-out infinite; }
-
-    /* 耳 */
     @keyframes ear {
       0%,100% { transform: rotate(4deg); }
       50%     { transform: rotate(-6deg); }
     }
     .beagle-full .ear-left { transform-origin:150px 150px; animation: ear 1.8s infinite ease-in-out; }
     .beagle-full .ear-right{ transform-origin:250px 150px; animation: ear 1.9s infinite ease-in-out; }
-
-    /* 歩行 */
     .beagle-full .leg { transform-box: fill-box; transform-origin: 50% 0%; }
     @keyframes walkA {
       0%,100% { transform: rotate(12deg);}
@@ -312,29 +310,30 @@
     }
     .beagle-full .walk-a { animation: walkA .9s ease-in-out infinite; }
     .beagle-full .walk-b { animation: walkB .9s ease-in-out infinite; }
-
-    /* 歩行に合わせて体が揺れる */
     @keyframes bob {
       0%,100% { transform: translateY(0); }
       50%     { transform: translateY(2.2px); }
     }
     .beagle-full .dog { animation: bob .9s ease-in-out infinite; transition: transform .25s; }
-
-    /* クリックで首かしげ */
     .beagle-full:active .dog {
       transform: rotate(8deg);
     }
-
-    /* ホバーでニコッ */
     .beagle-full:hover .mouth {
       d: path("M 188 198 Q 200 212 212 198");
       transition: d .18s;
     }
+
+    /* --- 結果画面用動物たち --- */
     
-    /* --- SVGネコちゃん用 CSS --- */
-    @keyframes blink {
-      0%,92%,100% { opacity:0; transform:translateY(-2px); }
-      95%,97%     { opacity:1; transform:translateY(0); }
+    /* ネコ */
+    .svg-cat-wrap {
+      --fur:#f2c28d; 
+      --fur-dark:#e1a765; 
+      --line:#333; 
+      --ear:#f7d8b7;
+      bottom: -20px;
+      width: 200px;
+      height: 200px;
     }
     .cat .eyelid { animation: blink 6s infinite; transform-origin: 0 0; }
     @keyframes wag {
@@ -348,24 +347,99 @@
     }
     .cat .whisk { animation: whisk 4.2s ease-in-out infinite; }
     .cat:hover .mouth { d: path("M 210 250 Q 230 262 250 250"); transition: d .2s; }
-    
-    .svg-cat-wrap {
-      --fur:#f2c28d; 
-      --fur-dark:#e1a765; 
-      --line:#333; 
-      --ear:#f7d8b7; 
-      
-      position: absolute;
+
+    /* ウサギ */
+    .svg-rabbit-wrap {
+      --fur:#f5e6d3;
+      --fur-dark:#d4b896;
+      --line:#333;
+      --ear-inner:#ffc0cb;
+      --nose:#ff9aa2;
       bottom: -20px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 200px; 
+      width: 200px;
       height: 200px;
-      z-index: 5;
     }
-    .svg-cat-wrap svg {
-      width: 100%;
-      height: 100%;
+    @keyframes ear-twitch {
+      0%,100% { transform: rotate(-2deg); }
+      50% { transform: rotate(3deg); }
+    }
+    .rabbit .ear-left { transform-origin: 160px 100px; animation: ear-twitch 2s ease-in-out infinite; }
+    .rabbit .ear-right { transform-origin: 240px 100px; animation: ear-twitch 2.2s ease-in-out infinite; }
+    .rabbit .eyelid { animation: blink 5s infinite; }
+    @keyframes nose-wiggle {
+      0%,100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+    .rabbit .nose { transform-origin: center; animation: nose-wiggle 1.5s ease-in-out infinite; }
+    .rabbit:hover .mouth { d: path("M 185 230 Q 200 238 215 230"); transition: d .2s; }
+
+    /* パンダ */
+    .svg-panda-wrap {
+      --fur:#ffffff;
+      --fur-dark:#333333;
+      --line:#222;
+      --ear:#000;
+      bottom: -20px;
+      width: 200px;
+      height: 200px;
+    }
+    .panda .eyelid { animation: blink 7s infinite; }
+    @keyframes panda-sway {
+      0%,100% { transform: rotate(-1deg); }
+      50% { transform: rotate(1deg); }
+    }
+    .panda .body { transform-origin: 200px 250px; animation: panda-sway 3s ease-in-out infinite; }
+    .panda:hover .mouth { d: path("M 185 230 Q 200 242 215 230"); transition: d .2s; }
+
+    /* ウマ */
+    .svg-horse-wrap {
+      --fur:#8b6f47;
+      --fur-dark:#6b5537;
+      --line:#333;
+      --mane:#4a3420;
+      bottom: -20px;
+      width: 220px;
+      height: 220px;
+    }
+    .horse .eyelid { animation: blink 6s infinite; }
+    @keyframes mane-wave {
+      0%,100% { transform: translateX(0); }
+      50% { transform: translateX(2px); }
+    }
+    .horse .mane { animation: mane-wave 2.5s ease-in-out infinite; }
+    @keyframes tail-swish {
+      0%,100% { transform: rotate(5deg); }
+      50% { transform: rotate(-10deg); }
+    }
+    .horse .tail { transform-origin: 320px 260px; animation: tail-swish 2s ease-in-out infinite; }
+    .horse:hover .mouth { d: path("M 185 205 Q 200 215 215 205"); transition: d .2s; }
+
+    /* 犬（柴犬風） */
+    .svg-dog-wrap {
+      --fur:#d4a373;
+      --fur-dark:#b8865c;
+      --line:#333;
+      --tongue:#ff6b9d;
+      bottom: -20px;
+      width: 200px;
+      height: 200px;
+    }
+    .dog .eyelid { animation: blink 5s infinite; }
+    @keyframes dog-tail-wag {
+      0%,100% { transform: rotate(20deg); }
+      50% { transform: rotate(-15deg); }
+    }
+    .dog .tail { transform-origin: 310px 240px; animation: dog-tail-wag 0.8s ease-in-out infinite; }
+    @keyframes pant {
+      0%,100% { transform: translateY(0); }
+      50% { transform: translateY(3px); }
+    }
+    .dog .tongue { animation: pant 1.2s ease-in-out infinite; }
+    .dog:hover .mouth { d: path("M 185 210 Q 200 222 215 210"); transition: d .2s; }
+
+    /* 全ての動物を非表示 */
+    .animal-hidden {
+      display: none;
     }
 
   </style>
@@ -394,7 +468,7 @@
       <button class="select-button" onclick="startQuiz('choice')">4択モードでスタート</button>
       <button class="select-button tenkey-mode" onclick="startQuiz('tenkey')">テンキーモードでスタート</button>
 
-      <div class="svg-beagle-wrap">
+      <div class="svg-beagle-wrap svg-animal-wrap">
         <svg class="beagle-full" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
           <ellipse cx="200" cy="330" rx="110" ry="16" fill="#000" opacity=".08"/>
           <g class="dog">
@@ -483,10 +557,9 @@
         <p>おめでとう！全問正解です！ 🎉</p>
         <p id="praise-message"></p>
         
-        <div class="svg-cat-wrap">
-          <svg class="cat" viewBox="0 0 400 400" role="img" aria-labelledby="title desc">
-            <title id="title">ねこ</title>
-            <desc id="desc">やさしい色の猫。まばたきして、しっぽが左右に揺れる。</desc>
+        <!-- ネコ -->
+        <div id="animal-cat" class="svg-cat-wrap svg-animal-wrap animal-hidden">
+          <svg class="cat" viewBox="0 0 400 400">
             <ellipse cx="200" cy="330" rx="110" ry="16" fill="#000" opacity=".08"/>
             <g class="tail">
               <path d="M 300 260 C 340 240, 360 230, 360 210 C 360 180, 320 180, 315 205 C 312 220, 335 225, 335 235 C 332 260, 310 255, 300 250 Z" fill="var(--fur)" stroke="var(--line)" stroke-width="3"/>
@@ -495,35 +568,159 @@
             <path d="M 120 300 C 90 260, 90 200, 160 180 L 240 180 C 310 200, 310 260, 280 300 Z" fill="var(--fur)" stroke="var(--line)" stroke-width="3"/>
             <ellipse cx="200" cy="250" rx="46" ry="54" fill="#fff" opacity=".7"/>
             <g>
-              <path d="M 140 110 L 160 70  180 105 Q 200 90 220 105 L 240 70  260 110 Q 280 125 280 150 Q 280 190 200 190 Q 120 190 120 150 Q 120 125 140 110 Z" fill="var(--fur)" stroke="var(--line)" stroke-width="3" stroke-linejoin="round"/>
+              <path d="M 140 110 L 160 70 180 105 Q 200 90 220 105 L 240 70 260 110 Q 280 125 280 150 Q 280 190 200 190 Q 120 190 120 150 Q 120 125 140 110 Z" fill="var(--fur)" stroke="var(--line)" stroke-width="3"/>
               <path d="M160 80 L 175 105 L150 112 Z" fill="var(--ear)" opacity=".9"/>
               <path d="M240 80 L 225 105 L250 112 Z" fill="var(--ear)" opacity=".9"/>
-              <g>
-                <ellipse cx="170" cy="145" rx="12" ry="10" fill="#fff" stroke="var(--line)" stroke-width="2"/>
-                <ellipse cx="230" cy="145" rx="12" ry="10" fill="#fff" stroke="var(--line)" stroke-width="2"/>
-                <circle cx="170" cy="145" r="4.5" fill="#222"/>
-                <circle cx="230" cy="145" r="4.5" fill="#222"/>
-                <g class="eyelid">
-                  <path d="M158 140 Q170 132 182 140" fill="#000" opacity=".1"/>
-                  <path d="M218 140 Q230 132 242 140" fill="#000" opacity=".1"/>
-                  <path d="M158 140 Q170 134 182 140" fill="var(--fur)" stroke="var(--line)" stroke-width="2"/>
-                  <path d="M218 140 Q230 134 242 140" fill="var(--fur)" stroke="var(--line)" stroke-width="2"/>
-                </g>
+              <ellipse cx="170" cy="145" rx="12" ry="10" fill="#fff" stroke="var(--line)" stroke-width="2"/>
+              <ellipse cx="230" cy="145" rx="12" ry="10" fill="#fff" stroke="var(--line)" stroke-width="2"/>
+              <circle cx="170" cy="145" r="4.5" fill="#222"/>
+              <circle cx="230" cy="145" r="4.5" fill="#222"/>
+              <g class="eyelid">
+                <path d="M158 140 Q170 134 182 140" fill="var(--fur)" stroke="var(--line)" stroke-width="2"/>
+                <path d="M218 140 Q230 134 242 140" fill="var(--fur)" stroke="var(--line)" stroke-width="2"/>
               </g>
               <polygon points="198,158 202,158 200,162" fill="#e07a7a"/>
               <path class="mouth" d="M 190 170 Q 200 178 210 170" fill="none" stroke="var(--line)" stroke-width="2" stroke-linecap="round"/>
               <g class="whisk" stroke="var(--line)" stroke-width="2" stroke-linecap="round">
-                <path d="M150 165 H115"/>
-                <path d="M152 170 H112"/>
-                <path d="M150 175 H118"/>
-                <path d="M250 165 H285"/>
-                <path d="M248 170 H288"/>
-                <path d="M250 175 H282"/>
+                <path d="M150 165 H115"/><path d="M152 170 H112"/><path d="M150 175 H118"/>
+                <path d="M250 165 H285"/><path d="M248 170 H288"/><path d="M250 175 H282"/>
               </g>
             </g>
-            <path d="M175 200 q -8 10 -20 12 M225 200 q 8 10 20 12" stroke="var(--fur-dark)" stroke-width="4" fill="none" opacity=".6" stroke-linecap="round"/>
           </svg>
         </div>
+
+        <!-- ウサギ -->
+        <div id="animal-rabbit" class="svg-rabbit-wrap svg-animal-wrap animal-hidden">
+          <svg class="rabbit" viewBox="0 0 400 400">
+            <ellipse cx="200" cy="330" rx="100" ry="14" fill="#000" opacity=".08"/>
+            <g>
+              <ellipse class="ear-left" cx="160" cy="100" rx="18" ry="65" fill="var(--fur)" stroke="var(--line)" stroke-width="3"/>
+              <ellipse cx="160" cy="100" rx="10" ry="50" fill="var(--ear-inner)" opacity=".8"/>
+              <ellipse class="ear-right" cx="240" cy="100" rx="18" ry="65" fill="var(--fur)" stroke="var(--line)" stroke-width="3"/>
+              <ellipse cx="240" cy="100" rx="10" ry="50" fill="var(--ear-inner)" opacity=".8"/>
+              <ellipse cx="200" cy="200" rx="70" ry="75" fill="var(--fur)" stroke="var(--line)" stroke-width="3"/>
+              <ellipse cx="170" cy="190" rx="11" ry="9" fill="#fff" stroke="var(--line)" stroke-width="2"/>
+              <ellipse cx="230" cy="190" rx="11" ry="9" fill="#fff" stroke="var(--line)" stroke-width="2"/>
+              <circle cx="170" cy="190" r="4" fill="#222"/>
+              <circle cx="230" cy="190" r="4" fill="#222"/>
+              <g class="eyelid">
+                <path d="M159 185 Q170 178 181 185" fill="var(--fur)" stroke="var(--line)" stroke-width="2"/>
+                <path d="M219 185 Q230 178 241 185" fill="var(--fur)" stroke="var(--line)" stroke-width="2"/>
+              </g>
+              <ellipse class="nose" cx="200" cy="215" rx="8" ry="6" fill="var(--nose)"/>
+              <path class="mouth" d="M 185 230 Q 200 235 215 230" fill="none" stroke="var(--line)" stroke-width="2" stroke-linecap="round"/>
+              <line x1="200" y1="215" x2="200" y2="228" stroke="var(--line)" stroke-width="2"/>
+              <ellipse cx="200" cy="290" rx="80" ry="65" fill="var(--fur)" stroke="var(--line)" stroke-width="3"/>
+              <circle cx="310" cy="295" r="18" fill="var(--fur)" stroke="var(--line)" stroke-width="3"/>
+              <circle cx="310" cy="295" r="12" fill="#fff" opacity=".9"/>
+            </g>
+          </svg>
+        </div>
+
+        <!-- パンダ -->
+        <div id="animal-panda" class="svg-panda-wrap svg-animal-wrap animal-hidden">
+          <svg class="panda" viewBox="0 0 400 400">
+            <ellipse cx="200" cy="330" rx="110" ry="14" fill="#000" opacity=".08"/>
+            <g class="body">
+              <ellipse cx="200" cy="280" rx="75" ry="70" fill="var(--fur)" stroke="var(--line)" stroke-width="3"/>
+              <ellipse cx="150" cy="250" rx="30" ry="35" fill="var(--fur-dark)"/>
+              <ellipse cx="250" cy="250" rx="30" ry="35" fill="var(--fur-dark)"/>
+              <circle cx="140" cy="150" r="28" fill="var(--ear)" stroke="var(--line)" stroke-width="3"/>
+              <circle cx="260" cy="150" r="28" fill="var(--ear)" stroke="var(--line)" stroke-width="3"/>
+              <ellipse cx="200" cy="180" rx="65" ry="70" fill="var(--fur)" stroke="var(--line)" stroke-width="3"/>
+              <ellipse cx="165" cy="170" rx="22" ry="28" fill="var(--fur-dark)"/>
+              <ellipse cx="235" cy="170" rx="22" ry="28" fill="var(--fur-dark)"/>
+              <ellipse cx="165" cy="172" rx="10" ry="8" fill="#fff"/>
+              <ellipse cx="235" cy="172" rx="10" ry="8" fill="#fff"/>
+              <circle cx="165" cy="172" r="4" fill="#222"/>
+              <circle cx="235" cy="172" r="4" fill="#222"/>
+              <g class="eyelid">
+                <path d="M155 165 Q165 158 175 165" fill="var(--fur-dark)" stroke="var(--line)" stroke-width="2"/>
+                <path d="M225 165 Q235 158 245 165" fill="var(--fur-dark)" stroke="var(--line)" stroke-width="2"/>
+              </g>
+              <ellipse cx="200" cy="200" rx="10" ry="8" fill="var(--fur-dark)"/>
+              <path class="mouth" d="M 185 220 Q 200 228 215 220" fill="none" stroke="var(--line)" stroke-width="2.5" stroke-linecap="round"/>
+            </g>
+          </svg>
+        </div>
+
+        <!-- ウマ -->
+        <div id="animal-horse" class="svg-horse-wrap svg-animal-wrap animal-hidden">
+          <svg class="horse" viewBox="0 0 400 400">
+            <ellipse cx="210" cy="330" rx="120" ry="16" fill="#000" opacity=".08"/>
+            <g>
+              <g class="tail">
+                <path d="M 310 270 Q 350 260 355 240 Q 360 220 345 225 Q 330 230 320 250 Q 315 265 310 275 Z" fill="var(--mane)" stroke="var(--line)" stroke-width="2"/>
+              </g>
+              <ellipse cx="210" cy="270" rx="85" ry="65" fill="var(--fur)" stroke="var(--line)" stroke-width="3"/>
+              <rect x="135" y="265" width="18" height="70" rx="8" fill="var(--fur-dark)" stroke="var(--line)" stroke-width="3"/>
+              <rect x="185" y="265" width="18" height="70" rx="8" fill="var(--fur-dark)" stroke="var(--line)" stroke-width="3"/>
+              <rect x="225" y="265" width="18" height="70" rx="8" fill="var(--fur-dark)" stroke="var(--line)" stroke-width="3"/>
+              <rect x="265" y="265" width="18" height="70" rx="8" fill="var(--fur-dark)" stroke="var(--line)" stroke-width="3"/>
+              <ellipse cx="144" cy="338" rx="12" ry="5" fill="#333"/>
+              <ellipse cx="194" cy="338" rx="12" ry="5" fill="#333"/>
+              <ellipse cx="234" cy="338" rx="12" ry="5" fill="#333"/>
+              <ellipse cx="274" cy="338" rx="12" ry="5" fill="#333"/>
+              <path d="M 150 240 Q 180 220 200 200 L 210 200 Q 230 210 240 240" fill="var(--fur)" stroke="var(--line)" stroke-width="3"/>
+              <ellipse cx="200" cy="160" rx="55" ry="60" fill="var(--fur)" stroke="var(--line)" stroke-width="3"/>
+              <ellipse cx="160" cy="125" rx="15" ry="20" fill="var(--fur)" stroke="var(--line)" stroke-width="3"/>
+              <ellipse cx="240" cy="125" rx="15" ry="20" fill="var(--fur)" stroke="var(--line)" stroke-width="3"/>
+              <g class="mane">
+                <path d="M 180 110 Q 190 85 200 80 Q 210 85 220 110" fill="var(--mane)" stroke="var(--line)" stroke-width="2"/>
+                <path d="M 175 130 Q 185 115 200 110 Q 215 115 225 130" fill="var(--mane)" opacity=".8"/>
+              </g>
+              <ellipse cx="175" cy="155" rx="10" ry="8" fill="#fff" stroke="var(--line)" stroke-width="2"/>
+              <ellipse cx="225" cy="155" rx="10" ry="8" fill="#fff" stroke="var(--line)" stroke-width="2"/>
+              <circle cx="175" cy="155" r="4" fill="#222"/>
+              <circle cx="225" cy="155" r="4" fill="#222"/>
+              <g class="eyelid">
+                <path d="M165 150 Q175 143 185 150" fill="var(--fur)" stroke="var(--line)" stroke-width="2"/>
+                <path d="M215 150 Q225 143 235 150" fill="var(--fur)" stroke="var(--line)" stroke-width="2"/>
+              </g>
+              <ellipse cx="200" cy="180" rx="12" ry="10" fill="var(--fur-dark)"/>
+              <path class="mouth" d="M 185 195 Q 200 205 215 195" fill="none" stroke="var(--line)" stroke-width="2.5" stroke-linecap="round"/>
+            </g>
+          </svg>
+        </div>
+
+        <!-- 犬（柴犬風） -->
+        <div id="animal-dog" class="svg-dog-wrap svg-animal-wrap animal-hidden">
+          <svg class="dog" viewBox="0 0 400 400">
+            <ellipse cx="200" cy="330" rx="105" ry="15" fill="#000" opacity=".08"/>
+            <g>
+              <g class="tail">
+                <path d="M 295 250 Q 330 230 340 210 Q 345 190 330 195 Q 315 200 305 220 Q 298 235 295 245 Z" fill="var(--fur)" stroke="var(--line)" stroke-width="3"/>
+              </g>
+              <ellipse cx="200" cy="270" rx="80" ry="60" fill="var(--fur)" stroke="var(--line)" stroke-width="3"/>
+              <ellipse cx="200" cy="275" rx="55" ry="45" fill="#fff" opacity=".85"/>
+              <rect x="150" y="265" width="16" height="65" rx="7" fill="var(--fur-dark)" stroke="var(--line)" stroke-width="3"/>
+              <rect x="185" y="265" width="16" height="65" rx="7" fill="var(--fur-dark)" stroke="var(--line)" stroke-width="3"/>
+              <rect x="205" y="265" width="16" height="65" rx="7" fill="var(--fur-dark)" stroke="var(--line)" stroke-width="3"/>
+              <rect x="240" y="265" width="16" height="65" rx="7" fill="var(--fur-dark)" stroke="var(--line)" stroke-width="3"/>
+              <ellipse cx="158" cy="332" rx="10" ry="4" fill="#333"/>
+              <ellipse cx="193" cy="332" rx="10" ry="4" fill="#333"/>
+              <ellipse cx="213" cy="332" rx="10" ry="4" fill="#333"/>
+              <ellipse cx="248" cy="332" rx="10" ry="4" fill="#333"/>
+              <ellipse cx="200" cy="170" rx="60" ry="65" fill="var(--fur)" stroke="var(--line)" stroke-width="3"/>
+              <path d="M 145 140 Q 140 110 155 100 L 165 130 Z" fill="var(--fur)" stroke="var(--line)" stroke-width="3"/>
+              <path d="M 255 140 Q 260 110 245 100 L 235 130 Z" fill="var(--fur)" stroke="var(--line)" stroke-width="3"/>
+              <ellipse cx="145" cy="115" rx="8" ry="12" fill="var(--fur-dark)" opacity=".7"/>
+              <ellipse cx="255" cy="115" rx="8" ry="12" fill="var(--fur-dark)" opacity=".7"/>
+              <ellipse cx="175" cy="165" rx="11" ry="9" fill="#fff" stroke="var(--line)" stroke-width="2"/>
+              <ellipse cx="225" cy="165" rx="11" ry="9" fill="#fff" stroke="var(--line)" stroke-width="2"/>
+              <circle cx="175" cy="165" r="4.5" fill="#222"/>
+              <circle cx="225" cy="165" r="4.5" fill="#222"/>
+              <g class="eyelid">
+                <path d="M164 160 Q175 153 186 160" fill="var(--fur)" stroke="var(--line)" stroke-width="2"/>
+                <path d="M214 160 Q225 153 236 160" fill="var(--fur)" stroke="var(--line)" stroke-width="2"/>
+              </g>
+              <ellipse cx="200" cy="190" rx="10" ry="8" fill="#333"/>
+              <path class="tongue" d="M 195 210 Q 200 218 205 210 L 203 215 L 197 215 Z" fill="var(--tongue)" stroke="var(--line)" stroke-width="1.5"/>
+              <path class="mouth" d="M 185 200 Q 200 212 215 200" fill="none" stroke="var(--line)" stroke-width="2.5" stroke-linecap="round"/>
+            </g>
+          </svg>
+        </div>
+
     </div>
   </div>
   
@@ -561,6 +758,10 @@
     let correctSound = null;
     let selectSound = null;
     let soundsInitialized = false;
+
+    // 動物の種類リスト
+    const animalTypes = ['cat', 'rabbit', 'panda', 'horse', 'dog'];
+    let selectedAnimal = '';
 
     function initSounds() {
         if (soundsInitialized) return;
@@ -856,6 +1057,26 @@
         return nigatanaDanList;
     }
 
+    // ランダムに動物を選択する関数
+    function selectRandomAnimal() {
+      const randomIndex = Math.floor(Math.random() * animalTypes.length);
+      selectedAnimal = animalTypes[randomIndex];
+      
+      // 全ての動物を非表示にする
+      animalTypes.forEach(animal => {
+        const animalEl = document.getElementById(`animal-${animal}`);
+        if (animalEl) {
+          animalEl.classList.add('animal-hidden');
+        }
+      });
+      
+      // 選択された動物だけを表示
+      const selectedAnimalEl = document.getElementById(`animal-${selectedAnimal}`);
+      if (selectedAnimalEl) {
+        selectedAnimalEl.classList.remove('animal-hidden');
+      }
+    }
+
     function showResult() {
       const resultContainer = document.getElementById('result-container');
       const quizContainer = document.getElementById('quiz-container');
@@ -941,6 +1162,9 @@
         
         const praiseIndex = Math.floor(Math.random() * praiseMessages.length);
         document.getElementById('praise-message').textContent = praiseMessages[praiseIndex];
+        
+        // ランダムに動物を選択して表示
+        selectRandomAnimal();
         
       } else {
         attendanceLink.style.display = 'none';
