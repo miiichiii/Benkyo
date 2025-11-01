@@ -4,7 +4,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@700&display=swap" rel="stylesheet">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>とけいの れんしゅう ver 1.1</title>
+  <title>とけいの れんしゅう ver 1.2</title>
   <style>
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
@@ -500,7 +500,7 @@
     let currentProblem = {}; 
     let shuffledOptions = [];
     let selectedDifficulty; 
-    let correctAnswerIndex = -1; // 正解のインデックスを保存
+    let correctAnswerIndex = -1;
 
     // キャラクターSVGデータ
     const characters = {
@@ -608,7 +608,7 @@
     }
 
     function generateClockProblem() {
-      let hour, minute, questionText, correctAnswerText, options = [], explanation;
+      let hour, minute, questionText, correctAnswerText, options = [], explanation, questionType = 'time';
 
       if (selectedDifficulty === 'easy') { 
         hour = Math.floor(Math.random() * 12) + 1;
@@ -695,7 +695,7 @@
       } else if (selectedDifficulty === 'reallife') {
         const scenarios = [
           {
-            // 学校開始まであと何分？
+            // シナリオ1: 学校開始まであと何分？（答え：分のみ）
             setup: () => {
               const startHour = Math.floor(Math.random() * 3) + 8; // 8-10時
               const startMinute = [20, 30, 45][Math.floor(Math.random() * 3)];
@@ -707,12 +707,13 @@
                 minute: nowMinute,
                 question: `がっこうは ${startHour}時${startMinute}分に はじまります。いまは ${startHour}時${nowMinute}分 です。あと なん分で はじまる？`,
                 answer: `${duration}分`,
-                explanation: `${startHour}時${startMinute}分 - ${startHour}時${nowMinute}分 = ${duration}分 です。`
+                explanation: `${startHour}時${startMinute}分 - ${startHour}時${nowMinute}分 = ${duration}分 です。`,
+                type: 'duration' // 時間差（分のみ）
               };
             }
           },
           {
-            // バス出発まであと何分？
+            // シナリオ2: バス出発まであと何分？（答え：分のみ）
             setup: () => {
               const nowHour = Math.floor(Math.random() * 2) + 7; // 7-8時
               const nowMinute = [0, 10, 15][Math.floor(Math.random() * 3)];
@@ -725,12 +726,13 @@
                 minute: nowMinute,
                 question: `いまは ${nowHour}時${nowMinute}分 です。バスは ${targetHour}時${targetMinute}分 に でます。あと なん分？`,
                 answer: `${diffMinute}分`,
-                explanation: `${targetHour}時${targetMinute}分 - ${nowHour}時${nowMinute}分 = ${diffMinute}分 です。`
+                explanation: `${targetHour}時${targetMinute}分 - ${nowHour}時${nowMinute}分 = ${diffMinute}分 です。`,
+                type: 'duration' // 時間差（分のみ）
               };
             }
           },
           {
-            // 勉強終了時刻は？
+            // シナリオ3: 勉強終了時刻は？（答え：時刻）
             setup: () => {
               const startHour = Math.floor(Math.random() * 2) + 3; // 3-4時
               const startMinute = [0, 15, 30][Math.floor(Math.random() * 3)];
@@ -744,7 +746,8 @@
                 minute: endMinute,
                 question: `${startHour}時${startMinute}分 から ${duration}分かん べんきょうしました。おわったのは なん時 なん分？`,
                 answer: endMinute === 0 ? `${endHour}時ちょうど` : `${endHour}時${endMinute}分`,
-                explanation: `${startHour}時${startMinute}分 + ${duration}分 = ${endMinute === 0 ? endHour + '時ちょうど' : endHour + '時' + endMinute + '分'} です。`
+                explanation: `${startHour}時${startMinute}分 + ${duration}分 = ${endMinute === 0 ? endHour + '時ちょうど' : endHour + '時' + endMinute + '分'} です。`,
+                type: 'time' // 時刻
               };
             }
           }
@@ -756,44 +759,82 @@
         questionText = scenario.question;
         correctAnswerText = scenario.answer;
         explanation = scenario.explanation;
+        questionType = scenario.type;
         
         options = [correctAnswerText];
         
-        // 正解から±10, ±15, ±20分の選択肢を生成
-        const correctNum = parseInt(correctAnswerText.replace(/[^0-9]/g, ''));
-        const offsets = [-20, -15, -10, 10, 15, 20];
-        const shuffledOffsets = shuffleArray(offsets);
-        
-        for (let offset of shuffledOffsets) {
-          if (options.length >= 4) break;
-          const dummyNum = correctNum + offset;
-          if (dummyNum <= 0 || dummyNum > 120) continue;
+        // 問題タイプに応じてダミー選択肢を生成
+        if (questionType === 'duration') {
+          // 「何分？」タイプ：分だけの選択肢
+          const correctNum = parseInt(correctAnswerText.replace(/[^0-9]/g, ''));
+          const offsets = [-20, -15, -10, 10, 15, 20];
+          const shuffledOffsets = shuffleArray(offsets);
           
-          let dummyText;
-          if (correctAnswerText.includes('ちょうど')) {
-            const hour = parseInt(correctAnswerText);
-            const newHour = hour + Math.floor(offset / 60);
-            const newMinute = (60 + offset) % 60;
-            if (newMinute === 0) {
-              dummyText = `${newHour}時ちょうど`;
-            } else {
-              dummyText = `${newHour}時${newMinute}分`;
+          for (let offset of shuffledOffsets) {
+            if (options.length >= 4) break;
+            const dummyNum = correctNum + offset;
+            if (dummyNum <= 0 || dummyNum > 60) continue;
+            const dummyText = `${dummyNum}分`;
+            if (!options.includes(dummyText)) {
+              options.push(dummyText);
             }
-          } else {
-            dummyText = `${dummyNum}分`;
           }
           
-          if (!options.includes(dummyText)) {
-            options.push(dummyText);
+          // まだ4つ揃っていない場合
+          while (options.length < 4) {
+            const dummyNum = Math.floor(Math.random() * 50) + 5;
+            const dummyText = `${dummyNum}分`;
+            if (!options.includes(dummyText)) {
+              options.push(dummyText);
+            }
           }
-        }
-        
-        // まだ4つ揃っていない場合、追加生成
-        while (options.length < 4) {
-          const dummyNum = Math.floor(Math.random() * 60) + 1;
-          const dummyText = `${dummyNum}分`;
-          if (!options.includes(dummyText) && dummyNum !== correctNum) {
-            options.push(dummyText);
+        } else {
+          // 「何時何分？」タイプ：時刻の選択肢
+          const isJustTime = correctAnswerText.includes('ちょうど');
+          let correctHour, correctMinute;
+          
+          if (isJustTime) {
+            correctHour = parseInt(correctAnswerText);
+            correctMinute = 0;
+          } else {
+            const match = correctAnswerText.match(/(\d+)時(\d+)分/);
+            correctHour = parseInt(match[1]);
+            correctMinute = parseInt(match[2]);
+          }
+          
+          const offsets = [
+            {h: 0, m: -15}, {h: 0, m: -30}, {h: 0, m: 15}, 
+            {h: 0, m: 30}, {h: -1, m: 0}, {h: 1, m: 0}
+          ];
+          const shuffledOffsets = shuffleArray(offsets);
+          
+          for (let offset of shuffledOffsets) {
+            if (options.length >= 4) break;
+            const dummyHour = correctHour + offset.h;
+            const dummyMinute = correctMinute + offset.m;
+            
+            if (dummyHour < 1 || dummyHour > 12 || dummyMinute < 0 || dummyMinute >= 60) continue;
+            
+            let dummyText;
+            if (dummyMinute === 0) {
+              dummyText = `${dummyHour}時ちょうど`;
+            } else {
+              dummyText = `${dummyHour}時${dummyMinute}分`;
+            }
+            
+            if (!options.includes(dummyText)) {
+              options.push(dummyText);
+            }
+          }
+          
+          // まだ4つ揃っていない場合
+          while (options.length < 4) {
+            const dummyHour = Math.floor(Math.random() * 12) + 1;
+            const dummyMinute = Math.floor(Math.random() * 12) * 5;
+            const dummyText = dummyMinute === 0 ? `${dummyHour}時ちょうど` : `${dummyHour}時${dummyMinute}分`;
+            if (!options.includes(dummyText)) {
+              options.push(dummyText);
+            }
           }
         }
       }
@@ -805,7 +846,8 @@
         answer: correctAnswerText,
         options: options,
         explanation: explanation,
-        optionsData: selectedDifficulty === 'challenge' ? options : null
+        optionsData: selectedDifficulty === 'challenge' ? options : null,
+        questionType: questionType
       };
     }
 
