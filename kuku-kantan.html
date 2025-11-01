@@ -351,12 +351,8 @@
     let answerSubmitted = false;
     let reviewSet = [];
 
-    // --- ▼▼ 効果音の定義 ▼▼ ---
-    // "new Audio()" で音声ファイルを読み込んでおきます
     const correctSound = new Audio('piroin.mp3');
     const selectSound = new Audio('kati.mp3');
-    // --- ▲▲ 効果音の定義 ▲▲ ---
-
 
     const praiseMessages = [
       "あやめちゃん、すごい！天才だね！",
@@ -373,8 +369,6 @@
 
     const animalFiles = [
       'neko.svg'
-      // 'inu.svg', // 将来追加用
-      // 'usagi.svg' // 将来追加用
     ];
 
     function setSelectedDan(dan) {
@@ -492,12 +486,10 @@
       explanationEl.style.opacity = '0'; 
     }
 
-    // --- ▼▼ 4択の音を再生 ▼▼ ---
+    // --- ▼▼ 修正 ▼▼ ---
     function selectOption(index) {
       if (answerSubmitted) return;
-      selectSound.currentTime = 0; // 音をリセット
-      selectSound.play(); // 音を再生
-
+      // selectSound.play(); // ここから削除
       answerSubmitted = true;
       const options = document.querySelectorAll('.option');
       options.forEach(option => {
@@ -508,27 +500,28 @@
       const isCorrect = (selectedAnswer === currentProblem.answer);
       showAnswerFeedback(isCorrect, selectedAnswer, options[index]);
     }
-    // --- ▲▲ 4択の音を再生 ▲▲ ---
+    // --- ▲▲ 修正 ▲▲ ---
 
-    // --- ▼▼ テンキーの音を再生 ▼▼ ---
     function pressKey(num) {
       if (answerSubmitted) return;
       if (tenkeyInput.length >= 3) return;
       
-      selectSound.currentTime = 0; // 音をリセット
-      selectSound.play(); // 音を再生
+      selectSound.currentTime = 0;
+      selectSound.play(); // テンキーのボタンを押す音は残す
       
       tenkeyInput += num;
       updateDisplay();
     }
     function clearDisplay() {
-      selectSound.currentTime = 0; // 音をリセット
-      selectSound.play(); // 音を再生
+      selectSound.currentTime = 0;
+      selectSound.play(); // Cボタンの音
       
       tenkeyInput = '';
       updateDisplay();
     }
-    // --- ▲▲ テンキーの音を再生 ▲▲ ---
+    function updateDisplay() {
+      document.getElementById('tenkey-display').textContent = tenkeyInput || ' ';
+    }
     
     function checkTenkeyAnswer() {
       if (answerSubmitted) return;
@@ -536,10 +529,10 @@
       answerSubmitted = true;
       const userAnswer = parseInt(tenkeyInput);
       const isCorrect = (userAnswer === currentProblem.answer);
-      showAnswerFeedback(isCorrect, userAnswer, null);
+      showAnswerFeedback(isCorrect, userAnswer, null); // ここでは音は鳴らさない
     }
 
-    // --- ▼▼ 正解の音を再生 ▼▼ ---
+    // --- ▼▼ 修正（音の鳴り分け） ▼▼ ---
     function showAnswerFeedback(isCorrect, selectedAnswer, selectedOptionEl) {
       quizHistory[currentQuestionIndex] = {
         problem: currentProblem,
@@ -549,10 +542,13 @@
       
       if (isCorrect) {
         score++;
-        correctSound.currentTime = 0; // 音をリセット
-        correctSound.play(); // 正解音を再生
+        correctSound.currentTime = 0;
+        correctSound.play(); // 正解音 (piroin.mp3)
+      } else {
+        // 不正解の時だけここでkati.mp3を鳴らす
+        selectSound.currentTime = 0;
+        selectSound.play(); // 不正解音 (kati.mp3)
       }
-      // --- ▲▲ 正解の音を再生 ▲▲ ---
       
       const explanationEl = document.getElementById('explanation');
       explanationEl.innerHTML = `
@@ -594,6 +590,7 @@
           }
       }
     }
+    // --- ▲▲ 修正（音の鳴り分け） ▲▲ ---
 
     function nextQuestion() {
       if (!answerSubmitted) {
@@ -714,7 +711,7 @@
         attendanceLink.style.display = 'block';
         
         const praiseIndex = Math.floor(Math.random() * praiseMessages.length);
-        document.getElementById('praise-message').textContent = praiseMessages[praiseIndex];
+        document.getElementById('praise-message').textContent = praiseMessages[randomIndex];
         
         const animalIndex = Math.floor(Math.random() * animalFiles.length);
         const animalFile = animalFiles[animalIndex];
