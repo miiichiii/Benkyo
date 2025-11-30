@@ -18,7 +18,7 @@
       background-size: cover;
       background-repeat: no-repeat;
       background-attachment: fixed;
-      padding: 15px; /* 余白を少し減らす */
+      padding: 15px; 
       margin: 0;
       min-height: 100vh;
       overflow-x: hidden;
@@ -38,17 +38,17 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-bottom: 10px; /* 余白縮小 */
-      flex-direction: column; /* スマホで見やすいよう縦並び寄りに */
+      margin-bottom: 10px;
+      flex-direction: column;
     }
     .title-header h1 {
       margin: 5px 0 10px 0;
       text-align: center;
-      font-size: 1.5rem; /* タイトルサイズを縮小 */
+      font-size: 1.5rem;
       line-height: 1.3;
     }
     .svg-pikachu-title-wrap {
-      width: 80px; /* ピカチュウも少し控えめに */
+      width: 80px;
       height: 80px;
       --pika-yellow: #fce205;
       --pika-dark: #e6c300;
@@ -167,45 +167,45 @@
       background-color: rgba(255, 255, 255, 0.2);
       backdrop-filter: blur(10px);
       border-radius: 16px;
-      padding: 15px; /* パディングを少し減らす */
+      padding: 15px;
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
       margin-bottom: 20px;
       border: 1px solid rgba(255, 255, 255, 0.3);
     }
 
-    /* --- クイズヘッダー（問題とボタンを横並び・1行強制） --- */
+    /* --- クイズヘッダー --- */
     .quiz-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
       gap: 10px;
       margin-bottom: 15px;
-      flex-wrap: nowrap; /* ★絶対に折り返さない設定 */
+      flex-wrap: nowrap;
     }
     .question { 
       margin-bottom: 0; 
       color: #1d1d1f; 
       display: flex; 
       align-items: baseline; 
-      white-space: nowrap; /* 文字の折り返しも禁止 */
+      white-space: nowrap; 
       overflow: visible;
     }
     .question-number { 
-        font-size: 0.9em; /* 「問題9:」を少し小さく */
+        font-size: 0.9em;
         margin-right: 5px; 
         font-weight: normal; 
         color: #555;
     }
     .question-text { 
-        font-size: 1.8em; /* 計算式を強調 */
+        font-size: 1.8em;
         font-weight: bold; 
         line-height: 1;
     }
 
-    /* --- 選択肢を2x2のグリッドにする設定 --- */
+    /* --- 選択肢を2x2 --- */
     .options { 
         display: grid; 
-        grid-template-columns: repeat(2, 1fr); /* ★必ず2列にする */
+        grid-template-columns: repeat(2, 1fr);
         gap: 12px; 
     }
     
@@ -213,8 +213,8 @@
         background-color: rgba(255, 255, 255, 0.7); 
         border: none; 
         border-radius: 16px; 
-        padding: 20px 10px; /* タップしやすいよう高さを確保 */
-        font-size: 1.5em; /* 文字を大きく見やすく */
+        padding: 20px 10px;
+        font-size: 1.5em;
         font-weight: bold;
         cursor: pointer; 
         transition: background 0.3s ease 0.1s, transform 0.3s ease; 
@@ -239,15 +239,14 @@
     .nav-button:hover { background: linear-gradient(135deg, #005bb5, #4aa0d3); box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); }
     .nav-button:active { transform: scale(0.98); }
 
-    /* 上部に移動した「次の問題」ボタン用のスタイル */
     .nav-button.next-btn-top {
         width: auto; 
         margin-top: 0; 
-        min-width: 100px; /* 必要最小限の幅 */
-        padding: 8px 16px; /* パディング調整 */
+        min-width: 100px;
+        padding: 8px 16px;
         font-size: 0.95em;
-        flex-shrink: 0; /* 縮まないようにする */
-        white-space: nowrap; /* 文字折り返し禁止 */
+        flex-shrink: 0;
+        white-space: nowrap;
     }
 
     .analysis-card {
@@ -273,6 +272,7 @@
     .correct { color: #34c759; }
     .incorrect { color: #ff3b30; }
     #attendance-link {
+        /* 背景色はJSで制御しますがデフォルトは緑にしておきます */
         background-color: #34c759;
         color: white;
         padding: 15px 15px 180px 15px;
@@ -699,7 +699,7 @@
     <div id="result-container" class="result-container"></div>
     
     <div id="attendance-link">
-        <p>おめでとう！全問正解です！ 🎉</p>
+        <p id="result-title">おめでとう！全問正解です！ 🎉</p>
         <p id="praise-message"></p>
         
         <div id="animal-cat" class="svg-cat-wrap svg-animal-wrap animal-hidden">
@@ -979,6 +979,16 @@
       "ナイスファイト！全問正解は努力の証だね！",
       "感動したよ！とってもよくできたね！",
       "最強の九九マスターだ！おめでとう！"
+    ];
+
+    // 励ましのメッセージ（全問正解じゃないとき用）
+    const encouragementMessages = [
+      "おしい！次は100点めざそう！",
+      "ドンマイ！まちがえた所を復習すれば大丈夫！",
+      "あきらめないで！あやめちゃんならできる！",
+      "次はきっと全問正解できるよ！",
+      "ナイスチャレンジ！その調子でがんばろう！",
+      "失敗は成功のもと！もう一回やってみよう！"
     ];
 
     function setSelectedDan(dan) {
@@ -1331,19 +1341,33 @@
       resultContainer.innerHTML = resultHtml;
 
       const attendanceLink = document.getElementById('attendance-link');
-      if (percentage === 100 && !isReview) {
+      const resultTitle = document.getElementById('result-title');
+      
+      // 結果表示ロジックの修正
+      // レビューモードでなく、かつ結果を表示するタイミングであれば常に動物エリアを表示する
+      if (!isReview) {
         attendanceLink.style.display = 'block';
         
-        // 紙吹雪発射！
-        fireConfetti();
+        if (percentage === 100) {
+            // 全問正解時
+            attendanceLink.style.backgroundColor = '#34c759'; // 緑色
+            resultTitle.textContent = "おめでとう！全問正解です！ 🎉";
+            fireConfetti();
+            const praiseIndex = Math.floor(Math.random() * praiseMessages.length);
+            document.getElementById('praise-message').textContent = praiseMessages[praiseIndex];
+        } else {
+            // 不正解があった時
+            attendanceLink.style.backgroundColor = '#ff9500'; // オレンジ色（応援カラー）
+            resultTitle.textContent = "おつかれさま！よくがんばったね！ 💪";
+            const encIndex = Math.floor(Math.random() * encouragementMessages.length);
+            document.getElementById('praise-message').textContent = encouragementMessages[encIndex];
+        }
 
-        const praiseIndex = Math.floor(Math.random() * praiseMessages.length);
-        document.getElementById('praise-message').textContent = praiseMessages[praiseIndex];
-        
-        // ランダムに動物を選択して表示
+        // どちらの場合も動物を表示
         selectRandomAnimal();
-        
+
       } else {
+        // レビューモードの時は表示しない（必要なら外してください）
         attendanceLink.style.display = 'none';
       }
     }
