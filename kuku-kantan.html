@@ -20,14 +20,14 @@
       background-attachment: fixed;
       padding: 20px;
       margin: 0;
-      min-height: 100vh; /* 紙吹雪のために高さを確保 */
-      overflow-x: hidden; /* 横スクロール防止 */
+      min-height: 100vh;
+      overflow-x: hidden;
     }
     .container {
       max-width: 800px;
       margin: 0 auto;
-      position: relative; /* z-index調整のため */
-      z-index: 10; /* 紙吹雪より前に表示 */
+      position: relative;
+      z-index: 10;
     }
     h1, h2 {
       font-family: 'Noto Sans JP', sans-serif;
@@ -48,7 +48,6 @@
     .svg-pikachu-title-wrap {
       width: 100px;
       height: 100px;
-      /* 既存の動物のスタイル変数を流用しつつ調整 */
       --pika-yellow: #fce205;
       --pika-dark: #e6c300;
       --pika-cheek: #ff0000;
@@ -59,7 +58,7 @@
     .svg-pikachu-title-wrap svg {
       width: 100%;
       height: 100%;
-      overflow: visible; /* 耳などがはみ出ても表示 */
+      overflow: visible;
     }
 
     /* --- ピカチュウのアニメーション --- */
@@ -74,7 +73,6 @@
         50% { transform: rotate(-8deg); }
     }
     .pikachu-title .tail { transform-origin: 60px 80px; animation: pika-tail-wag 2.5s ease-in-out infinite; }
-
 
     #selection-container {
       background-color: rgba(255, 255, 255, 0.2);
@@ -171,6 +169,25 @@
       margin-bottom: 20px;
       border: 1px solid rgba(255, 255, 255, 0.3);
     }
+
+    /* --- クイズヘッダー（問題とボタンを横並びにする） --- */
+    .quiz-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 20px;
+      flex-wrap: wrap; /* スマホで幅が足りない時は折り返し */
+    }
+    .question { 
+      margin-bottom: 0; /* マージンは親要素で管理 */
+      color: #1d1d1f; 
+      display: flex; 
+      align-items: baseline; 
+      flex-wrap: wrap; 
+      flex-grow: 1; /* 余ったスペースを占有 */
+    }
+
     .analysis-card {
         background-color: rgba(255, 255, 224, 0.3);
         border: 2px solid rgba(255, 193, 7, 0.5);
@@ -187,7 +204,7 @@
     .nav-button.tenkey-mode:hover {
         background: linear-gradient(135deg, #e08500, #e0a800);
     }
-    .question { margin-bottom: 20px; color: #1d1d1f; display: flex; align-items: baseline; flex-wrap: wrap; }
+    
     .question-number { font-size: 1.2em; margin-right: 10px; font-weight: normal; }
     .question-text { font-size: 2.0em; font-weight: bold; }
     .options { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
@@ -202,9 +219,20 @@
     .explanation { margin-top: 20px; font-size: 1em; color: #333; background-color: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); border-left: 5px solid #4caf50; border-radius: 12px; padding: 15px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); opacity: 0; display: none; transition: opacity 0.3s ease; }
     .explanation-header { display: flex; align-items: center; margin-bottom: 10px; font-weight: bold; color: #4caf50; }
     .explanation-icon { font-size: 1.5em; margin-right: 10px; }
+    
     .nav-button { background: linear-gradient(135deg, #007aff, #5ac8fa); color: #fff; border: none; border-radius: 12px; padding: 12px 24px; font-size: 1em; cursor: pointer; transition: background 0.3s ease, transform 0.2s ease; margin-top: 20px; width: 100%; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); }
     .nav-button:hover { background: linear-gradient(135deg, #005bb5, #4aa0d3); box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); }
     .nav-button:active { transform: scale(0.98); }
+
+    /* 上部に移動した「次の問題」ボタン用のスタイル上書き */
+    .nav-button.next-btn-top {
+        width: auto; /* 幅を自動調整 */
+        margin-top: 0; /* マージンリセット */
+        min-width: 140px; /* 押しやすい幅を確保 */
+        padding: 12px 20px;
+        flex-shrink: 0; /* 縮まないようにする */
+    }
+
     .result-card { margin-bottom: 20px; }
     .result-card h3 { font-size: 1.2em; margin-bottom: 10px; }
     .result-status { font-weight: bold; margin-bottom: 10px; }
@@ -607,7 +635,11 @@
 
     <div id="quiz-container" class="quiz-container">
       <div id="quiz-content">
-        <div id="question" class="question"></div> 
+        <div class="quiz-header">
+           <div id="question" class="question"></div> 
+           <button id="next" class="nav-button next-btn-top" onclick="nextQuestion()">次の問題</button>
+        </div>
+
         <div id="options" class="options"></div>
         <div id="tenkey-container">
           <div id="tenkey-display"></div>
@@ -628,8 +660,7 @@
         </div>
         <div id="explanation" class="explanation"></div>
       </div>
-      <button id="next" class="nav-button" onclick="nextQuestion()">次の問題</button>
-    </div>
+      </div>
 
     <div id="result-container" class="result-container"></div>
     
