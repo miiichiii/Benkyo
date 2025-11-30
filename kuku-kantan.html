@@ -7,28 +7,75 @@
   <title>九九れんしゅう（確認テスト）</title>
   <style>
     /* --- CSS変数を調整 --- */
-    :root { 
-      --bg:#fffaf2; 
+    :root {
+      --bg:#fffaf2;
     }
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
       line-height: 1.6;
       color: #333;
       background: linear-gradient(135deg, #a8edea, #fed6e3);
-      background-size: cover;  
+      background-size: cover;
       background-repeat: no-repeat;
       background-attachment: fixed;
       padding: 20px;
       margin: 0;
+      min-height: 100vh; /* 紙吹雪のために高さを確保 */
+      overflow-x: hidden; /* 横スクロール防止 */
     }
     .container {
       max-width: 800px;
       margin: 0 auto;
+      position: relative; /* z-index調整のため */
+      z-index: 10; /* 紙吹雪より前に表示 */
     }
     h1, h2 {
       font-family: 'Noto Sans JP', sans-serif;
       font-weight: 700;
     }
+    /* --- タイトルとピカチュウのレイアウト --- */
+    .title-header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .title-header h1 {
+      margin: 10px;
+      text-align: center;
+    }
+    .svg-pikachu-title-wrap {
+      width: 100px;
+      height: 100px;
+      /* 既存の動物のスタイル変数を流用しつつ調整 */
+      --pika-yellow: #fce205;
+      --pika-dark: #e6c300;
+      --pika-cheek: #ff0000;
+      --pika-stripe: #8b5a2b;
+      --pika-black: #222;
+      --line: #333;
+    }
+    .svg-pikachu-title-wrap svg {
+      width: 100%;
+      height: 100%;
+      overflow: visible; /* 耳などがはみ出ても表示 */
+    }
+
+    /* --- ピカチュウのアニメーション --- */
+    .pikachu-title .eyelid { animation: blink 4s infinite; }
+    @keyframes pika-ear-twitch {
+      0%, 100% { transform: rotate(0deg); }
+      50% { transform: rotate(5deg); }
+    }
+    .pikachu-title .ear-left { transform-origin: 25px 35px; animation: pika-ear-twitch 3s ease-in-out infinite; }
+    @keyframes pika-tail-wag {
+        0%, 100% { transform: rotate(0deg); }
+        50% { transform: rotate(-8deg); }
+    }
+    .pikachu-title .tail { transform-origin: 60px 80px; animation: pika-tail-wag 2.5s ease-in-out infinite; }
+
+
     #selection-container {
       background-color: rgba(255, 255, 255, 0.2);
       backdrop-filter: blur(10px);
@@ -171,15 +218,15 @@
         margin-top: 20px;
         text-align: center;
         display: none;
-        position: relative; 
-        overflow: hidden; 
+        position: relative;
+        overflow: hidden;
     }
     #attendance-link p {
         margin: 0;
         padding: 0;
         font-size: 1.3em;
         font-weight: bold;
-        z-index: 10; 
+        z-index: 10;
         position: relative;
     }
     #praise-message {
@@ -446,7 +493,40 @@
 </head>
 <body>
   <div class="container">
-    <h1 style="text-align: center;">九九れんしゅう（確認テスト・改）</h1>
+    <div class="title-header">
+      <div class="svg-pikachu-title-wrap">
+        <svg class="pikachu-title" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <path class="tail" d="M 60 80 L 75 70 L 65 60 L 85 45 L 70 40 L 80 20 L 60 35 L 55 55 Z" fill="var(--pika-yellow)" stroke="var(--line)" stroke-width="2" stroke-linejoin="round"/>
+            <path class="tail-base" d="M 60 80 L 55 75 L 58 70 Z" fill="var(--pika-stripe)" stroke="none"/>
+            
+            <g class="body-head">
+                <path class="ear-left" d="M 25 35 Q 10 5 0 15 Q 5 40 25 35 Z" fill="var(--pika-yellow)" stroke="var(--line)" stroke-width="2"/>
+                <path d="M 5 12 Q 0 15 2 20 L 8 16 Z" fill="var(--pika-black)"/> <path class="ear-right" d="M 75 35 Q 90 5 100 15 Q 95 40 75 35 Z" fill="var(--pika-yellow)" stroke="var(--line)" stroke-width="2"/>
+                <path d="M 95 12 Q 100 15 98 20 L 92 16 Z" fill="var(--pika-black)"/> <path d="M 30 85 Q 10 80 15 50 Q 20 20 50 20 Q 80 20 85 50 Q 90 80 70 85 Q 50 95 30 85 Z" fill="var(--pika-yellow)" stroke="var(--line)" stroke-width="2"/>
+                
+                <path d="M 25 60 Q 50 65 75 60" fill="none" stroke="var(--pika-stripe)" stroke-width="3" stroke-linecap="round"/>
+                <path d="M 30 75 Q 50 80 70 75" fill="none" stroke="var(--pika-stripe)" stroke-width="3" stroke-linecap="round"/>
+
+                <g class="face">
+                    <circle cx="35" cy="45" r="5" fill="var(--pika-black)"/>
+                    <circle cx="37" cy="43" r="2" fill="#fff"/>
+                    <circle cx="65" cy="45" r="5" fill="var(--pika-black)"/>
+                    <circle cx="67" cy="43" r="2" fill="#fff"/>
+                    <g class="eyelid">
+                        <path d="M 30 42 Q 35 38 40 42" fill="var(--pika-yellow)" stroke="var(--line)" stroke-width="1.5"/>
+                        <path d="M 60 42 Q 65 38 70 42" fill="var(--pika-yellow)" stroke="var(--line)" stroke-width="1.5"/>
+                    </g>
+                    <polygon points="50,52 48,50 52,50" fill="var(--pika-black)"/>
+                    <path d="M 42 58 Q 45 62 50 58 Q 55 62 58 58" fill="none" stroke="var(--line)" stroke-width="2" stroke-linecap="round"/>
+                    <circle cx="25" cy="60" r="7" fill="var(--pika-cheek)" opacity="0.8"/>
+                    <circle cx="75" cy="60" r="7" fill="var(--pika-cheek)" opacity="0.8"/>
+                </g>
+            </g>
+        </svg>
+      </div>
+      <h1>九九れんしゅう（確認テスト・改）</h1>
+    </div>
+
 
     <div id="selection-container">
       <h2>1. どの段をれんしゅうする？</h2>
@@ -557,7 +637,6 @@
         <p>おめでとう！全問正解です！ 🎉</p>
         <p id="praise-message"></p>
         
-        <!-- ネコ -->
         <div id="animal-cat" class="svg-cat-wrap svg-animal-wrap animal-hidden">
           <svg class="cat" viewBox="0 0 400 400">
             <ellipse cx="200" cy="330" rx="110" ry="16" fill="#000" opacity=".08"/>
@@ -589,7 +668,6 @@
           </svg>
         </div>
 
-        <!-- ウサギ -->
         <div id="animal-rabbit" class="svg-rabbit-wrap svg-animal-wrap animal-hidden">
           <svg class="rabbit" viewBox="0 0 400 400">
             <ellipse cx="200" cy="330" rx="100" ry="14" fill="#000" opacity=".08"/>
@@ -617,7 +695,6 @@
           </svg>
         </div>
 
-        <!-- パンダ -->
         <div id="animal-panda" class="svg-panda-wrap svg-animal-wrap animal-hidden">
           <svg class="panda" viewBox="0 0 400 400">
             <ellipse cx="200" cy="330" rx="110" ry="14" fill="#000" opacity=".08"/>
@@ -644,7 +721,6 @@
           </svg>
         </div>
 
-        <!-- ウマ -->
         <div id="animal-horse" class="svg-horse-wrap svg-animal-wrap animal-hidden">
           <svg class="horse" viewBox="0 0 400 400">
             <ellipse cx="210" cy="330" rx="120" ry="16" fill="#000" opacity=".08"/>
@@ -683,7 +759,6 @@
           </svg>
         </div>
 
-        <!-- 犬（柴犬風） -->
         <div id="animal-dog" class="svg-dog-wrap svg-animal-wrap animal-hidden">
           <svg class="dog" viewBox="0 0 400 400">
             <ellipse cx="200" cy="330" rx="105" ry="15" fill="#000" opacity=".08"/>
@@ -755,42 +830,76 @@
     let answerSubmitted = false;
     let reviewSet = [];
 
-    let correctSound = null;
-    let selectSound = null;
-    let soundsInitialized = false;
-
     // 動物の種類リスト
     const animalTypes = ['cat', 'rabbit', 'panda', 'horse', 'dog'];
     let selectedAnimal = '';
 
-    function initSounds() {
-        if (soundsInitialized) return;
-        try {
-            correctSound = new Audio('pirorin.mp3');
-            selectSound = new Audio('kati.mp3');
-            correctSound.load();
-            selectSound.load();
-            soundsInitialized = true;
-        } catch (e) {
-            console.error("音声の初期化に失敗:", e);
+    // --- 音声合成（外部MP3不要版） ---
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+    function playSound(type) {
+        if (audioCtx.state === 'suspended') {
+            audioCtx.resume();
+        }
+        const osc = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+        osc.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+
+        if (type === 'correct') {
+            // 正解音: ピロリン♪ (高いド→さらに高いド)
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); // ド
+            osc.frequency.setValueAtTime(1046.50, audioCtx.currentTime + 0.1); // 高いド
+            gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.3);
+        } else if (type === 'select') {
+            // 選択音: カッ (短いノイズ系)
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(800, audioCtx.currentTime);
+            gainNode.gain.setValueAtTime(0.05, audioCtx.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.05);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.05);
         }
     }
     
-    function playSound(type) {
-        if (!soundsInitialized) {
-            initSounds();
-        }
-        
-        try {
-            if (type === 'correct' && correctSound) {
-                correctSound.currentTime = 0;
-                correctSound.play();
-            } else if (type === 'select' && selectSound) {
-                selectSound.currentTime = 0;
-                selectSound.play();
-            }
-        } catch (e) {
-            console.error("音声の再生に失敗しました:", e);
+    // 既存コードとの互換性のため空の関数を残す
+    function initSounds() {}
+
+    // --- 紙吹雪エフェクト ---
+    function fireConfetti() {
+        const colors = ['#ff0', '#f00', '#0f0', '#00f', '#f0f', '#0ff'];
+        for (let i = 0; i < 150; i++) { // 数を少し増やしました
+            const confetti = document.createElement('div');
+            confetti.style.position = 'fixed';
+            confetti.style.zIndex = '9999';
+            confetti.style.left = Math.random() * 100 + 'vw';
+            confetti.style.top = '-20px';
+            confetti.style.width = Math.random() * 10 + 5 + 'px'; // サイズをランダムに
+            confetti.style.height = confetti.style.width;
+            confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+            confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0'; // 丸と四角を混ぜる
+            confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+            // 落下時間と回転をランダムに
+            const fallDuration = Math.random() * 3 + 2 + 's';
+            const rotation = Math.random() * 360 + 720;
+            confetti.style.transition = `top ${fallDuration} ease-in, transform ${fallDuration} linear`;
+            
+            document.body.appendChild(confetti);
+
+            // 少し遅らせてアニメーション開始
+            setTimeout(() => {
+                confetti.style.top = '110vh';
+                confetti.style.transform = `rotate(${rotation}deg)`;
+            }, Math.random() * 500);
+
+            // アニメーション後に要素を削除
+            setTimeout(() => {
+                confetti.remove();
+            }, 6000);
         }
     }
 
@@ -1160,6 +1269,9 @@
       if (percentage === 100 && !isReview) {
         attendanceLink.style.display = 'block';
         
+        // 紙吹雪発射！
+        fireConfetti();
+
         const praiseIndex = Math.floor(Math.random() * praiseMessages.length);
         document.getElementById('praise-message').textContent = praiseMessages[praiseIndex];
         
