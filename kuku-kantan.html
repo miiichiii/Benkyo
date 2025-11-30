@@ -44,13 +44,13 @@
     .title-header h1 {
       margin: 5px 0 0 0;
       text-align: center;
-      font-size: 1.6rem; /* タイトルを少し小さく */
+      font-size: 1.6rem;
       line-height: 1.3;
       color: #333;
       text-shadow: 1px 1px 0 rgba(255,255,255,0.5);
     }
     .svg-pikachu-title-wrap {
-      width: 70px; /* ピカチュウのサイズ調整 */
+      width: 70px;
       height: 70px;
       --pika-yellow: #fce205;
       --pika-dark: #e6c300;
@@ -152,7 +152,6 @@
       border: 1px solid rgba(255, 255, 255, 0.6);
     }
 
-    /* ★重要：ヘッダー部分のレイアウト（問題とボタンを横並び） */
     .quiz-header {
       display: flex;
       justify-content: space-between;
@@ -166,7 +165,6 @@
       color: #1d1d1f; 
       display: flex; 
       align-items: baseline; 
-      /* 文字がはみ出さないように調整 */
       flex-shrink: 1;
     }
     .question-number { 
@@ -183,14 +181,13 @@
         line-height: 1;
     }
 
-    /* ボタンを強制的に右上に配置 */
     .nav-button.next-btn-top {
         width: auto; 
         margin-top: 0; 
         min-width: 90px;
         padding: 8px 12px;
         font-size: 0.9em;
-        flex-shrink: 0; /* ボタンが潰れないようにする */
+        flex-shrink: 0;
         white-space: nowrap;
         background: linear-gradient(135deg, #007aff, #5ac8fa);
         color: white;
@@ -201,10 +198,9 @@
     }
     .nav-button.next-btn-top:active { transform: scale(0.95); }
 
-    /* ★重要：選択肢を2x2にする */
     .options { 
         display: grid; 
-        grid-template-columns: repeat(2, 1fr); /* 2列固定 */
+        grid-template-columns: repeat(2, 1fr); 
         gap: 12px; 
         margin-bottom: 10px;
     }
@@ -212,7 +208,7 @@
         background-color: rgba(255, 255, 255, 0.8); 
         border: none; 
         border-radius: 12px; 
-        padding: 20px 5px; /* 高さを確保 */
+        padding: 20px 5px;
         font-size: 1.6em; 
         font-weight: bold;
         cursor: pointer; 
@@ -225,28 +221,24 @@
     .option.incorrect { background: #ff3b30; color: #fff; }
     .option.disabled { pointer-events: none; opacity: 0.8; }
 
-    /* 解説エリア */
     .explanation { margin-top: 15px; font-size: 1em; color: #333; background-color: rgba(255, 255, 255, 0.9); border-left: 5px solid #4caf50; border-radius: 8px; padding: 10px; display: none; }
     .explanation-header { display: flex; align-items: center; margin-bottom: 5px; font-weight: bold; }
 
-    /* テンキーモード */
     #tenkey-display { background-color: #fff; border-radius: 8px; border: 2px solid #ccc; padding: 10px; font-size: 1.8em; text-align: right; margin-bottom: 10px; height: 1.5em; }
     .tenkey-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
     .tenkey-btn { background-color: rgba(255,255,255,0.8); border:none; border-radius:10px; padding:15px; font-size:1.4em; font-weight:bold; box-shadow:0 2px 4px rgba(0,0,0,0.1); }
     .tenkey-btn.ok { background-color: #007aff; color: white; grid-column: span 2; }
     .tenkey-btn.clear { background-color: #ff3b30; color: white; }
 
-    /* 結果画面 */
     .result-card h3 { margin: 0 0 5px 0; font-size: 1.1em; }
     .result-status { font-weight: bold; margin-bottom: 5px; }
     .correct { color: #34c759; } 
     .incorrect { color: #ff3b30; }
     
-    /* 100点および応援メッセージエリア */
     #attendance-link {
-        background-color: #34c759; /* デフォルト緑 */
+        background-color: #34c759; 
         color: white;
-        padding: 20px 20px 180px 20px; /* 動物用のスペースを下部に確保 */
+        padding: 20px 20px 180px 20px; 
         border-radius: 16px;
         margin-top: 20px;
         text-align: center;
@@ -258,7 +250,77 @@
     #result-title { font-size: 1.4em; font-weight: bold; margin: 0; }
     #praise-message { font-size: 1.1em; margin-top: 10px; font-weight: bold; }
 
-    /* 動物SVG共通設定 */
+    /* --- ビーグル犬のアニメーション定義 --- */
+    .svg-beagle-wrap {
+      --fur: #e5c29f;
+      --fur-dark: #b5763d;
+      --fur-black: #333;
+      --line: #333;
+      --tongue: #ff6f92;
+    }
+    @keyframes pero { 0%, 90%, 100% { transform: translateY(0) scaleY(0); opacity:0; } 30%, 60% { transform: translateY(2px) scaleY(1); opacity:1; } }
+    .beagle-full .tongue { transform-origin: 200px 198px; animation: pero 1.8s ease-in-out infinite; transition: transform .15s; }
+    .beagle-full:hover .tongue { transform: translateY(4px) scaleY(1.5) !important; }
+    .beagle-full .eyelid { animation: blink 6s infinite; }
+    @keyframes wag-beagle { 0%,100% { transform: rotate(16deg); } 50% { transform: rotate(-12deg); } }
+    .beagle-full .tail { transform-origin: 300px 260px; animation: wag-beagle .9s ease-in-out infinite; }
+    @keyframes ear { 0%,100% { transform: rotate(4deg); } 50% { transform: rotate(-6deg); } }
+    .beagle-full .ear-left { transform-origin:150px 150px; animation: ear 1.8s infinite ease-in-out; }
+    .beagle-full .ear-right{ transform-origin:250px 150px; animation: ear 1.9s infinite ease-in-out; }
+    .beagle-full .leg { transform-box: fill-box; transform-origin: 50% 0%; }
+    @keyframes walkA { 0%,100% { transform: rotate(12deg);} 50% { transform: rotate(-14deg);} }
+    @keyframes walkB { 0%,100% { transform: rotate(-12deg);} 50% { transform: rotate(14deg);} }
+    .beagle-full .walk-a { animation: walkA .9s ease-in-out infinite; }
+    .beagle-full .walk-b { animation: walkB .9s ease-in-out infinite; }
+    @keyframes bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(2.2px); } }
+    .beagle-full .dog { animation: bob .9s ease-in-out infinite; transition: transform .25s; }
+    .beagle-full:active .dog { transform: rotate(8deg); }
+    .beagle-full:hover .mouth { d: path("M 188 198 Q 200 212 212 198"); transition: d .18s; }
+
+    /* --- ネコのアニメーション --- */
+    .svg-cat-wrap { --fur:#f2c28d; --fur-dark:#e1a765; --line:#333; --ear:#f7d8b7; }
+    .cat .eyelid { animation: blink 6s infinite; transform-origin: 0 0; }
+    @keyframes wag { 0%,100% { transform: rotate(10deg); } 50% { transform: rotate(-8deg); } }
+    .cat .tail { transform-origin: 340px 250px; animation: wag 3.5s ease-in-out infinite; }
+    @keyframes whisk { 0%,100% { transform: translateX(0) } 50% { transform: translateX(1.5px) } }
+    .cat .whisk { animation: whisk 4.2s ease-in-out infinite; }
+    .cat:hover .mouth { d: path("M 210 250 Q 230 262 250 250"); transition: d .2s; }
+
+    /* --- ウサギのアニメーション --- */
+    .svg-rabbit-wrap { --fur:#f5e6d3; --fur-dark:#d4b896; --line:#333; --ear-inner:#ffc0cb; --nose:#ff9aa2; }
+    @keyframes ear-twitch { 0%,100% { transform: rotate(-2deg); } 50% { transform: rotate(3deg); } }
+    .rabbit .ear-left { transform-origin: 160px 100px; animation: ear-twitch 2s ease-in-out infinite; }
+    .rabbit .ear-right { transform-origin: 240px 100px; animation: ear-twitch 2.2s ease-in-out infinite; }
+    .rabbit .eyelid { animation: blink 5s infinite; }
+    @keyframes nose-wiggle { 0%,100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+    .rabbit .nose { transform-origin: center; animation: nose-wiggle 1.5s ease-in-out infinite; }
+    .rabbit:hover .mouth { d: path("M 185 230 Q 200 238 215 230"); transition: d .2s; }
+
+    /* --- パンダのアニメーション --- */
+    .svg-panda-wrap { --fur:#ffffff; --fur-dark:#333333; --line:#222; --ear:#000; }
+    .panda .eyelid { animation: blink 7s infinite; }
+    @keyframes panda-sway { 0%,100% { transform: rotate(-1deg); } 50% { transform: rotate(1deg); } }
+    .panda .body { transform-origin: 200px 250px; animation: panda-sway 3s ease-in-out infinite; }
+    .panda:hover .mouth { d: path("M 185 230 Q 200 242 215 230"); transition: d .2s; }
+
+    /* --- ウマのアニメーション --- */
+    .svg-horse-wrap { --fur:#8b6f47; --fur-dark:#6b5537; --line:#333; --mane:#4a3420; }
+    .horse .eyelid { animation: blink 6s infinite; }
+    @keyframes mane-wave { 0%,100% { transform: translateX(0); } 50% { transform: translateX(2px); } }
+    .horse .mane { animation: mane-wave 2.5s ease-in-out infinite; }
+    @keyframes tail-swish { 0%,100% { transform: rotate(5deg); } 50% { transform: rotate(-10deg); } }
+    .horse .tail { transform-origin: 320px 260px; animation: tail-swish 2s ease-in-out infinite; }
+    .horse:hover .mouth { d: path("M 185 205 Q 200 215 215 205"); transition: d .2s; }
+
+    /* --- 犬のアニメーション --- */
+    .svg-dog-wrap { --fur:#d4a373; --fur-dark:#b8865c; --line:#333; --tongue:#ff6b9d; }
+    .dog .eyelid { animation: blink 5s infinite; }
+    @keyframes dog-tail-wag { 0%,100% { transform: rotate(20deg); } 50% { transform: rotate(-15deg); } }
+    .dog .tail { transform-origin: 310px 240px; animation: dog-tail-wag 0.8s ease-in-out infinite; }
+    @keyframes pant { 0%,100% { transform: translateY(0); } 50% { transform: translateY(3px); } }
+    .dog .tongue { animation: pant 1.2s ease-in-out infinite; }
+    .dog:hover .mouth { d: path("M 185 210 Q 200 222 215 210"); transition: d .2s; }
+
     .svg-animal-wrap {
       position: absolute;
       bottom: 10px;
@@ -269,13 +331,12 @@
       z-index: 5;
       cursor: pointer;
     }
+    .svg-animal-wrap svg { width: 100%; height: 100%; overflow: visible; }
     .animal-hidden { display: none; }
     
-    /* アニメーション定義 (簡略化のため共通化) */
     @keyframes blink { 0%,90%,100%{opacity:0;transform:scaleY(0.1);} 30%,60%{opacity:1;transform:scaleY(1);} }
     .eyelid { animation: blink 4s infinite; }
 
-    /* 汎用ボタン */
     .nav-button {
         width: 100%;
         padding: 12px;
@@ -290,7 +351,6 @@
         cursor: pointer;
     }
 
-    /* モーダル */
     .modal-bg { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:100; align-items:center; justify-content:center; }
     .modal-content { background:#fff; padding:20px; border-radius:16px; width:90%; max-width:500px; max-height:80vh; overflow-y:auto; position:relative; }
     .modal-close-btn { position:absolute; top:10px; right:15px; font-size:30px; cursor:pointer; }
@@ -303,12 +363,12 @@
     <div class="title-header">
       <div class="svg-pikachu-title-wrap">
         <svg class="pikachu-title" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-            <path d="M 60 80 L 75 70 L 65 60 L 85 45 L 70 40 L 80 20 L 60 35 L 55 55 Z" fill="#fce205" stroke="#333" stroke-width="2" stroke-linejoin="round"/>
+            <path class="tail" d="M 60 80 L 75 70 L 65 60 L 85 45 L 70 40 L 80 20 L 60 35 L 55 55 Z" fill="#fce205" stroke="#333" stroke-width="2" stroke-linejoin="round"/>
             <path d="M 60 80 L 55 75 L 58 70 Z" fill="#8b5a2b" stroke="none"/>
             <g class="body-head">
-                <path d="M 25 35 Q 10 5 0 15 Q 5 40 25 35 Z" fill="#fce205" stroke="#333" stroke-width="2"/>
+                <path class="ear-left" d="M 25 35 Q 10 5 0 15 Q 5 40 25 35 Z" fill="#fce205" stroke="#333" stroke-width="2"/>
                 <path d="M 5 12 Q 0 15 2 20 L 8 16 Z" fill="#222"/> 
-                <path d="M 75 35 Q 90 5 100 15 Q 95 40 75 35 Z" fill="#fce205" stroke="#333" stroke-width="2"/>
+                <path class="ear-right" d="M 75 35 Q 90 5 100 15 Q 95 40 75 35 Z" fill="#fce205" stroke="#333" stroke-width="2"/>
                 <path d="M 95 12 Q 100 15 98 20 L 92 16 Z" fill="#222"/> 
                 <path d="M 30 85 Q 10 80 15 50 Q 20 20 50 20 Q 80 20 85 50 Q 90 80 70 85 Q 50 95 30 85 Z" fill="#fce205" stroke="#333" stroke-width="2"/>
                 <path d="M 25 60 Q 50 65 75 60" fill="none" stroke="#8b5a2b" stroke-width="3" stroke-linecap="round"/>
@@ -316,6 +376,10 @@
                 <g class="face">
                     <circle cx="35" cy="45" r="5" fill="#222"/> <circle cx="37" cy="43" r="2" fill="#fff"/>
                     <circle cx="65" cy="45" r="5" fill="#222"/> <circle cx="67" cy="43" r="2" fill="#fff"/>
+                    <g class="eyelid">
+                        <path d="M 30 42 Q 35 38 40 42" fill="#fce205" stroke="#333" stroke-width="1.5"/>
+                        <path d="M 60 42 Q 65 38 70 42" fill="#fce205" stroke="#333" stroke-width="1.5"/>
+                    </g>
                     <polygon points="50,52 48,50 52,50" fill="#222"/>
                     <path d="M 42 58 Q 45 62 50 58 Q 55 62 58 58" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round"/>
                     <circle cx="25" cy="60" r="7" fill="#ff0000" opacity="0.8"/>
@@ -348,22 +412,40 @@
       <button class="select-button tenkey-mode" onclick="startQuiz('tenkey')">テンキーモードでスタート</button>
       
       <div class="svg-beagle-wrap svg-animal-wrap">
-        <svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+        <svg class="beagle-full" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
           <ellipse cx="200" cy="330" rx="110" ry="16" fill="#000" opacity=".08"/>
-          <g>
-             <path d="M 290 270 C 330 250, 350 235, 345 215 C 338 190, 305 205, 300 240 Z" fill="#b5763d" stroke="#333" stroke-width="3"/>
-             <rect x="145" y="242" width="16" height="62" rx="7" fill="#b5763d" stroke="#333" stroke-width="3"/>
-             <rect x="235" y="242" width="16" height="62" rx="7" fill="#b5763d" stroke="#333" stroke-width="3"/>
+          <g class="dog">
+             <g class="tail">
+               <path d="M 290 270 C 330 250, 350 235, 345 215 C 338 190, 305 205, 300 240 Z" fill="#b5763d" stroke="#333" stroke-width="3"/>
+             </g>
+             <g class="leg walk-b" opacity="0.9">
+                <rect x="145" y="242" width="16" height="62" rx="7" fill="#b5763d" stroke="#333" stroke-width="3"/>
+             </g>
+             <g class="leg walk-a" opacity="0.9">
+                <rect x="235" y="242" width="16" height="62" rx="7" fill="#b5763d" stroke="#333" stroke-width="3"/>
+             </g>
              <path d="M 120 300 C 90 260, 95 200, 165 185 L 235 185 C 305 200, 310 260, 280 300 Z" fill="#e5c29f" stroke="#333" stroke-width="3"/>
-             <rect x="165" y="240" width="16" height="64" rx="7" fill="#e5c29f" stroke="#333" stroke-width="3"/>
-             <rect x="220" y="240" width="16" height="64" rx="7" fill="#e5c29f" stroke="#333" stroke-width="3"/>
-             <path d="M 140 120 Q 200 60 260 120 Q 295 160 260 190 Q 200 215 140 190 Q 105 160 140 120 Z" fill="#e5c29f" stroke="#333" stroke-width="3"/>
-             <path d="M140 120 C 110 150 115 210 150 220 C 170 200 165 160 160 130 Z" fill="#b5763d" stroke="#333" stroke-width="3"/>
-             <path d="M260 120 C 290 150 285 210 250 220 C 230 200 235 160 240 130 Z" fill="#b5763d" stroke="#333" stroke-width="3"/>
-             <circle cx="175" cy="165" r="4.5" fill="#222"/> <circle cx="225" cy="165" r="4.5" fill="#222"/>
-             <circle cx="200" cy="182" r="4.2" fill="#333"/>
-             <path d="M196 200 Q200 210 204 200" fill="#ff6f92"/>
-             <path d="M188 198 Q200 208 212 198" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round"/>
+             <path d="M160 210 C 200 190 240 190 260 230 C 232 218 178 238 160 210 Z" fill="#333" opacity=".8"/>
+             <ellipse cx="200" cy="255" rx="46" ry="52" fill="#fff" opacity=".85"/>
+             <g class="leg walk-a">
+                <rect x="165" y="240" width="16" height="64" rx="7" fill="#e5c29f" stroke="#333" stroke-width="3"/>
+             </g>
+             <g class="leg walk-b">
+                <rect x="220" y="240" width="16" height="64" rx="7" fill="#e5c29f" stroke="#333" stroke-width="3"/>
+             </g>
+             <g>
+                 <path d="M 140 120 Q 200 60 260 120 Q 295 160 260 190 Q 200 215 140 190 Q 105 160 140 120 Z" fill="#e5c29f" stroke="#333" stroke-width="3"/>
+                 <path class="ear-left" d="M140 120 C 110 150 115 210 150 220 C 170 200 165 160 160 130 Z" fill="#b5763d" stroke="#333" stroke-width="3"/>
+                 <path class="ear-right" d="M260 120 C 290 150 285 210 250 220 C 230 200 235 160 240 130 Z" fill="#b5763d" stroke="#333" stroke-width="3"/>
+                 <circle cx="175" cy="165" r="4.5" fill="#222"/> <circle cx="225" cy="165" r="4.5" fill="#222"/>
+                 <g class="eyelid">
+                    <path d="M163 160 Q175 150 187 160" fill="#e5c29f" stroke="#333" stroke-width="2"/>
+                    <path d="M213 160 Q225 150 237 160" fill="#e5c29f" stroke="#333" stroke-width="2"/>
+                 </g>
+                 <circle cx="200" cy="182" r="4.2" fill="#333"/>
+                 <path class="tongue" d="M196 200 Q200 210 204 200" fill="#ff6f92"/>
+                 <path class="mouth" d="M188 198 Q200 208 212 198" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round"/>
+             </g>
           </g>
         </svg>
       </div>
@@ -407,19 +489,107 @@
         <p id="praise-message"></p>
         
         <div id="animal-cat" class="svg-cat-wrap svg-animal-wrap animal-hidden">
-          <svg viewBox="0 0 400 400"><g><path d="M 120 300 C 90 260, 90 200, 160 180 L 240 180 C 310 200, 310 260, 280 300 Z" fill="#f2c28d" stroke="#333" stroke-width="3"/><path d="M 140 110 L 160 70 180 105 Q 200 90 220 105 L 240 70 260 110 Q 280 125 280 150 Q 280 190 200 190 Q 120 190 120 150 Q 120 125 140 110 Z" fill="#f2c28d" stroke="#333" stroke-width="3"/><path d="M160 80 L 175 105 L150 112 Z" fill="#f7d8b7"/><path d="M240 80 L 225 105 L250 112 Z" fill="#f7d8b7"/><circle cx="170" cy="145" r="4.5" fill="#222"/><circle cx="230" cy="145" r="4.5" fill="#222"/><polygon points="198,158 202,158 200,162" fill="#e07a7a"/><path d="M 190 170 Q 200 178 210 170" fill="none" stroke="#333" stroke-width="2"/></g></svg>
+          <svg class="cat" viewBox="0 0 400 400">
+            <ellipse cx="200" cy="330" rx="110" ry="16" fill="#000" opacity=".08"/>
+            <g class="tail"><path d="M 300 260 C 340 240, 360 230, 360 210 C 360 180, 320 180, 315 205 C 312 220, 335 225, 335 235 C 332 260, 310 255, 300 250 Z" fill="#f2c28d" stroke="#333" stroke-width="3"/></g>
+            <g>
+                <path d="M 120 300 C 90 260, 90 200, 160 180 L 240 180 C 310 200, 310 260, 280 300 Z" fill="#f2c28d" stroke="#333" stroke-width="3"/>
+                <path d="M 140 110 L 160 70 180 105 Q 200 90 220 105 L 240 70 260 110 Q 280 125 280 150 Q 280 190 200 190 Q 120 190 120 150 Q 120 125 140 110 Z" fill="#f2c28d" stroke="#333" stroke-width="3"/>
+                <path d="M160 80 L 175 105 L150 112 Z" fill="#f7d8b7"/>
+                <path d="M240 80 L 225 105 L250 112 Z" fill="#f7d8b7"/>
+                <circle cx="170" cy="145" r="4.5" fill="#222"/>
+                <circle cx="230" cy="145" r="4.5" fill="#222"/>
+                <g class="eyelid">
+                    <path d="M158 140 Q170 134 182 140" fill="#f2c28d" stroke="#333" stroke-width="2"/>
+                    <path d="M218 140 Q230 134 242 140" fill="#f2c28d" stroke="#333" stroke-width="2"/>
+                </g>
+                <polygon points="198,158 202,158 200,162" fill="#e07a7a"/>
+                <path class="mouth" d="M 190 170 Q 200 178 210 170" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round"/>
+                <g class="whisk" stroke="#333" stroke-width="2" stroke-linecap="round">
+                    <path d="M150 165 H115"/><path d="M152 170 H112"/><path d="M250 165 H285"/><path d="M248 170 H288"/>
+                </g>
+            </g>
+          </svg>
         </div>
         <div id="animal-rabbit" class="svg-rabbit-wrap svg-animal-wrap animal-hidden">
-          <svg viewBox="0 0 400 400"><g><ellipse cx="160" cy="100" rx="18" ry="65" fill="#f5e6d3" stroke="#333" stroke-width="3"/><ellipse cx="240" cy="100" rx="18" ry="65" fill="#f5e6d3" stroke="#333" stroke-width="3"/><ellipse cx="200" cy="200" rx="70" ry="75" fill="#f5e6d3" stroke="#333" stroke-width="3"/><circle cx="170" cy="190" r="4" fill="#222"/><circle cx="230" cy="190" r="4" fill="#222"/><ellipse cx="200" cy="215" rx="8" ry="6" fill="#ff9aa2"/><path d="M 185 230 Q 200 235 215 230" fill="none" stroke="#333" stroke-width="2"/><ellipse cx="200" cy="290" rx="80" ry="65" fill="#f5e6d3" stroke="#333" stroke-width="3"/></g></svg>
+          <svg class="rabbit" viewBox="0 0 400 400">
+            <ellipse cx="200" cy="330" rx="100" ry="14" fill="#000" opacity=".08"/>
+            <g>
+              <ellipse class="ear-left" cx="160" cy="100" rx="18" ry="65" fill="#f5e6d3" stroke="#333" stroke-width="3"/>
+              <ellipse class="ear-right" cx="240" cy="100" rx="18" ry="65" fill="#f5e6d3" stroke="#333" stroke-width="3"/>
+              <ellipse cx="200" cy="200" rx="70" ry="75" fill="#f5e6d3" stroke="#333" stroke-width="3"/>
+              <circle cx="170" cy="190" r="4" fill="#222"/>
+              <circle cx="230" cy="190" r="4" fill="#222"/>
+              <g class="eyelid">
+                <path d="M159 185 Q170 178 181 185" fill="#f5e6d3" stroke="#333" stroke-width="2"/>
+                <path d="M219 185 Q230 178 241 185" fill="#f5e6d3" stroke="#333" stroke-width="2"/>
+              </g>
+              <ellipse class="nose" cx="200" cy="215" rx="8" ry="6" fill="#ff9aa2"/>
+              <path class="mouth" d="M 185 230 Q 200 235 215 230" fill="none" stroke="#333" stroke-width="2"/>
+              <ellipse cx="200" cy="290" rx="80" ry="65" fill="#f5e6d3" stroke="#333" stroke-width="3"/>
+            </g>
+          </svg>
         </div>
         <div id="animal-panda" class="svg-panda-wrap svg-animal-wrap animal-hidden">
-          <svg viewBox="0 0 400 400"><g><ellipse cx="200" cy="280" rx="75" ry="70" fill="#fff" stroke="#222" stroke-width="3"/><circle cx="140" cy="150" r="28" fill="#000"/><circle cx="260" cy="150" r="28" fill="#000"/><ellipse cx="200" cy="180" rx="65" ry="70" fill="#fff" stroke="#222" stroke-width="3"/><ellipse cx="165" cy="170" rx="22" ry="28" fill="#333"/><ellipse cx="235" cy="170" rx="22" ry="28" fill="#333"/><circle cx="165" cy="172" r="4" fill="#fff"/><circle cx="235" cy="172" r="4" fill="#fff"/><ellipse cx="200" cy="200" rx="10" ry="8" fill="#333"/><path d="M 185 220 Q 200 228 215 220" fill="none" stroke="#222" stroke-width="2.5"/></g></svg>
+          <svg class="panda" viewBox="0 0 400 400">
+            <ellipse cx="200" cy="330" rx="110" ry="14" fill="#000" opacity=".08"/>
+            <g class="body">
+              <ellipse cx="200" cy="280" rx="75" ry="70" fill="#fff" stroke="#222" stroke-width="3"/>
+              <circle cx="140" cy="150" r="28" fill="#000"/>
+              <circle cx="260" cy="150" r="28" fill="#000"/>
+              <ellipse cx="200" cy="180" rx="65" ry="70" fill="#fff" stroke="#222" stroke-width="3"/>
+              <ellipse cx="165" cy="170" rx="22" ry="28" fill="#333"/>
+              <ellipse cx="235" cy="170" rx="22" ry="28" fill="#333"/>
+              <circle cx="165" cy="172" r="4" fill="#fff"/>
+              <circle cx="235" cy="172" r="4" fill="#fff"/>
+              <g class="eyelid">
+                <path d="M155 165 Q165 158 175 165" fill="#333" stroke="#222" stroke-width="2"/>
+                <path d="M225 165 Q235 158 245 165" fill="#333" stroke="#222" stroke-width="2"/>
+              </g>
+              <ellipse cx="200" cy="200" rx="10" ry="8" fill="#333"/>
+              <path class="mouth" d="M 185 220 Q 200 228 215 220" fill="none" stroke="#222" stroke-width="2.5"/>
+            </g>
+          </svg>
         </div>
         <div id="animal-horse" class="svg-horse-wrap svg-animal-wrap animal-hidden">
-          <svg viewBox="0 0 400 400"><g><ellipse cx="210" cy="270" rx="85" ry="65" fill="#8b6f47" stroke="#333" stroke-width="3"/><ellipse cx="200" cy="160" rx="55" ry="60" fill="#8b6f47" stroke="#333" stroke-width="3"/><path d="M 180 110 Q 190 85 200 80 Q 210 85 220 110" fill="#4a3420" stroke="#333" stroke-width="2"/><circle cx="175" cy="155" r="4" fill="#222"/><circle cx="225" cy="155" r="4" fill="#222"/><ellipse cx="200" cy="180" rx="12" ry="10" fill="#6b5537"/><path d="M 185 195 Q 200 205 215 195" fill="none" stroke="#333" stroke-width="2.5"/></g></svg>
+          <svg class="horse" viewBox="0 0 400 400">
+            <ellipse cx="210" cy="330" rx="120" ry="16" fill="#000" opacity=".08"/>
+            <g>
+              <g class="tail"><path d="M 310 270 Q 350 260 355 240 Q 360 220 345 225 Q 330 230 320 250 Q 315 265 310 275 Z" fill="#4a3420" stroke="#333" stroke-width="2"/></g>
+              <ellipse cx="210" cy="270" rx="85" ry="65" fill="#8b6f47" stroke="#333" stroke-width="3"/>
+              <ellipse cx="200" cy="160" rx="55" ry="60" fill="#8b6f47" stroke="#333" stroke-width="3"/>
+              <g class="mane"><path d="M 180 110 Q 190 85 200 80 Q 210 85 220 110" fill="#4a3420" stroke="#333" stroke-width="2"/></g>
+              <circle cx="175" cy="155" r="4" fill="#222"/>
+              <circle cx="225" cy="155" r="4" fill="#222"/>
+              <g class="eyelid">
+                <path d="M165 150 Q175 143 185 150" fill="#8b6f47" stroke="#333" stroke-width="2"/>
+                <path d="M215 150 Q225 143 235 150" fill="#8b6f47" stroke="#333" stroke-width="2"/>
+              </g>
+              <ellipse cx="200" cy="180" rx="12" ry="10" fill="#6b5537"/>
+              <path class="mouth" d="M 185 195 Q 200 205 215 195" fill="none" stroke="#333" stroke-width="2.5"/>
+            </g>
+          </svg>
         </div>
         <div id="animal-dog" class="svg-dog-wrap svg-animal-wrap animal-hidden">
-          <svg viewBox="0 0 400 400"><g><ellipse cx="200" cy="270" rx="80" ry="60" fill="#d4a373" stroke="#333" stroke-width="3"/><ellipse cx="200" cy="170" rx="60" ry="65" fill="#d4a373" stroke="#333" stroke-width="3"/><path d="M 145 140 Q 140 110 155 100 L 165 130 Z" fill="#d4a373" stroke="#333" stroke-width="3"/><path d="M 255 140 Q 260 110 245 100 L 235 130 Z" fill="#d4a373" stroke="#333" stroke-width="3"/><circle cx="175" cy="165" r="4.5" fill="#222"/><circle cx="225" cy="165" r="4.5" fill="#222"/><ellipse cx="200" cy="190" rx="10" ry="8" fill="#333"/><path d="M 185 200 Q 200 212 215 200" fill="none" stroke="#333" stroke-width="2.5"/></g></svg>
+          <svg class="dog" viewBox="0 0 400 400">
+            <ellipse cx="200" cy="330" rx="105" ry="15" fill="#000" opacity=".08"/>
+            <g>
+              <g class="tail"><path d="M 295 250 Q 330 230 340 210 Q 345 190 330 195 Q 315 200 305 220 Q 298 235 295 245 Z" fill="#d4a373" stroke="#333" stroke-width="3"/></g>
+              <ellipse cx="200" cy="270" rx="80" ry="60" fill="#d4a373" stroke="#333" stroke-width="3"/>
+              <ellipse cx="200" cy="170" rx="60" ry="65" fill="#d4a373" stroke="#333" stroke-width="3"/>
+              <path d="M 145 140 Q 140 110 155 100 L 165 130 Z" fill="#d4a373" stroke="#333" stroke-width="3"/>
+              <path d="M 255 140 Q 260 110 245 100 L 235 130 Z" fill="#d4a373" stroke="#333" stroke-width="3"/>
+              <circle cx="175" cy="165" r="4.5" fill="#222"/>
+              <circle cx="225" cy="165" r="4.5" fill="#222"/>
+              <g class="eyelid">
+                <path d="M164 160 Q175 153 186 160" fill="#d4a373" stroke="#333" stroke-width="2"/>
+                <path d="M214 160 Q225 153 236 160" fill="#d4a373" stroke="#333" stroke-width="2"/>
+              </g>
+              <ellipse cx="200" cy="190" rx="10" ry="8" fill="#333"/>
+              <path class="tongue" d="M 195 210 Q 200 218 205 210 L 203 215 L 197 215 Z" fill="#ff6b9d" stroke="#333" stroke-width="1.5"/>
+              <path class="mouth" d="M 185 200 Q 200 212 215 200" fill="none" stroke="#333" stroke-width="2.5"/>
+            </g>
+          </svg>
         </div>
     </div>
   </div>
