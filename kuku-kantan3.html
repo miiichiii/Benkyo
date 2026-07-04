@@ -1318,7 +1318,7 @@
     function loadCloudSettings() {
       const config = window.KUKU_FIREBASE_CONFIG || {};
       const defaults = {
-        enabled: false,
+        enabled: Boolean(config.enabled),
         familyCode: config.familyCode || '',
         childId: config.childId || 'ayame',
         childName: config.childName || CHILD_NAME,

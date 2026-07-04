@@ -4,17 +4,17 @@
 // 親ビューアは parentEmail のGoogleアカウントでログインした時だけ開きます。
 // Firebase Console の Authentication で Google プロバイダも有効にしてください。
 window.KUKU_FIREBASE_CONFIG = {
-  enabled: false,
+  enabled: true,
   familyCode: 'hamada-kuku',
   childId: 'ayame',
   childName: 'あやめちゃん',
   parentEmail: 'hamamicchi@gmail.com',
   firebaseConfig: {
-    apiKey: 'YOUR_API_KEY',
-    authDomain: 'YOUR_PROJECT_ID.firebaseapp.com',
-    projectId: 'YOUR_PROJECT_ID',
-    storageBucket: 'YOUR_PROJECT_ID.appspot.com',
-    messagingSenderId: 'YOUR_MESSAGING_SENDER_ID',
-    appId: 'YOUR_APP_ID'
+    apiKey: 'AIzaSyCfXq_Mlldi-eELMMW3h7q4peO6lT_smY8',
+    authDomain: 'weakness-quiz-hamamicchi.firebaseapp.com',
+    projectId: 'weakness-quiz-hamamicchi',
+    storageBucket: 'weakness-quiz-hamamicchi.firebasestorage.app',
+    messagingSenderId: '1078414220963',
+    appId: '1:1078414220963:web:4996b93b702298219be916'
   }
 };
