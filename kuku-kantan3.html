@@ -871,7 +871,7 @@
     }
 
     .level-up-modal.rive-ready .level-fallback {
-      opacity: 0;
+      display: none;
     }
 
     .level-fallback {
@@ -927,6 +927,24 @@
       margin-bottom: 0;
       color: var(--muted);
       font-weight: 800;
+    }
+
+    .level-credit {
+      display: none;
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 0.76rem;
+      font-weight: 750;
+    }
+
+    .level-credit.open {
+      display: block;
+    }
+
+    .level-credit a {
+      color: inherit;
+      text-decoration: underline;
+      text-underline-offset: 3px;
     }
 
     .unlock-list {
@@ -1373,6 +1391,7 @@
         <h2 id="level-up-title">Lv 2</h2>
         <p id="level-up-message"></p>
         <div class="unlock-list" id="level-unlock-list"></div>
+        <p class="level-credit" id="level-credit"></p>
       </div>
       <div class="button-row">
         <button class="primary-button" id="level-up-rewards" type="button">ごほうびを見る</button>
@@ -1474,7 +1493,8 @@
       levelConfetti: document.getElementById('level-confetti'),
       levelUpTitle: document.getElementById('level-up-title'),
       levelUpMessage: document.getElementById('level-up-message'),
-      levelUnlockList: document.getElementById('level-unlock-list')
+      levelUnlockList: document.getElementById('level-unlock-list'),
+      levelCredit: document.getElementById('level-credit')
     };
 
     document.getElementById('brand-home').addEventListener('click', goHome);
@@ -2273,6 +2293,7 @@
       els.levelUnlockList.innerHTML = unlocked.length > 0
         ? unlocked.map(item => `<div class="unlock-chip">${item}</div>`).join('')
         : `<div class="unlock-chip">${latest.title}</div>`;
+      renderLevelCredit();
       els.levelFallback.innerHTML = renderPetSvg('level-up');
       renderLevelConfetti();
       els.levelUpModal.classList.add('open');
@@ -2317,6 +2338,7 @@
           alignment: window.rive.Alignment.Center
         }),
         onLoad: () => {
+          els.levelUpModal.classList.add('rive-ready');
           requestAnimationFrame(() => {
             if (levelUpRiveInstance && typeof levelUpRiveInstance.resizeDrawingSurfaceToCanvas === 'function') {
               levelUpRiveInstance.resizeDrawingSurfaceToCanvas();
@@ -2324,13 +2346,15 @@
           });
         }
       };
+      if (config.artboard) {
+        options.artboard = config.artboard;
+      }
       if (config.stateMachine) {
         options.stateMachines = config.stateMachine;
       } else if (config.animation) {
         options.animations = config.animation;
       }
       levelUpRiveInstance = new window.rive.Rive(options);
-      els.levelUpModal.classList.add('rive-ready');
       return true;
     }
 
@@ -2339,9 +2363,27 @@
       const riveConfig = appConfig.rive || {};
       return {
         src: riveConfig.levelUpSrc || '',
+        artboard: riveConfig.levelUpArtboard || '',
         stateMachine: riveConfig.levelUpStateMachine || '',
-        animation: riveConfig.levelUpAnimation || ''
+        animation: riveConfig.levelUpAnimation || '',
+        credit: riveConfig.credit || '',
+        creditUrl: riveConfig.creditUrl || ''
       };
+    }
+
+    function renderLevelCredit() {
+      const config = getRiveLevelUpConfig();
+      if (!config.credit) {
+        els.levelCredit.classList.remove('open');
+        els.levelCredit.textContent = '';
+        return;
+      }
+      els.levelCredit.classList.add('open');
+      if (config.creditUrl) {
+        els.levelCredit.innerHTML = `Animation: <a href="${escapeAttr(config.creditUrl)}" target="_blank" rel="noopener">${escapeHtml(config.credit)}</a>`;
+      } else {
+        els.levelCredit.textContent = `Animation: ${config.credit}`;
+      }
     }
 
     function loadRiveRuntime() {
@@ -2365,6 +2407,20 @@
         seen.add(value);
         return true;
       });
+    }
+
+    function escapeHtml(value) {
+      return String(value).replace(/[&<>"']/g, char => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;'
+      }[char]));
+    }
+
+    function escapeAttr(value) {
+      return escapeHtml(value).replace(/`/g, '&#96;');
     }
 
     function chooseNextProblem(mission) {

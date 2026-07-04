@@ -10,9 +10,12 @@ window.KUKU_FIREBASE_CONFIG = {
   childName: 'あやめちゃん',
   parentEmail: 'hamamicchi@gmail.com',
   rive: {
-    levelUpSrc: '',
-    levelUpStateMachine: '',
-    levelUpAnimation: ''
+    levelUpSrc: 'https://public.rive.app/community/runtime-files/22243-46463-level-up.riv',
+    levelUpArtboard: 'Showcase Mobile',
+    levelUpStateMachine: 'State Machine 1',
+    levelUpAnimation: '',
+    credit: 'Level up! by Maximized (CC BY)',
+    creditUrl: 'https://rive.app/marketplace/22243-46463-level-up/'
   },
   firebaseConfig: {
     apiKey: 'AIzaSyCfXq_Mlldi-eELMMW3h7q4peO6lT_smY8',
