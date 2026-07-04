@@ -768,6 +768,200 @@
       background: #eef2f4;
     }
 
+    .reward-next-note {
+      margin: 10px 0 0;
+      padding: 11px 12px;
+      border: 1px solid rgba(15, 159, 154, 0.22);
+      border-radius: 8px;
+      background: #edf9f7;
+      color: #17625e;
+      font-weight: 850;
+    }
+
+    .result-level-reward {
+      display: none;
+      margin: 14px 0;
+      padding: 14px;
+      border: 1px solid rgba(242, 184, 75, 0.5);
+      border-radius: 8px;
+      background: #fff8e7;
+    }
+
+    .result-level-reward.open {
+      display: grid;
+      gap: 10px;
+    }
+
+    .result-level-reward strong {
+      display: block;
+      font-size: 1.18rem;
+    }
+
+    .level-up-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 60;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      background: rgba(23, 33, 43, 0.58);
+    }
+
+    .level-up-modal.open {
+      display: flex;
+    }
+
+    .level-up-box {
+      position: relative;
+      width: min(100%, 620px);
+      max-height: min(88vh, 760px);
+      overflow: auto;
+      padding: 18px;
+      border-radius: 8px;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+
+    .level-up-stage {
+      position: relative;
+      min-height: 310px;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      border-radius: 8px;
+      background:
+        linear-gradient(180deg, #fff7d7 0%, #f0fbf7 52%, #e8f2ff 100%),
+        repeating-linear-gradient(90deg, rgba(23, 33, 43, 0.04) 0 18px, transparent 18px 36px);
+    }
+
+    .level-up-stage::before,
+    .level-up-stage::after {
+      content: "";
+      position: absolute;
+      left: -16%;
+      right: -16%;
+      height: 42px;
+      background: rgba(255, 255, 255, 0.5);
+      --angle: -12deg;
+      transform: translate3d(0, 0, 0) rotate(var(--angle));
+      animation: reward-ribbon 4.8s ease-in-out infinite;
+    }
+
+    .level-up-stage::before {
+      top: 34px;
+    }
+
+    .level-up-stage::after {
+      bottom: 44px;
+      --angle: 10deg;
+      animation-delay: -2.6s;
+    }
+
+    .level-rive-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: none;
+    }
+
+    .level-up-modal.rive-ready .level-rive-canvas {
+      display: block;
+    }
+
+    .level-up-modal.rive-ready .level-fallback {
+      opacity: 0;
+    }
+
+    .level-fallback {
+      position: relative;
+      z-index: 1;
+      width: min(84%, 300px);
+      animation: reward-pop 900ms cubic-bezier(.2, 1.2, .2, 1) both;
+    }
+
+    .level-confetti {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .level-confetti span {
+      position: absolute;
+      top: -20px;
+      width: 12px;
+      height: 22px;
+      border-radius: 3px;
+      background: var(--gold);
+      animation: reward-confetti 1.85s ease-out infinite;
+    }
+
+    .level-confetti span:nth-child(2n) {
+      background: var(--teal);
+      animation-duration: 2.05s;
+    }
+
+    .level-confetti span:nth-child(3n) {
+      background: var(--coral);
+      animation-duration: 1.7s;
+    }
+
+    .level-confetti span:nth-child(4n) {
+      background: var(--blue);
+      animation-duration: 2.2s;
+    }
+
+    .level-up-copy {
+      margin-top: 14px;
+      text-align: center;
+    }
+
+    .level-up-copy h2 {
+      margin-bottom: 6px;
+      font-size: clamp(1.7rem, 7vw, 2.7rem);
+    }
+
+    .level-up-copy p {
+      margin-bottom: 0;
+      color: var(--muted);
+      font-weight: 800;
+    }
+
+    .unlock-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .unlock-chip {
+      padding: 10px 12px;
+      border: 1px solid rgba(242, 184, 75, 0.5);
+      border-radius: 8px;
+      background: #fff8e7;
+      font-weight: 900;
+      text-align: center;
+    }
+
+    @keyframes reward-pop {
+      0% { opacity: 0; transform: translateY(28px) scale(.72) rotate(-6deg); }
+      70% { opacity: 1; transform: translateY(-8px) scale(1.08) rotate(3deg); }
+      100% { opacity: 1; transform: translateY(0) scale(1) rotate(0); }
+    }
+
+    @keyframes reward-ribbon {
+      0%, 100% { opacity: .45; transform: translate3d(0, 0, 0) rotate(var(--angle)); }
+      50% { opacity: .72; transform: translate3d(24px, 10px, 0) rotate(var(--angle)); }
+    }
+
+    @keyframes reward-confetti {
+      0% { transform: translate3d(0, -20px, 0) rotate(0); opacity: 0; }
+      12% { opacity: 1; }
+      100% { transform: translate3d(var(--drift, 0), 360px, 0) rotate(360deg); opacity: 0; }
+    }
+
     .table-modal {
       position: fixed;
       inset: 0;
@@ -1112,6 +1306,7 @@
             </div>
           </div>
 
+          <div class="result-level-reward" id="result-level-reward"></div>
           <div class="answer-review" id="answer-review"></div>
 
           <div class="button-row">
@@ -1143,6 +1338,7 @@
                   <div class="progress-fill" id="reward-xp-fill"></div>
                 </div>
               </div>
+              <p class="reward-next-note" id="reward-next-note"></p>
               <div class="inventory-grid" id="inventory-grid"></div>
               <div class="button-row">
                 <button class="primary-button" id="reward-daily" type="button">今日のミッション</button>
@@ -1165,6 +1361,26 @@
     </div>
   </div>
 
+  <div class="level-up-modal" id="level-up-modal" role="dialog" aria-modal="true" aria-labelledby="level-up-title">
+    <div class="level-up-box">
+      <div class="level-up-stage">
+        <canvas class="level-rive-canvas" id="level-rive-canvas" width="620" height="360"></canvas>
+        <div class="level-confetti" id="level-confetti" aria-hidden="true"></div>
+        <div class="level-fallback" id="level-fallback"></div>
+      </div>
+      <div class="level-up-copy">
+        <p class="eyebrow">レベルアップ</p>
+        <h2 id="level-up-title">Lv 2</h2>
+        <p id="level-up-message"></p>
+        <div class="unlock-list" id="level-unlock-list"></div>
+      </div>
+      <div class="button-row">
+        <button class="primary-button" id="level-up-rewards" type="button">ごほうびを見る</button>
+        <button class="secondary-button" id="level-up-close" type="button">結果に戻る</button>
+      </div>
+    </div>
+  </div>
+
   <script src="kuku-firebase-config.js"></script>
   <script>
     const CHILD_NAME = 'あやめちゃん';
@@ -1173,13 +1389,14 @@
     const MISSION_TOTAL = 12;
     const VERSION = 1;
 
+    const RIVE_RUNTIME_URL = 'https://cdn.jsdelivr.net/npm/@rive-app/canvas@2.38.4/rive.js';
     const ITEMS = [
-      { id: 'ribbon', name: '赤いリボン', level: 2 },
-      { id: 'scarf', name: 'みどりのスカーフ', level: 3 },
-      { id: 'cap', name: '青いぼうし', level: 4 },
-      { id: 'badge', name: '星バッジ', level: 5 },
-      { id: 'bag', name: 'たんけんバッグ', level: 7 },
-      { id: 'crown', name: '小さな王冠', level: 9 }
+      { id: 'ribbon', name: '赤いリボン', level: 2, note: 'はじめてのおしゃれ' },
+      { id: 'scarf', name: 'みどりのスカーフ', level: 3, note: '冒険のしるし' },
+      { id: 'cap', name: '青いぼうし', level: 4, note: '集中モード' },
+      { id: 'badge', name: '星バッジ', level: 5, note: 'がんばりの証' },
+      { id: 'bag', name: 'たんけんバッグ', level: 7, note: '苦手探検セット' },
+      { id: 'crown', name: '小さな王冠', level: 9, note: '九九マスター候補' }
     ];
 
     const PROBLEMS = [];
@@ -1197,6 +1414,8 @@
     let hintUsed = false;
     let lastResultMission = null;
     let audioContext = null;
+    let riveRuntimePromise = null;
+    let levelUpRiveInstance = null;
 
     const els = {
       homeScreen: document.getElementById('home-screen'),
@@ -1239,14 +1458,23 @@
       resultScore: document.getElementById('result-score'),
       resultStars: document.getElementById('result-stars'),
       resultFood: document.getElementById('result-food'),
+      resultLevelReward: document.getElementById('result-level-reward'),
       answerReview: document.getElementById('answer-review'),
       rewardSummary: document.getElementById('reward-summary'),
       rewardXpLabel: document.getElementById('reward-xp-label'),
       rewardXpCount: document.getElementById('reward-xp-count'),
       rewardXpFill: document.getElementById('reward-xp-fill'),
+      rewardNextNote: document.getElementById('reward-next-note'),
       inventoryGrid: document.getElementById('inventory-grid'),
       tableModal: document.getElementById('table-modal'),
-      kukuTable: document.getElementById('kuku-table')
+      kukuTable: document.getElementById('kuku-table'),
+      levelUpModal: document.getElementById('level-up-modal'),
+      levelRiveCanvas: document.getElementById('level-rive-canvas'),
+      levelFallback: document.getElementById('level-fallback'),
+      levelConfetti: document.getElementById('level-confetti'),
+      levelUpTitle: document.getElementById('level-up-title'),
+      levelUpMessage: document.getElementById('level-up-message'),
+      levelUnlockList: document.getElementById('level-unlock-list')
     };
 
     document.getElementById('brand-home').addEventListener('click', goHome);
@@ -1269,6 +1497,11 @@
     document.getElementById('reward-daily').addEventListener('click', () => startMission('daily'));
     document.getElementById('reward-home').addEventListener('click', goHome);
     document.getElementById('close-table').addEventListener('click', closeTable);
+    document.getElementById('level-up-close').addEventListener('click', closeLevelUp);
+    document.getElementById('level-up-rewards').addEventListener('click', () => {
+      closeLevelUp();
+      showRewards();
+    });
     els.tableModal.addEventListener('click', event => {
       if (event.target === els.tableModal) closeTable();
     });
@@ -1395,7 +1628,22 @@
       merged.xp = Number.isFinite(value.xp) ? value.xp : 0;
       merged.stars = Number.isFinite(value.stars) ? value.stars : 0;
       merged.food = Number.isFinite(value.food) ? value.food : 0;
+      if (merged.activeMission && merged.activeMission.earned) {
+        merged.activeMission.earned = normalizeEarned(merged.activeMission.earned);
+      }
+      if (merged.lastMission && merged.lastMission.earned) {
+        merged.lastMission.earned = normalizeEarned(merged.lastMission.earned);
+      }
       return merged;
+    }
+
+    function normalizeEarned(earned) {
+      return {
+        stars: Number.isFinite(earned.stars) ? earned.stars : 0,
+        food: Number.isFinite(earned.food) ? earned.food : 0,
+        items: Array.isArray(earned.items) ? earned.items : [],
+        levels: Array.isArray(earned.levels) ? earned.levels : []
+      };
     }
 
     function renderAll() {
@@ -1506,12 +1754,16 @@
       els.rewardSummary.textContent = `星 ${progress.stars}・ごはん ${progress.food}`;
       els.rewardXpCount.textContent = `${progress.xp} / ${nextXp}`;
       els.rewardXpFill.style.width = `${xpRatio}%`;
+      const nextItem = ITEMS.find(item => item.level > progress.level);
+      els.rewardNextNote.textContent = nextItem
+        ? `次のごほうび: Lv ${nextItem.level}で「${nextItem.name}」`
+        : '今あるごほうびは全部そろっています。次の追加を待とう。';
       els.inventoryGrid.innerHTML = ITEMS.map(item => {
         const unlocked = progress.items.includes(item.id);
         return `
           <div class="reward-tile ${unlocked ? '' : 'locked'}">
             <strong>${item.name}</strong>
-            <span>${unlocked ? 'もっている' : `Lv ${item.level}`}</span>
+            <span>${unlocked ? item.note : `Lv ${item.level}で解放`}</span>
           </div>
         `;
       }).join('');
@@ -1652,7 +1904,7 @@
         currentInput: '',
         currentStreak: 0,
         weakCountBefore: getWeakProblems().length,
-        earned: { stars: 0, food: 0, items: [] },
+        earned: { stars: 0, food: 0, items: [], levels: [] },
         completed: false,
         startedAt: new Date().toISOString()
       };
@@ -1796,7 +2048,7 @@
     function applyAnswer(problem, correct, usedHint) {
       const stat = progress.stats[problem.key];
       const today = todayKey();
-      const reward = { stars: 0, food: 0, xp: 0, bonus: false, items: [] };
+      const reward = { stars: 0, food: 0, xp: 0, bonus: false, items: [], levels: [] };
       stat.lastPracticed = today;
       progress.totalAnswered += 1;
       progress.lastPracticeDate = today;
@@ -1815,10 +2067,12 @@
         }
         progress.stars += reward.stars;
         progress.food += reward.food;
-        addXp(reward.xp, reward.items);
+        addXp(reward.xp, reward);
+        progress.activeMission.earned = normalizeEarned(progress.activeMission.earned || {});
         progress.activeMission.earned.stars += reward.stars;
         progress.activeMission.earned.food += reward.food;
         progress.activeMission.earned.items.push(...reward.items);
+        progress.activeMission.earned.levels.push(...reward.levels);
       } else {
         stat.wrong += 1;
         stat.streak = 0;
@@ -1827,14 +2081,16 @@
       return reward;
     }
 
-    function addXp(amount, itemBucket) {
+    function addXp(amount, reward) {
       progress.xp += amount;
       while (progress.xp >= xpNeeded(progress.level)) {
+        const from = progress.level;
         progress.xp -= xpNeeded(progress.level);
         progress.level += 1;
-        unlockItems(itemBucket);
+        unlockItems(reward.items);
+        reward.levels.push(buildLevelReward(from, progress.level));
       }
-      unlockItems(itemBucket);
+      unlockItems(reward.items);
     }
 
     function unlockItems(itemBucket) {
@@ -1844,6 +2100,37 @@
           itemBucket.push(item.name);
         }
       });
+    }
+
+    function buildLevelReward(fromLevel, toLevel) {
+      const unlockedItems = ITEMS.filter(item => item.level === toLevel);
+      const title = unlockedItems.length > 0
+        ? `${unlockedItems.map(item => item.name).join('、')}を手に入れた`
+        : levelRewardTitle(toLevel);
+      return {
+        from: fromLevel,
+        to: toLevel,
+        title,
+        items: unlockedItems.map(item => item.name),
+        message: levelRewardMessage(toLevel, unlockedItems)
+      };
+    }
+
+    function levelRewardTitle(level) {
+      if (level >= 10) return '九九マスターへの道が広がった';
+      if (level >= 8) return '葉っぱが大きくなった';
+      if (level >= 6) return '体の色が明るくなった';
+      return 'キャラが少し成長した';
+    }
+
+    function levelRewardMessage(level, unlockedItems) {
+      if (unlockedItems.length > 0) {
+        return `${unlockedItems.map(item => item.note).join('、')}。がんばりが形になったよ。`;
+      }
+      if (level >= 10) return 'ここからは苦手を減らすほど、もっと堂々と育っていきます。';
+      if (level >= 8) return '毎日の練習で、葉っぱも動きも元気になってきました。';
+      if (level >= 6) return '正解を積み重ねて、見た目にも変化が出てきました。';
+      return '次のアイテムまでもう少し。短い練習を続けよう。';
     }
 
     function scheduleRetry(mission, problem) {
@@ -1866,7 +2153,9 @@
       if (correct) {
         const bonus = reward.bonus ? ' 連続ボーナスも入ったよ。' : '';
         const items = reward.items.length > 0 ? ` ${reward.items.join('、')}を手に入れたよ。` : '';
-        body = `星 ${reward.stars}・ごはん ${reward.food}。${bonus}${items}`;
+        const latestLevel = reward.levels.length > 0 ? reward.levels[reward.levels.length - 1] : null;
+        const levels = latestLevel ? ` Lv ${latestLevel.to}になったよ。` : '';
+        body = `星 ${reward.stars}・ごはん ${reward.food}。${bonus}${levels}${items}`;
       } else {
         body = `答えは ${problem.answer}。${buildHint(problem)}。あとでもう一度出ます。`;
       }
@@ -1921,6 +2210,9 @@
       renderResult(mission, summary);
       renderAll();
       showScreen('result');
+      if (mission.earned && Array.isArray(mission.earned.levels) && mission.earned.levels.length > 0) {
+        setTimeout(() => openLevelUp(mission.earned.levels, mission.earned.items), 350);
+      }
     }
 
     function renderResult(mission, summary) {
@@ -1930,6 +2222,20 @@
       els.resultScore.textContent = `${summary.correct} / ${summary.total}`;
       els.resultStars.textContent = `${earned.stars}`;
       els.resultFood.textContent = `${earned.food}`;
+      if (earned.levels && earned.levels.length > 0) {
+        const latest = earned.levels[earned.levels.length - 1];
+        const first = earned.levels[0];
+        const unlocked = uniqueText([...(earned.items || []), ...(latest.items || [])]);
+        const levelText = earned.levels.length > 1 ? `Lv ${first.from} から Lv ${latest.to}` : `Lv ${latest.to}`;
+        els.resultLevelReward.classList.add('open');
+        els.resultLevelReward.innerHTML = `
+          <strong>${levelText} にレベルアップ</strong>
+          <span>${unlocked.length > 0 ? `${unlocked.join('、')}を手に入れた` : latest.title}</span>
+        `;
+      } else {
+        els.resultLevelReward.classList.remove('open');
+        els.resultLevelReward.innerHTML = '';
+      }
 
       if (previous && summary.percent > previous.percent) {
         els.resultMessage.textContent = `昨日より正答率が上がったよ。${summary.percent}%まで進んだ。`;
@@ -1952,6 +2258,113 @@
           </div>
         `;
       }).join('');
+    }
+
+    function openLevelUp(levels, earnedItems) {
+      const latest = levels[levels.length - 1];
+      const unlockedValues = [];
+      levels.forEach(level => {
+        if (Array.isArray(level.items)) unlockedValues.push(...level.items);
+      });
+      if (Array.isArray(earnedItems)) unlockedValues.push(...earnedItems);
+      const unlocked = uniqueText(unlockedValues);
+      els.levelUpTitle.textContent = `Lv ${latest.to}`;
+      els.levelUpMessage.textContent = latest.message || latest.title || 'キャラが成長したよ。';
+      els.levelUnlockList.innerHTML = unlocked.length > 0
+        ? unlocked.map(item => `<div class="unlock-chip">${item}</div>`).join('')
+        : `<div class="unlock-chip">${latest.title}</div>`;
+      els.levelFallback.innerHTML = renderPetSvg('level-up');
+      renderLevelConfetti();
+      els.levelUpModal.classList.add('open');
+      playTone('level');
+      startRiveLevelUp().catch(() => {
+        els.levelUpModal.classList.remove('rive-ready');
+      });
+    }
+
+    function closeLevelUp() {
+      els.levelUpModal.classList.remove('open', 'rive-ready');
+      if (levelUpRiveInstance && typeof levelUpRiveInstance.cleanup === 'function') {
+        levelUpRiveInstance.cleanup();
+      }
+      levelUpRiveInstance = null;
+    }
+
+    function renderLevelConfetti() {
+      const pieces = Array.from({ length: 24 }, (_, index) => {
+        const left = randomInt(2, 98);
+        const delay = (index % 8) * 0.12;
+        const drift = randomInt(-70, 70);
+        return `<span style="left:${left}%; animation-delay:${delay}s; --drift:${drift}px"></span>`;
+      });
+      els.levelConfetti.innerHTML = pieces.join('');
+    }
+
+    async function startRiveLevelUp() {
+      const config = getRiveLevelUpConfig();
+      if (!config.src) return false;
+      await loadRiveRuntime();
+      if (!window.rive || !window.rive.Rive) return false;
+      if (levelUpRiveInstance && typeof levelUpRiveInstance.cleanup === 'function') {
+        levelUpRiveInstance.cleanup();
+      }
+      const options = {
+        src: config.src,
+        canvas: els.levelRiveCanvas,
+        autoplay: true,
+        layout: new window.rive.Layout({
+          fit: window.rive.Fit.Contain,
+          alignment: window.rive.Alignment.Center
+        }),
+        onLoad: () => {
+          requestAnimationFrame(() => {
+            if (levelUpRiveInstance && typeof levelUpRiveInstance.resizeDrawingSurfaceToCanvas === 'function') {
+              levelUpRiveInstance.resizeDrawingSurfaceToCanvas();
+            }
+          });
+        }
+      };
+      if (config.stateMachine) {
+        options.stateMachines = config.stateMachine;
+      } else if (config.animation) {
+        options.animations = config.animation;
+      }
+      levelUpRiveInstance = new window.rive.Rive(options);
+      els.levelUpModal.classList.add('rive-ready');
+      return true;
+    }
+
+    function getRiveLevelUpConfig() {
+      const appConfig = window.KUKU_FIREBASE_CONFIG || {};
+      const riveConfig = appConfig.rive || {};
+      return {
+        src: riveConfig.levelUpSrc || '',
+        stateMachine: riveConfig.levelUpStateMachine || '',
+        animation: riveConfig.levelUpAnimation || ''
+      };
+    }
+
+    function loadRiveRuntime() {
+      if (window.rive && window.rive.Rive) return Promise.resolve(window.rive);
+      if (riveRuntimePromise) return riveRuntimePromise;
+      riveRuntimePromise = new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = RIVE_RUNTIME_URL;
+        script.async = true;
+        script.onload = () => resolve(window.rive);
+        script.onerror = () => reject(new Error('Rive runtime could not be loaded'));
+        document.head.appendChild(script);
+      });
+      return riveRuntimePromise;
+    }
+
+    function uniqueText(values) {
+      const seen = new Set();
+      return values.filter(value => {
+        if (!value || seen.has(value)) return false;
+        seen.add(value);
+        return true;
+      });
     }
 
     function chooseNextProblem(mission) {
@@ -2005,10 +2418,13 @@
       }
       if (pool.length === 0) pool = candidates.slice();
       if (pool.length === 0) pool = PROBLEMS.slice();
-      const weighted = pool.flatMap(problem => {
+      const weighted = [];
+      pool.forEach(problem => {
         const stat = progress.stats[problem.key];
         const score = Math.max(1, Math.round(weaknessScore(problem, stat)));
-        return Array(Math.min(score, 8)).fill(problem);
+        for (let i = 0; i < Math.min(score, 8); i += 1) {
+          weighted.push(problem);
+        }
       });
       return weighted[randomInt(0, weighted.length - 1)];
     }
@@ -2267,6 +2683,14 @@
           gain.gain.exponentialRampToValueAtTime(0.001, now + 0.24);
           osc.start(now);
           osc.stop(now + 0.25);
+        } else if (type === 'level') {
+          osc.frequency.setValueAtTime(392, now);
+          osc.frequency.setValueAtTime(523.25, now + 0.08);
+          osc.frequency.setValueAtTime(783.99, now + 0.17);
+          gain.gain.setValueAtTime(0.09, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.42);
+          osc.start(now);
+          osc.stop(now + 0.44);
         } else if (type === 'wrong') {
           osc.frequency.setValueAtTime(220, now);
           osc.frequency.setValueAtTime(174.61, now + 0.11);

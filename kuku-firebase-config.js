@@ -9,6 +9,11 @@ window.KUKU_FIREBASE_CONFIG = {
   childId: 'ayame',
   childName: 'あやめちゃん',
   parentEmail: 'hamamicchi@gmail.com',
+  rive: {
+    levelUpSrc: '',
+    levelUpStateMachine: '',
+    levelUpAnimation: ''
+  },
   firebaseConfig: {
     apiKey: 'AIzaSyCfXq_Mlldi-eELMMW3h7q4peO6lT_smY8',
     authDomain: 'weakness-quiz-hamamicchi.firebaseapp.com',
