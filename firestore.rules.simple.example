@@ -24,7 +24,8 @@ service cloud.firestore {
     }
 
     match /kukuFamilies/{familyId}/children/{childId} {
-      allow list, get: if parentViewer();
+      allow list: if parentViewer();
+      allow get: if parentViewer() || existingChildOwner();
       allow create: if childOwner();
       allow update: if existingChildOwner() && request.resource.data.ownerUid == resource.data.ownerUid;
       allow delete: if false;
