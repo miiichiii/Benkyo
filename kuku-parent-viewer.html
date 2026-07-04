@@ -95,7 +95,7 @@
 
     .login-grid {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr)) auto auto auto;
+      grid-template-columns: auto minmax(0, 1fr);
       gap: 10px;
       align-items: end;
     }
@@ -337,19 +337,19 @@
     <section class="panel">
       <h2>接続</h2>
       <div class="login-grid">
-        <div class="field">
+        <div class="field hidden">
           <label for="family-code">ファミリーコード</label>
           <input id="family-code" type="text" inputmode="latin" autocomplete="off">
         </div>
-        <div class="field">
+        <div class="field hidden">
           <label for="child-id">子どもID（空なら全員）</label>
           <input id="child-id" type="text" inputmode="latin" autocomplete="off">
         </div>
         <button class="secondary-button" id="google-button" type="button">Googleログイン</button>
         <div class="account-pill" id="account-pill">未ログイン</div>
-        <button class="primary-button" id="load-button" type="button">読み込み</button>
+        <button class="primary-button hidden" id="load-button" type="button">読み込み</button>
       </div>
-      <p class="status" id="status">kuku-firebase-config.js の設定を使います。</p>
+      <p class="status" id="status">Googleログインすると自動で読み込みます。</p>
     </section>
 
     <section class="summary-grid hidden" id="summary-grid">
@@ -430,10 +430,12 @@
 
     const allowedParentEmail = (config.parentEmail || 'hamamicchi@gmail.com').toLowerCase();
     let firebaseReady = false;
+    let firebaseInitPromise = null;
     let firestore = null;
     let auth = null;
     let firebaseFns = null;
     let currentParent = null;
+    let loadedForUid = null;
     let loadedChildren = [];
     let selectedChild = null;
 
@@ -441,31 +443,52 @@
     els.loadButton.addEventListener('click', loadDashboard);
 
     setStatus(config.enabled ? `${allowedParentEmail} のGoogleアカウントでログインしてください。` : 'Firebase設定が未入力です。kuku-firebase-config.js を編集してください。', config.enabled ? '' : 'warn');
+    if (config.enabled) {
+      ensureFirebase().catch(error => {
+        setStatus(`Firebase初期化に失敗しました: ${error.message}`, 'warn');
+      });
+    }
 
     async function ensureFirebase() {
       if (firebaseReady) return;
-      if (!config.enabled || !firebaseConfig.apiKey || String(firebaseConfig.apiKey).includes('YOUR_')) {
-        throw new Error('Firebase設定が未入力です。');
-      }
-      const [
-        { initializeApp },
-        { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged },
-        { getFirestore, collection, getDocs, doc, getDoc }
-      ] = await Promise.all([
-        import('https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js'),
-        import('https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js'),
-        import('https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js')
-      ]);
+      if (firebaseInitPromise) return firebaseInitPromise;
+      firebaseInitPromise = (async () => {
+        if (!config.enabled || !firebaseConfig.apiKey || String(firebaseConfig.apiKey).includes('YOUR_')) {
+          throw new Error('Firebase設定が未入力です。');
+        }
+        const [
+          { initializeApp },
+          { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged },
+          { getFirestore, collection, getDocs, doc, getDoc }
+        ] = await Promise.all([
+          import('https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js'),
+          import('https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js'),
+          import('https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js')
+        ]);
 
-      const app = initializeApp(firebaseConfig);
-      auth = getAuth(app);
-      firestore = getFirestore(app);
-      firebaseFns = { collection, getDocs, doc, getDoc, GoogleAuthProvider, signInWithPopup, signOut };
-      onAuthStateChanged(auth, user => {
-        currentParent = user && isAllowedParent(user) ? user : null;
-        renderAccount(user);
-      });
-      firebaseReady = true;
+        const app = initializeApp(firebaseConfig);
+        auth = getAuth(app);
+        firestore = getFirestore(app);
+        firebaseFns = { collection, getDocs, doc, getDoc, GoogleAuthProvider, signInWithPopup, signOut };
+        onAuthStateChanged(auth, user => {
+          currentParent = user && isAllowedParent(user) ? user : null;
+          renderAccount(user);
+          if (currentParent) {
+            autoLoadDashboard();
+          } else {
+            loadedForUid = null;
+            els.summaryGrid.classList.add('hidden');
+            els.dashboard.classList.add('hidden');
+          }
+        });
+        firebaseReady = true;
+      })();
+      try {
+        await firebaseInitPromise;
+      } catch (error) {
+        firebaseInitPromise = null;
+        throw error;
+      }
     }
 
     async function signInParent() {
@@ -474,6 +497,7 @@
         if (auth.currentUser && isAllowedParent(auth.currentUser)) {
           await firebaseFns.signOut(auth);
           currentParent = null;
+          loadedForUid = null;
           renderAccount(null);
           setStatus(`${allowedParentEmail} のGoogleアカウントでログインしてください。`, '');
           return;
@@ -491,10 +515,17 @@
         }
         currentParent = credential.user;
         renderAccount(currentParent);
-        setStatus(`${currentParent.email} でログインしました。読み込みできます。`, 'ok');
+        setStatus(`${currentParent.email} でログインしました。読み込み中です。`, 'ok');
+        await autoLoadDashboard();
       } catch (error) {
         setStatus(`Googleログインに失敗しました: ${error.message}`, 'warn');
       }
+    }
+
+    async function autoLoadDashboard() {
+      if (!currentParent || loadedForUid === currentParent.uid) return;
+      loadedForUid = currentParent.uid;
+      await loadDashboard();
     }
 
     function isAllowedParent(user) {
@@ -515,8 +546,8 @@
     }
 
     async function loadDashboard() {
-      const familyCode = normalizeCode(els.familyCode.value || '');
-      const childId = normalizeCode(els.childId.value || '');
+      const familyCode = normalizeCode(els.familyCode.value || config.familyCode || '');
+      const childId = normalizeCode(els.childId.value || config.childId || '');
       if (!familyCode) {
         setStatus('ファミリーコードを入れてください。', 'warn');
         return;
