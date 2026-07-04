@@ -2428,6 +2428,9 @@
             detail: { progress: remote.progress }
           }));
           sendStatus('クラウドの記録を読み込みました。', 'ok', new Date().toISOString());
+        } else {
+          await pushProgress(window.KukuQuest.getCloudSnapshot(), settings);
+          sendStatus('クラウドに記録を保存しました。', 'ok', new Date().toISOString());
         }
       }
 

@@ -13,7 +13,7 @@ service cloud.firestore {
 
     function anonymousChild() {
       return signedIn()
-        && request.auth.token.email == null;
+        && request.auth.token.firebase.sign_in_provider == 'anonymous';
     }
 
     function ayameRecord(familyId, childId) {
