@@ -1025,8 +1025,8 @@
             <h2 id="cloud-title">クラウド同期</h2>
             <span class="stat-pill" id="cloud-badge">未接続</span>
           </div>
-          <p class="cloud-status" id="cloud-status">Firebase設定を入れると、子どものスマホと親ビューアで同じ記録を見られます。</p>
-          <div class="cloud-grid">
+          <p class="cloud-status" id="cloud-status">練習すると自動で親ビューアに反映されます。</p>
+          <div class="cloud-grid hidden">
             <div class="field">
               <label for="family-code">ファミリーコード</label>
               <input id="family-code" type="text" inputmode="latin" autocomplete="off" placeholder="例: hamada-kuku">
@@ -1040,7 +1040,7 @@
               <input id="child-name" type="text" autocomplete="off" placeholder="あやめちゃん">
             </div>
           </div>
-          <div class="button-row">
+          <div class="button-row hidden">
             <button class="primary-button" id="cloud-connect" type="button">接続して同期</button>
             <button class="secondary-button" id="cloud-pull" type="button">クラウドから読み込み</button>
             <button class="secondary-button" id="cloud-disconnect" type="button">切断</button>
@@ -1326,8 +1326,15 @@
       };
       try {
         const raw = localStorage.getItem(CLOUD_SETTINGS_KEY);
-        if (!raw) return defaults;
-        return { ...defaults, ...JSON.parse(raw) };
+        const saved = raw ? JSON.parse(raw) : {};
+        const merged = { ...defaults, ...saved };
+        if (config.enabled) {
+          merged.enabled = true;
+          merged.familyCode = config.familyCode || merged.familyCode;
+          merged.childId = config.childId || merged.childId;
+          merged.childName = config.childName || merged.childName;
+        }
+        return merged;
       } catch (error) {
         return defaults;
       }
@@ -1469,7 +1476,7 @@
       els.familyCode.value = cloudSettings.familyCode || '';
       els.childId.value = cloudSettings.childId || 'ayame';
       els.childNameInput.value = cloudSettings.childName || CHILD_NAME;
-      els.cloudBadge.textContent = cloudSettings.enabled ? '接続中' : '未接続';
+      els.cloudBadge.textContent = cloudSettings.enabled ? '自動同期' : '未接続';
       els.cloudBadge.style.background = cloudSettings.enabled ? '#edf9f2' : '';
       els.cloudBadge.style.color = cloudSettings.enabled ? '#17623b' : '';
 
@@ -1479,10 +1486,10 @@
       } else if (cloudSettings.enabled) {
         els.cloudStatus.className = 'cloud-status ok';
         const suffix = cloudSettings.lastSync ? ` 最終同期: ${formatShortDateTime(cloudSettings.lastSync)}` : '';
-        els.cloudStatus.textContent = `クラウド同期中です。親ビューアでも記録を見られます。${suffix}`;
+        els.cloudStatus.textContent = `練習すると自動で親ビューアに反映されます。${suffix}`;
       } else {
         els.cloudStatus.className = 'cloud-status';
-        els.cloudStatus.textContent = 'ファミリーコードを入れて接続すると、この端末の記録をクラウドへ保存します。';
+        els.cloudStatus.textContent = 'この端末だけに保存しています。';
       }
     }
 

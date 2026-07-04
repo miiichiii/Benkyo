@@ -11,29 +11,24 @@ service cloud.firestore {
         && request.auth.token.email == 'hamamicchi@gmail.com';
     }
 
-    function childOwner() {
+    function anonymousChild() {
       return signedIn()
-        && request.auth.token.email == null
-        && request.resource.data.ownerUid == request.auth.uid;
+        && request.auth.token.email == null;
     }
 
-    function existingChildOwner() {
-      return signedIn()
-        && request.auth.token.email == null
-        && resource.data.ownerUid == request.auth.uid;
+    function ayameRecord(familyId, childId) {
+      return familyId == 'hamada-kuku' && childId == 'ayame';
     }
 
     match /kukuFamilies/{familyId}/children/{childId} {
       allow list: if parentViewer();
-      allow get: if parentViewer() || (signedIn() && request.auth.token.email == null);
-      allow create: if childOwner();
-      allow update: if existingChildOwner() && request.resource.data.ownerUid == resource.data.ownerUid;
+      allow get: if parentViewer() || (anonymousChild() && ayameRecord(familyId, childId));
+      allow create, update: if anonymousChild() && ayameRecord(familyId, childId);
       allow delete: if false;
 
       match /attempts/{attemptId} {
         allow list, get: if parentViewer();
-        allow create: if childOwner();
-        allow update: if existingChildOwner() && request.resource.data.ownerUid == resource.data.ownerUid;
+        allow create, update: if anonymousChild() && ayameRecord(familyId, childId);
         allow delete: if false;
       }
     }
@@ -42,6 +37,5 @@ service cloud.firestore {
 
 // Home-use rules for this version:
 // - Parent viewer reads only after Google login as hamamicchi@gmail.com.
-// - Child app writes with Firebase Anonymous Auth and an ownerUid.
-// - Anonymous child users can read a child document if they know the family code
-//   and child ID, but they can update only documents owned by their UID.
+// - Child app writes automatically with Firebase Anonymous Auth.
+// - Writes are limited to /kukuFamilies/hamada-kuku/children/ayame.
