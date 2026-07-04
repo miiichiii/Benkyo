@@ -25,7 +25,7 @@ service cloud.firestore {
 
     match /kukuFamilies/{familyId}/children/{childId} {
       allow list: if parentViewer();
-      allow get: if parentViewer() || existingChildOwner();
+      allow get: if parentViewer() || (signedIn() && request.auth.token.email == null);
       allow create: if childOwner();
       allow update: if existingChildOwner() && request.resource.data.ownerUid == resource.data.ownerUid;
       allow delete: if false;
@@ -43,5 +43,5 @@ service cloud.firestore {
 // Home-use rules for this version:
 // - Parent viewer reads only after Google login as hamamicchi@gmail.com.
 // - Child app writes with Firebase Anonymous Auth and an ownerUid.
-// - A second child device with a different anonymous UID will not be able to
-//   read/update the first device's child document under these rules.
+// - Anonymous child users can read a child document if they know the family code
+//   and child ID, but they can update only documents owned by their UID.
