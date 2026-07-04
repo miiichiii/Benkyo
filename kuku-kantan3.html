@@ -1,0 +1,2492 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="data:,">
+  <title>九九クエスト</title>
+  <style>
+    :root {
+      --bg: #f4f8fb;
+      --surface: #ffffff;
+      --surface-2: #eef6f7;
+      --ink: #17212b;
+      --muted: #66717f;
+      --line: #d8e2ea;
+      --teal: #0f9f9a;
+      --blue: #276ef1;
+      --coral: #ef6461;
+      --gold: #f2b84b;
+      --green: #35a867;
+      --shadow: 0 12px 32px rgba(23, 33, 43, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      min-height: 100%;
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 12% 10%, rgba(15, 159, 154, 0.12), transparent 28rem),
+        linear-gradient(180deg, #f8fbfd 0%, var(--bg) 58%, #e9f2f4 100%);
+      font-family: -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN", "Yu Gothic", "Noto Sans JP", sans-serif;
+      line-height: 1.5;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      border: 0;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    button:disabled {
+      cursor: default;
+      opacity: 0.55;
+    }
+
+    .app {
+      min-height: 100vh;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      border-bottom: 1px solid rgba(216, 226, 234, 0.9);
+      background: rgba(248, 251, 253, 0.92);
+      backdrop-filter: blur(14px);
+    }
+
+    .topbar-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: min(100%, 980px);
+      margin: 0 auto;
+      padding: 10px 14px;
+      gap: 12px;
+    }
+
+    .brand-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      padding: 7px 9px;
+      color: var(--ink);
+      background: transparent;
+      border-radius: 8px;
+      font-weight: 800;
+    }
+
+    .brand-mark {
+      display: grid;
+      place-items: center;
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      color: #fff;
+      background: var(--teal);
+      box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.14);
+    }
+
+    .brand-mark svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .top-stats {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .stat-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 58px;
+      height: 34px;
+      padding: 0 10px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: var(--surface);
+      color: var(--ink);
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    main {
+      width: min(100%, 980px);
+      margin: 0 auto;
+      padding: 16px 14px 38px;
+    }
+
+    .screen {
+      display: none;
+    }
+
+    .screen.active {
+      display: block;
+    }
+
+    .home-hero {
+      display: grid;
+      grid-template-columns: minmax(240px, 0.85fr) minmax(300px, 1.15fr);
+      gap: 16px;
+      align-items: stretch;
+      margin-bottom: 16px;
+    }
+
+    .pet-stage,
+    .mission-panel,
+    .quiz-panel,
+    .result-panel,
+    .rewards-panel,
+    .memo-panel {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+
+    .pet-stage {
+      position: relative;
+      display: grid;
+      place-items: center;
+      min-height: 280px;
+      padding: 18px;
+      overflow: hidden;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.78), rgba(238, 246, 247, 0.92)),
+        repeating-linear-gradient(90deg, rgba(39, 110, 241, 0.05) 0 16px, transparent 16px 32px);
+    }
+
+    .level-badge {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 34px;
+      min-width: 76px;
+      padding: 0 11px;
+      border-radius: 999px;
+      background: var(--ink);
+      color: #fff;
+      font-weight: 900;
+    }
+
+    .pet-svg {
+      width: min(78%, 250px);
+      max-height: 250px;
+      overflow: visible;
+    }
+
+    .pet-body {
+      transform-origin: 160px 250px;
+      animation: pet-breathe 3.2s ease-in-out infinite;
+    }
+
+    .pet-leaf {
+      transform-origin: 160px 104px;
+      animation: pet-leaf 2.8s ease-in-out infinite;
+    }
+
+    .pet-eye-close {
+      animation: blink 4.5s infinite;
+      transform-origin: center;
+    }
+
+    @keyframes pet-breathe {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-3px) scale(1.015); }
+    }
+
+    @keyframes pet-leaf {
+      0%, 100% { transform: rotate(-4deg); }
+      50% { transform: rotate(6deg); }
+    }
+
+    @keyframes blink {
+      0%, 92%, 100% { opacity: 0; }
+      94%, 97% { opacity: 1; }
+    }
+
+    .mission-panel {
+      padding: 20px;
+    }
+
+    .eyebrow {
+      margin: 0 0 6px;
+      color: var(--teal);
+      font-size: 0.86rem;
+      font-weight: 900;
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin-top: 0;
+    }
+
+    h1 {
+      margin-bottom: 8px;
+      font-size: clamp(2rem, 5.5vw, 3.4rem);
+      line-height: 1.05;
+    }
+
+    h2 {
+      margin-bottom: 12px;
+      font-size: 1.35rem;
+      line-height: 1.25;
+    }
+
+    h3 {
+      margin-bottom: 8px;
+      font-size: 1.05rem;
+    }
+
+    .home-message {
+      min-height: 48px;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .xp-wrap {
+      margin: 16px 0;
+    }
+
+    .xp-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 7px;
+      color: var(--muted);
+      font-size: 0.92rem;
+      font-weight: 800;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 12px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: #dbe7ec;
+    }
+
+    .progress-fill {
+      width: 0%;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--teal), var(--green));
+      transition: width 220ms ease;
+    }
+
+    .primary-button,
+    .secondary-button,
+    .tool-button,
+    .key-button,
+    .choice-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 50px;
+      padding: 12px 14px;
+      border-radius: 8px;
+      font-weight: 900;
+      transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
+    }
+
+    .primary-button:active,
+    .secondary-button:active,
+    .tool-button:active,
+    .key-button:active,
+    .choice-button:active {
+      transform: scale(0.98);
+    }
+
+    .primary-button {
+      width: 100%;
+      color: #fff;
+      background: var(--blue);
+      box-shadow: 0 8px 18px rgba(39, 110, 241, 0.26);
+    }
+
+    .secondary-button {
+      color: var(--ink);
+      background: #e8f0f4;
+      border: 1px solid var(--line);
+    }
+
+    .tool-button {
+      flex-direction: column;
+      align-items: flex-start;
+      min-height: 92px;
+      width: 100%;
+      border: 1px solid var(--line);
+      background: var(--surface);
+      color: var(--ink);
+      box-shadow: 0 7px 18px rgba(23, 33, 43, 0.07);
+      text-align: left;
+    }
+
+    .tool-button strong {
+      display: block;
+      font-size: 1.12rem;
+      line-height: 1.2;
+    }
+
+    .tool-button span {
+      display: block;
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 0.86rem;
+      font-weight: 800;
+      line-height: 1.35;
+    }
+
+    .tool-button.accent-teal {
+      border-top: 5px solid var(--teal);
+    }
+
+    .tool-button.accent-coral {
+      border-top: 5px solid var(--coral);
+    }
+
+    .tool-button.accent-gold {
+      border-top: 5px solid var(--gold);
+    }
+
+    .tool-button.accent-green {
+      border-top: 5px solid var(--green);
+    }
+
+    .action-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .memo-panel {
+      padding: 16px;
+    }
+
+    .cloud-panel {
+      margin-top: 16px;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+
+    .cloud-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin: 12px 0;
+    }
+
+    .field {
+      display: grid;
+      gap: 6px;
+    }
+
+    .field label {
+      color: var(--muted);
+      font-size: 0.82rem;
+      font-weight: 900;
+    }
+
+    .field input {
+      width: 100%;
+      min-height: 46px;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fbfdfe;
+      color: var(--ink);
+      font-weight: 850;
+    }
+
+    .cloud-status {
+      min-height: 24px;
+      color: var(--muted);
+      font-weight: 800;
+    }
+
+    .cloud-status.ok {
+      color: #17623b;
+    }
+
+    .cloud-status.warn {
+      color: #8b211f;
+    }
+
+    .memo-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .memo-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .memo-row {
+      display: grid;
+      grid-template-columns: 84px 1fr auto;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fbfdfe;
+    }
+
+    .memo-row strong {
+      font-size: 1.05rem;
+    }
+
+    .memo-row span {
+      color: var(--muted);
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+
+    .mini-meter {
+      height: 8px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: #e7edf0;
+    }
+
+    .mini-meter div {
+      width: 20%;
+      height: 100%;
+      border-radius: inherit;
+      background: var(--coral);
+    }
+
+    .empty-note {
+      margin: 0;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .quiz-panel {
+      padding: 14px;
+    }
+
+    .quiz-top {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .counter-pill {
+      justify-self: center;
+      min-width: 98px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: var(--ink);
+      color: #fff;
+      font-weight: 900;
+      text-align: center;
+    }
+
+    .problem-card {
+      display: grid;
+      gap: 12px;
+      margin-bottom: 12px;
+      padding: 18px;
+      border-radius: 8px;
+      background: linear-gradient(180deg, #ffffff, #eef6f7);
+      border: 1px solid var(--line);
+    }
+
+    .source-label {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: fit-content;
+      min-height: 30px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      color: #fff;
+      background: var(--teal);
+      font-size: 0.84rem;
+      font-weight: 900;
+    }
+
+    .source-label.retry {
+      background: var(--coral);
+    }
+
+    .source-label.review {
+      background: var(--gold);
+      color: #3d2a00;
+    }
+
+    .question-line {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 88px;
+      font-size: clamp(2.9rem, 14vw, 5.4rem);
+      font-weight: 950;
+      line-height: 1;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .answer-display {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 58px;
+      border: 2px solid var(--line);
+      border-radius: 8px;
+      background: var(--surface);
+      font-size: 2rem;
+      font-weight: 950;
+    }
+
+    .answer-display.empty {
+      color: #b4c0c9;
+    }
+
+    .tenkey-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 9px;
+      margin-bottom: 12px;
+    }
+
+    .key-button {
+      min-height: 62px;
+      color: var(--ink);
+      background: var(--surface);
+      border: 1px solid var(--line);
+      box-shadow: 0 5px 12px rgba(23, 33, 43, 0.08);
+      font-size: 1.45rem;
+    }
+
+    .key-button.ok {
+      color: #fff;
+      background: var(--green);
+      border-color: var(--green);
+    }
+
+    .key-button.clear {
+      color: #fff;
+      background: var(--coral);
+      border-color: var(--coral);
+    }
+
+    .quiz-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .choice-panel {
+      display: none;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .choice-panel.open {
+      display: grid;
+    }
+
+    .choice-button {
+      min-height: 58px;
+      color: var(--ink);
+      background: #fff9ea;
+      border: 1px solid #edd391;
+      font-size: 1.35rem;
+    }
+
+    .feedback-panel {
+      display: none;
+      padding: 14px;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      background: #f8fbfd;
+    }
+
+    .feedback-panel.open {
+      display: block;
+    }
+
+    .feedback-title {
+      margin-bottom: 6px;
+      font-size: 1.2rem;
+      font-weight: 950;
+    }
+
+    .feedback-panel.correct {
+      border-color: rgba(53, 168, 103, 0.45);
+      background: #effaf3;
+    }
+
+    .feedback-panel.wrong {
+      border-color: rgba(239, 100, 97, 0.45);
+      background: #fff2f1;
+    }
+
+    .feedback-panel p {
+      margin-bottom: 0;
+      color: var(--muted);
+      font-weight: 750;
+    }
+
+    .result-panel,
+    .rewards-panel {
+      padding: 18px;
+    }
+
+    .result-score {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin: 14px 0;
+    }
+
+    .score-tile,
+    .reward-tile {
+      min-height: 82px;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fbfdfe;
+    }
+
+    .score-tile strong,
+    .reward-tile strong {
+      display: block;
+      font-size: 1.5rem;
+      line-height: 1.15;
+    }
+
+    .score-tile span,
+    .reward-tile span {
+      display: block;
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 0.86rem;
+      font-weight: 800;
+    }
+
+    .answer-review {
+      display: grid;
+      gap: 8px;
+      margin: 14px 0;
+    }
+
+    .answer-row {
+      display: grid;
+      grid-template-columns: 36px 1fr auto;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fbfdfe;
+      font-weight: 850;
+    }
+
+    .answer-row .mark {
+      display: grid;
+      place-items: center;
+      width: 30px;
+      height: 30px;
+      border-radius: 999px;
+      color: #fff;
+      font-weight: 950;
+    }
+
+    .answer-row.correct .mark {
+      background: var(--green);
+    }
+
+    .answer-row.wrong .mark {
+      background: var(--coral);
+    }
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .button-row > button {
+      flex: 1 1 180px;
+    }
+
+    .rewards-layout {
+      display: grid;
+      grid-template-columns: minmax(220px, 0.8fr) minmax(280px, 1.2fr);
+      gap: 16px;
+      align-items: start;
+    }
+
+    .inventory-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .reward-tile.locked {
+      color: #7b8791;
+      background: #eef2f4;
+    }
+
+    .table-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 40;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      background: rgba(23, 33, 43, 0.5);
+    }
+
+    .table-modal.open {
+      display: flex;
+    }
+
+    .modal-box {
+      width: min(100%, 760px);
+      max-height: min(82vh, 760px);
+      overflow: auto;
+      border-radius: 8px;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+
+    .modal-head {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px;
+      border-bottom: 1px solid var(--line);
+      background: var(--surface);
+    }
+
+    .kuku-table {
+      display: grid;
+      grid-template-columns: repeat(9, minmax(48px, 1fr));
+      gap: 1px;
+      padding: 14px;
+      background: var(--line);
+    }
+
+    .kuku-cell {
+      display: grid;
+      place-items: center;
+      min-height: 46px;
+      padding: 6px;
+      background: #fff;
+      font-weight: 850;
+      text-align: center;
+    }
+
+    .kuku-cell.mastered {
+      background: #edf9f2;
+      color: #17623b;
+    }
+
+    .kuku-cell.weak {
+      background: #fff0ef;
+      color: #8b211f;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    @media (max-width: 760px) {
+      .topbar-inner {
+        padding: 8px 10px;
+      }
+
+      .brand-button span:last-child {
+        display: none;
+      }
+
+      .stat-pill {
+        min-width: 50px;
+        height: 32px;
+        padding: 0 8px;
+        font-size: 0.9rem;
+      }
+
+      main {
+        padding: 12px 10px 30px;
+      }
+
+      .home-hero,
+      .rewards-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .pet-stage {
+        min-height: 220px;
+      }
+
+      .pet-svg {
+        width: min(68%, 210px);
+      }
+
+      .mission-panel {
+        padding: 16px;
+      }
+
+      .action-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      .tool-button {
+        min-height: 86px;
+      }
+
+      .memo-row {
+        grid-template-columns: 72px 1fr;
+      }
+
+      .memo-row .mini-meter {
+        grid-column: 1 / -1;
+      }
+
+      .cloud-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .quiz-top {
+        grid-template-columns: auto 1fr;
+      }
+
+      .quiz-top .counter-pill {
+        justify-self: end;
+      }
+
+      .quiz-top .top-progress {
+        grid-column: 1 / -1;
+      }
+
+      .question-line {
+        min-height: 74px;
+      }
+
+      .result-score,
+      .inventory-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .kuku-table {
+        grid-template-columns: repeat(3, minmax(72px, 1fr));
+      }
+    }
+
+    @media (max-width: 390px) {
+      .action-grid,
+      .quiz-actions,
+      .choice-panel {
+        grid-template-columns: 1fr;
+      }
+
+      .top-stats {
+        gap: 5px;
+      }
+
+      .stat-pill {
+        min-width: 44px;
+        padding: 0 6px;
+      }
+
+      .answer-row {
+        grid-template-columns: 32px 1fr;
+      }
+
+      .answer-row span:last-child {
+        grid-column: 2;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="topbar-inner">
+        <button class="brand-button" id="brand-home" type="button">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24" role="img">
+              <path d="M12 3c3 0 5 2 5 5 0 4-5 10-5 10S7 12 7 8c0-3 2-5 5-5Z" fill="currentColor" opacity=".9"/>
+              <circle cx="12" cy="8" r="2.2" fill="#fff"/>
+            </svg>
+          </span>
+          <span>九九クエスト</span>
+        </button>
+        <div class="top-stats" aria-label="進み具合">
+          <span class="stat-pill" id="top-level">Lv 1</span>
+          <span class="stat-pill" id="top-stars">星 0</span>
+          <span class="stat-pill" id="top-food">ごはん 0</span>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="screen active" id="home-screen">
+        <div class="home-hero">
+          <div class="pet-stage" id="home-pet-stage">
+            <span class="level-badge" id="home-level-badge">Lv 1</span>
+            <div id="home-pet"></div>
+          </div>
+
+          <div class="mission-panel">
+            <p class="eyebrow">今日のミッション</p>
+            <h1>九九クエスト</h1>
+            <p class="home-message" id="home-message">あやめちゃんの今日の練習を始めよう。</p>
+            <div class="xp-wrap">
+              <div class="xp-row">
+                <span id="xp-label">次のレベルまで</span>
+                <span id="xp-count">0 / 18</span>
+              </div>
+              <div class="progress-track" aria-hidden="true">
+                <div class="progress-fill" id="home-xp-fill"></div>
+              </div>
+            </div>
+            <button class="primary-button" id="daily-button" type="button">今日のミッション</button>
+          </div>
+        </div>
+
+        <div class="action-grid">
+          <button class="tool-button accent-teal" id="action-daily" type="button">
+            <strong>今日のミッション</strong>
+            <span id="daily-caption">12問</span>
+          </button>
+          <button class="tool-button accent-coral" id="action-weak" type="button">
+            <strong>苦手だけ</strong>
+            <span id="weak-caption">まちがえた九九</span>
+          </button>
+          <button class="tool-button accent-gold" id="action-table" type="button">
+            <strong>九九表</strong>
+            <span>1から9の段</span>
+          </button>
+          <button class="tool-button accent-green" id="action-rewards" type="button">
+            <strong>ごほうび</strong>
+            <span id="reward-caption">育成とアイテム</span>
+          </button>
+        </div>
+
+        <section class="memo-panel" aria-labelledby="memo-title">
+          <div class="memo-header">
+            <h2 id="memo-title">苦手メモ</h2>
+            <span class="stat-pill" id="weak-count">0こ</span>
+          </div>
+          <div class="memo-list" id="memo-list"></div>
+        </section>
+
+        <section class="cloud-panel" aria-labelledby="cloud-title">
+          <div class="memo-header">
+            <h2 id="cloud-title">クラウド同期</h2>
+            <span class="stat-pill" id="cloud-badge">未接続</span>
+          </div>
+          <p class="cloud-status" id="cloud-status">Firebase設定を入れると、子どものスマホと親ビューアで同じ記録を見られます。</p>
+          <div class="cloud-grid">
+            <div class="field">
+              <label for="family-code">ファミリーコード</label>
+              <input id="family-code" type="text" inputmode="latin" autocomplete="off" placeholder="例: hamada-kuku">
+            </div>
+            <div class="field">
+              <label for="child-id">子どもID</label>
+              <input id="child-id" type="text" inputmode="latin" autocomplete="off" placeholder="例: ayame">
+            </div>
+            <div class="field">
+              <label for="child-name">表示名</label>
+              <input id="child-name" type="text" autocomplete="off" placeholder="あやめちゃん">
+            </div>
+          </div>
+          <div class="button-row">
+            <button class="primary-button" id="cloud-connect" type="button">接続して同期</button>
+            <button class="secondary-button" id="cloud-pull" type="button">クラウドから読み込み</button>
+            <button class="secondary-button" id="cloud-disconnect" type="button">切断</button>
+          </div>
+        </section>
+      </section>
+
+      <section class="screen" id="quiz-screen">
+        <div class="quiz-panel">
+          <div class="quiz-top">
+            <button class="secondary-button" id="quiz-home" type="button">ホーム</button>
+            <div class="counter-pill" id="quiz-counter">1 / 12</div>
+            <div class="top-progress">
+              <div class="progress-track" aria-hidden="true">
+                <div class="progress-fill" id="quiz-progress"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="problem-card">
+            <span class="source-label" id="source-label">ミッション</span>
+            <div class="question-line" id="question-line">6 × 7</div>
+            <div class="answer-display empty" id="answer-display">答え</div>
+          </div>
+
+          <div class="tenkey-grid" aria-label="テンキー">
+            <button class="key-button" type="button" data-num="1">1</button>
+            <button class="key-button" type="button" data-num="2">2</button>
+            <button class="key-button" type="button" data-num="3">3</button>
+            <button class="key-button" type="button" data-num="4">4</button>
+            <button class="key-button" type="button" data-num="5">5</button>
+            <button class="key-button" type="button" data-num="6">6</button>
+            <button class="key-button" type="button" data-num="7">7</button>
+            <button class="key-button" type="button" data-num="8">8</button>
+            <button class="key-button" type="button" data-num="9">9</button>
+            <button class="key-button clear" id="clear-key" type="button">C</button>
+            <button class="key-button" type="button" data-num="0">0</button>
+            <button class="key-button ok" id="ok-key" type="button">OK</button>
+          </div>
+
+          <div class="quiz-actions">
+            <button class="secondary-button" id="hint-button" type="button">4択ヒント</button>
+            <button class="primary-button" id="next-button" type="button" disabled>次へ</button>
+          </div>
+
+          <div class="choice-panel" id="choice-panel"></div>
+          <div class="feedback-panel" id="feedback-panel"></div>
+        </div>
+      </section>
+
+      <section class="screen" id="result-screen">
+        <div class="result-panel">
+          <p class="eyebrow">ミッション結果</p>
+          <h1 id="result-title">今日の練習</h1>
+          <p class="home-message" id="result-message"></p>
+
+          <div class="result-score">
+            <div class="score-tile">
+              <strong id="result-score">0 / 12</strong>
+              <span>正解数</span>
+            </div>
+            <div class="score-tile">
+              <strong id="result-stars">0</strong>
+              <span>星</span>
+            </div>
+            <div class="score-tile">
+              <strong id="result-food">0</strong>
+              <span>ごはん</span>
+            </div>
+          </div>
+
+          <div class="answer-review" id="answer-review"></div>
+
+          <div class="button-row">
+            <button class="primary-button" id="result-rewards" type="button">ごほうびを見る</button>
+            <button class="secondary-button" id="result-again" type="button">もう一回</button>
+            <button class="secondary-button" id="result-home" type="button">ホーム</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen" id="rewards-screen">
+        <div class="rewards-panel">
+          <p class="eyebrow">ごほうび</p>
+          <h1>育成</h1>
+          <div class="rewards-layout">
+            <div class="pet-stage">
+              <span class="level-badge" id="reward-level-badge">Lv 1</span>
+              <div id="reward-pet"></div>
+            </div>
+
+            <div>
+              <h2 id="reward-summary">星 0・ごはん 0</h2>
+              <div class="xp-wrap">
+                <div class="xp-row">
+                  <span id="reward-xp-label">次のレベルまで</span>
+                  <span id="reward-xp-count">0 / 18</span>
+                </div>
+                <div class="progress-track" aria-hidden="true">
+                  <div class="progress-fill" id="reward-xp-fill"></div>
+                </div>
+              </div>
+              <div class="inventory-grid" id="inventory-grid"></div>
+              <div class="button-row">
+                <button class="primary-button" id="reward-daily" type="button">今日のミッション</button>
+                <button class="secondary-button" id="reward-home" type="button">ホーム</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="table-modal" id="table-modal" role="dialog" aria-modal="true" aria-labelledby="table-title">
+    <div class="modal-box">
+      <div class="modal-head">
+        <h2 id="table-title">九九表</h2>
+        <button class="secondary-button" id="close-table" type="button">閉じる</button>
+      </div>
+      <div class="kuku-table" id="kuku-table"></div>
+    </div>
+  </div>
+
+  <script src="kuku-firebase-config.js"></script>
+  <script>
+    const CHILD_NAME = 'あやめちゃん';
+    const STORAGE_KEY = 'kukuQuestProgressV1';
+    const CLOUD_SETTINGS_KEY = 'kukuQuestCloudSettingsV1';
+    const MISSION_TOTAL = 12;
+    const VERSION = 1;
+
+    const ITEMS = [
+      { id: 'ribbon', name: '赤いリボン', level: 2 },
+      { id: 'scarf', name: 'みどりのスカーフ', level: 3 },
+      { id: 'cap', name: '青いぼうし', level: 4 },
+      { id: 'badge', name: '星バッジ', level: 5 },
+      { id: 'bag', name: 'たんけんバッグ', level: 7 },
+      { id: 'crown', name: '小さな王冠', level: 9 }
+    ];
+
+    const PROBLEMS = [];
+    for (let a = 1; a <= 9; a++) {
+      for (let b = 1; b <= 9; b++) {
+        PROBLEMS.push({ a, b, key: `${a}x${b}`, answer: a * b });
+      }
+    }
+
+    let progress = loadProgress();
+    let cloudSettings = loadCloudSettings();
+    let screen = 'home';
+    let inputValue = '';
+    let answerLocked = false;
+    let hintUsed = false;
+    let lastResultMission = null;
+    let audioContext = null;
+
+    const els = {
+      homeScreen: document.getElementById('home-screen'),
+      quizScreen: document.getElementById('quiz-screen'),
+      resultScreen: document.getElementById('result-screen'),
+      rewardsScreen: document.getElementById('rewards-screen'),
+      topLevel: document.getElementById('top-level'),
+      topStars: document.getElementById('top-stars'),
+      topFood: document.getElementById('top-food'),
+      homeLevelBadge: document.getElementById('home-level-badge'),
+      rewardLevelBadge: document.getElementById('reward-level-badge'),
+      homePet: document.getElementById('home-pet'),
+      rewardPet: document.getElementById('reward-pet'),
+      homeMessage: document.getElementById('home-message'),
+      xpLabel: document.getElementById('xp-label'),
+      xpCount: document.getElementById('xp-count'),
+      homeXpFill: document.getElementById('home-xp-fill'),
+      dailyButton: document.getElementById('daily-button'),
+      dailyCaption: document.getElementById('daily-caption'),
+      weakCaption: document.getElementById('weak-caption'),
+      rewardCaption: document.getElementById('reward-caption'),
+      weakCount: document.getElementById('weak-count'),
+      memoList: document.getElementById('memo-list'),
+      cloudBadge: document.getElementById('cloud-badge'),
+      cloudStatus: document.getElementById('cloud-status'),
+      familyCode: document.getElementById('family-code'),
+      childId: document.getElementById('child-id'),
+      childNameInput: document.getElementById('child-name'),
+      quizCounter: document.getElementById('quiz-counter'),
+      quizProgress: document.getElementById('quiz-progress'),
+      sourceLabel: document.getElementById('source-label'),
+      questionLine: document.getElementById('question-line'),
+      answerDisplay: document.getElementById('answer-display'),
+      choicePanel: document.getElementById('choice-panel'),
+      feedbackPanel: document.getElementById('feedback-panel'),
+      nextButton: document.getElementById('next-button'),
+      hintButton: document.getElementById('hint-button'),
+      resultTitle: document.getElementById('result-title'),
+      resultMessage: document.getElementById('result-message'),
+      resultScore: document.getElementById('result-score'),
+      resultStars: document.getElementById('result-stars'),
+      resultFood: document.getElementById('result-food'),
+      answerReview: document.getElementById('answer-review'),
+      rewardSummary: document.getElementById('reward-summary'),
+      rewardXpLabel: document.getElementById('reward-xp-label'),
+      rewardXpCount: document.getElementById('reward-xp-count'),
+      rewardXpFill: document.getElementById('reward-xp-fill'),
+      inventoryGrid: document.getElementById('inventory-grid'),
+      tableModal: document.getElementById('table-modal'),
+      kukuTable: document.getElementById('kuku-table')
+    };
+
+    document.getElementById('brand-home').addEventListener('click', goHome);
+    document.getElementById('daily-button').addEventListener('click', () => startMission('daily'));
+    document.getElementById('action-daily').addEventListener('click', () => startMission('daily'));
+    document.getElementById('action-weak').addEventListener('click', () => startMission('weak'));
+    document.getElementById('action-table').addEventListener('click', openTable);
+    document.getElementById('action-rewards').addEventListener('click', showRewards);
+    document.getElementById('cloud-connect').addEventListener('click', connectCloud);
+    document.getElementById('cloud-pull').addEventListener('click', pullCloudProgress);
+    document.getElementById('cloud-disconnect').addEventListener('click', disconnectCloud);
+    document.getElementById('quiz-home').addEventListener('click', goHome);
+    document.getElementById('clear-key').addEventListener('click', clearInput);
+    document.getElementById('ok-key').addEventListener('click', submitTenkey);
+    document.getElementById('hint-button').addEventListener('click', showChoices);
+    document.getElementById('next-button').addEventListener('click', nextQuestion);
+    document.getElementById('result-rewards').addEventListener('click', showRewards);
+    document.getElementById('result-again').addEventListener('click', () => startMission(lastResultMission?.type || 'daily', true));
+    document.getElementById('result-home').addEventListener('click', goHome);
+    document.getElementById('reward-daily').addEventListener('click', () => startMission('daily'));
+    document.getElementById('reward-home').addEventListener('click', goHome);
+    document.getElementById('close-table').addEventListener('click', closeTable);
+    els.tableModal.addEventListener('click', event => {
+      if (event.target === els.tableModal) closeTable();
+    });
+
+    document.querySelectorAll('[data-num]').forEach(button => {
+      button.addEventListener('click', () => pressNumber(button.dataset.num));
+    });
+
+    document.addEventListener('keydown', event => {
+      if (screen !== 'quiz' || answerLocked) return;
+      if (/^[0-9]$/.test(event.key)) {
+        pressNumber(event.key);
+      } else if (event.key === 'Backspace') {
+        inputValue = inputValue.slice(0, -1);
+        renderInput();
+      } else if (event.key === 'Enter') {
+        submitTenkey();
+      } else if (event.key === 'Escape') {
+        closeTable();
+      }
+    });
+
+    renderAll();
+
+    function loadProgress() {
+      const fallback = createDefaultProgress();
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return fallback;
+        return normalizeProgress(JSON.parse(raw));
+      } catch (error) {
+        return fallback;
+      }
+    }
+
+    function saveProgress() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+      } catch (error) {
+        // The game remains playable even when browser storage is unavailable.
+      }
+      window.dispatchEvent(new CustomEvent('kuku-progress-saved', {
+        detail: { progress: buildCloudSnapshot() }
+      }));
+    }
+
+    function loadCloudSettings() {
+      const config = window.KUKU_FIREBASE_CONFIG || {};
+      const defaults = {
+        enabled: false,
+        familyCode: config.familyCode || '',
+        childId: config.childId || 'ayame',
+        childName: config.childName || CHILD_NAME,
+        lastSync: null
+      };
+      try {
+        const raw = localStorage.getItem(CLOUD_SETTINGS_KEY);
+        if (!raw) return defaults;
+        return { ...defaults, ...JSON.parse(raw) };
+      } catch (error) {
+        return defaults;
+      }
+    }
+
+    function saveCloudSettings() {
+      try {
+        localStorage.setItem(CLOUD_SETTINGS_KEY, JSON.stringify(cloudSettings));
+      } catch (error) {
+        // Local cloud preferences are optional.
+      }
+      renderCloudPanel();
+      window.dispatchEvent(new CustomEvent('kuku-cloud-settings-changed', {
+        detail: { settings: getCloudSettings() }
+      }));
+    }
+
+    function createDefaultProgress() {
+      return {
+        version: VERSION,
+        childName: CHILD_NAME,
+        level: 1,
+        xp: 0,
+        stars: 0,
+        food: 0,
+        items: [],
+        totalAnswered: 0,
+        totalCorrect: 0,
+        lastPracticeDate: null,
+        daily: {},
+        stats: createEmptyStats(),
+        activeMission: null,
+        lastMission: null
+      };
+    }
+
+    function createEmptyStats() {
+      const stats = {};
+      PROBLEMS.forEach(problem => {
+        stats[problem.key] = {
+          correct: 0,
+          wrong: 0,
+          streak: 0,
+          lastPracticed: null,
+          lastWrong: null
+        };
+      });
+      return stats;
+    }
+
+    function normalizeProgress(value) {
+      const base = createDefaultProgress();
+      const merged = { ...base, ...value };
+      merged.stats = { ...createEmptyStats(), ...(value.stats || {}) };
+      merged.daily = value.daily || {};
+      merged.items = Array.isArray(value.items) ? value.items : [];
+      merged.level = Number.isFinite(value.level) ? value.level : 1;
+      merged.xp = Number.isFinite(value.xp) ? value.xp : 0;
+      merged.stars = Number.isFinite(value.stars) ? value.stars : 0;
+      merged.food = Number.isFinite(value.food) ? value.food : 0;
+      return merged;
+    }
+
+    function renderAll() {
+      renderTopStats();
+      renderHome();
+      renderRewards();
+      renderTable();
+      renderCloudPanel();
+    }
+
+    function renderTopStats() {
+      els.topLevel.textContent = `Lv ${progress.level}`;
+      els.topStars.textContent = `星 ${progress.stars}`;
+      els.topFood.textContent = `ごはん ${progress.food}`;
+    }
+
+    function renderHome() {
+      const weak = getWeakProblems();
+      const active = getResumableDailyMission();
+      const today = progress.daily[todayKey()];
+      const previous = progress.daily[dateKeyWithOffset(-1)];
+      const nextXp = xpNeeded(progress.level);
+      const xpRatio = Math.min(100, Math.round((progress.xp / nextXp) * 100));
+
+      els.homePet.innerHTML = renderPetSvg('home');
+      els.homeLevelBadge.textContent = `Lv ${progress.level}`;
+      els.xpCount.textContent = `${progress.xp} / ${nextXp}`;
+      els.homeXpFill.style.width = `${xpRatio}%`;
+      els.weakCount.textContent = `${weak.length}こ`;
+      els.weakCaption.textContent = weak.length > 0 ? `${weak.length}この苦手` : 'むずかしめ';
+      els.rewardCaption.textContent = `${progress.items.length}こ`;
+
+      if (active) {
+        els.dailyButton.textContent = `つづきから ${active.answered.length} / ${active.total}`;
+        els.dailyCaption.textContent = `${active.answered.length} / ${active.total}`;
+      } else {
+        els.dailyButton.textContent = today ? '今日ももう一回' : '今日のミッション';
+        els.dailyCaption.textContent = today ? `${today.correct} / ${today.total}` : `${MISSION_TOTAL}問`;
+      }
+
+      if (today && previous && today.percent > previous.percent) {
+        els.homeMessage.textContent = `昨日より正答率が上がったよ。${CHILD_NAME}、いい流れ。`;
+      } else if (today) {
+        els.homeMessage.textContent = `今日の記録は ${today.correct} / ${today.total}。星とごはんが増えているよ。`;
+      } else if (weak.length > 0) {
+        els.homeMessage.textContent = `苦手メモに ${weak.length}こ残っているよ。短く進めよう。`;
+      } else {
+        els.homeMessage.textContent = `${CHILD_NAME}の今日の練習を始めよう。`;
+      }
+
+      renderMemo(weak);
+    }
+
+    function renderMemo(weak) {
+      if (weak.length === 0) {
+        els.memoList.innerHTML = '<p class="empty-note">まだ苦手データはありません。</p>';
+        return;
+      }
+
+      const rows = weak.slice(0, 5).map(item => {
+        const stat = item.stat;
+        const total = stat.correct + stat.wrong;
+        const rate = total === 0 ? 0 : Math.round((stat.wrong / total) * 100);
+        const width = Math.max(12, Math.min(100, rate));
+        return `
+          <div class="memo-row">
+            <strong>${item.problem.a} × ${item.problem.b}</strong>
+            <span>まちがい ${stat.wrong}回・連続 ${stat.streak}</span>
+            <div class="mini-meter" aria-hidden="true"><div style="width:${width}%"></div></div>
+          </div>
+        `;
+      }).join('');
+      els.memoList.innerHTML = rows;
+    }
+
+    function renderCloudPanel() {
+      const configured = isFirebaseConfigured();
+      els.familyCode.value = cloudSettings.familyCode || '';
+      els.childId.value = cloudSettings.childId || 'ayame';
+      els.childNameInput.value = cloudSettings.childName || CHILD_NAME;
+      els.cloudBadge.textContent = cloudSettings.enabled ? '接続中' : '未接続';
+      els.cloudBadge.style.background = cloudSettings.enabled ? '#edf9f2' : '';
+      els.cloudBadge.style.color = cloudSettings.enabled ? '#17623b' : '';
+
+      if (!configured) {
+        els.cloudStatus.className = 'cloud-status warn';
+        els.cloudStatus.textContent = 'kuku-firebase-config.js にFirebase設定を入れると同期できます。今はこの端末だけに保存します。';
+      } else if (cloudSettings.enabled) {
+        els.cloudStatus.className = 'cloud-status ok';
+        const suffix = cloudSettings.lastSync ? ` 最終同期: ${formatShortDateTime(cloudSettings.lastSync)}` : '';
+        els.cloudStatus.textContent = `クラウド同期中です。親ビューアでも記録を見られます。${suffix}`;
+      } else {
+        els.cloudStatus.className = 'cloud-status';
+        els.cloudStatus.textContent = 'ファミリーコードを入れて接続すると、この端末の記録をクラウドへ保存します。';
+      }
+    }
+
+    function isFirebaseConfigured() {
+      const config = window.KUKU_FIREBASE_CONFIG;
+      return Boolean(config && config.enabled && config.firebaseConfig && config.firebaseConfig.apiKey && !String(config.firebaseConfig.apiKey).includes('YOUR_'));
+    }
+
+    function renderRewards() {
+      const nextXp = xpNeeded(progress.level);
+      const xpRatio = Math.min(100, Math.round((progress.xp / nextXp) * 100));
+      els.rewardPet.innerHTML = renderPetSvg('reward');
+      els.rewardLevelBadge.textContent = `Lv ${progress.level}`;
+      els.rewardSummary.textContent = `星 ${progress.stars}・ごはん ${progress.food}`;
+      els.rewardXpCount.textContent = `${progress.xp} / ${nextXp}`;
+      els.rewardXpFill.style.width = `${xpRatio}%`;
+      els.inventoryGrid.innerHTML = ITEMS.map(item => {
+        const unlocked = progress.items.includes(item.id);
+        return `
+          <div class="reward-tile ${unlocked ? '' : 'locked'}">
+            <strong>${item.name}</strong>
+            <span>${unlocked ? 'もっている' : `Lv ${item.level}`}</span>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderTable() {
+      els.kukuTable.innerHTML = PROBLEMS.map(problem => {
+        const stat = progress.stats[problem.key];
+        const classes = ['kuku-cell'];
+        if (isWeakStat(stat)) classes.push('weak');
+        if (stat.streak >= 3) classes.push('mastered');
+        return `<div class="${classes.join(' ')}">${problem.a}×${problem.b}<br>${problem.answer}</div>`;
+      }).join('');
+    }
+
+    function showScreen(name) {
+      screen = name;
+      [els.homeScreen, els.quizScreen, els.resultScreen, els.rewardsScreen].forEach(element => {
+        element.classList.remove('active');
+      });
+      document.getElementById(`${name}-screen`).classList.add('active');
+      if (name === 'home') renderAll();
+      if (name === 'rewards') renderAll();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function goHome() {
+      if (progress.activeMission && screen === 'quiz') {
+        progress.activeMission.currentInput = inputValue;
+        saveProgress();
+      }
+      answerLocked = false;
+      closeTable();
+      showScreen('home');
+    }
+
+    function showRewards() {
+      closeTable();
+      showScreen('rewards');
+    }
+
+    function openTable() {
+      renderTable();
+      els.tableModal.classList.add('open');
+    }
+
+    function closeTable() {
+      els.tableModal.classList.remove('open');
+    }
+
+    function connectCloud() {
+      cloudSettings = readCloudForm(true);
+      if (!cloudSettings.familyCode || !cloudSettings.childId) {
+        setCloudStatus('ファミリーコードと子どもIDを入れてください。', 'warn');
+        return;
+      }
+      if (!isFirebaseConfigured()) {
+        saveCloudSettings();
+        setCloudStatus('Firebase設定がまだなので、この端末だけに保存します。', 'warn');
+        return;
+      }
+      cloudSettings.enabled = true;
+      progress.childName = cloudSettings.childName || CHILD_NAME;
+      saveCloudSettings();
+      saveProgress();
+      setCloudStatus('接続しました。クラウドへ同期しています。', 'ok');
+      window.dispatchEvent(new CustomEvent('kuku-cloud-sync-requested', {
+        detail: { mode: 'push', progress: buildCloudSnapshot(), settings: getCloudSettings() }
+      }));
+    }
+
+    function pullCloudProgress() {
+      cloudSettings = readCloudForm(true);
+      if (!cloudSettings.familyCode || !cloudSettings.childId) {
+        setCloudStatus('読み込みにはファミリーコードと子どもIDが必要です。', 'warn');
+        return;
+      }
+      if (!isFirebaseConfigured()) {
+        setCloudStatus('Firebase設定がまだなので、クラウドから読み込めません。', 'warn');
+        return;
+      }
+      cloudSettings.enabled = true;
+      saveCloudSettings();
+      setCloudStatus('クラウドから読み込んでいます。', '');
+      window.dispatchEvent(new CustomEvent('kuku-cloud-sync-requested', {
+        detail: { mode: 'pull', progress: buildCloudSnapshot(), settings: getCloudSettings() }
+      }));
+    }
+
+    function disconnectCloud() {
+      cloudSettings.enabled = false;
+      saveCloudSettings();
+      setCloudStatus('クラウド同期を切りました。この端末の記録は残っています。', '');
+    }
+
+    function readCloudForm(enabled) {
+      return {
+        ...cloudSettings,
+        enabled,
+        familyCode: normalizeCode(els.familyCode.value || ''),
+        childId: normalizeCode(els.childId.value || 'ayame'),
+        childName: (els.childNameInput.value || CHILD_NAME).trim()
+      };
+    }
+
+    function setCloudStatus(message, tone) {
+      els.cloudStatus.className = `cloud-status ${tone || ''}`.trim();
+      els.cloudStatus.textContent = message;
+    }
+
+    function startMission(type, forceNew = false) {
+      playTone('tap');
+      let mission = !forceNew && type === 'daily' ? getResumableDailyMission() : null;
+      if (!mission) {
+        mission = createMission(type);
+      }
+      progress.activeMission = mission;
+      saveProgress();
+      prepareQuestion();
+      showScreen('quiz');
+    }
+
+    function getResumableDailyMission() {
+      const mission = progress.activeMission;
+      if (!mission || mission.completed || mission.type !== 'daily') return null;
+      return mission;
+    }
+
+    function createMission(type) {
+      return {
+        id: `${Date.now()}`,
+        type,
+        date: todayKey(),
+        total: MISSION_TOTAL,
+        answered: [],
+        pendingRetries: [],
+        currentProblem: null,
+        currentInput: '',
+        currentStreak: 0,
+        weakCountBefore: getWeakProblems().length,
+        earned: { stars: 0, food: 0, items: [] },
+        completed: false,
+        startedAt: new Date().toISOString()
+      };
+    }
+
+    function prepareQuestion() {
+      const mission = progress.activeMission;
+      if (!mission) return;
+      if (mission.answered.length >= mission.total) {
+        finishMission();
+        return;
+      }
+      if (!mission.currentProblem) {
+        mission.currentProblem = chooseNextProblem(mission);
+      }
+      inputValue = mission.currentInput || '';
+      answerLocked = false;
+      hintUsed = false;
+      renderQuiz();
+      saveProgress();
+    }
+
+    function renderQuiz() {
+      const mission = progress.activeMission;
+      const problem = mission.currentProblem;
+      const answered = mission.answered.length;
+      const progressPct = Math.round((answered / mission.total) * 100);
+      els.quizCounter.textContent = `${answered + 1} / ${mission.total}`;
+      els.quizProgress.style.width = `${progressPct}%`;
+      els.questionLine.textContent = `${problem.a} × ${problem.b}`;
+      els.sourceLabel.textContent = sourceText(problem.source);
+      els.sourceLabel.className = `source-label ${problem.source || ''}`;
+      els.choicePanel.classList.remove('open');
+      els.feedbackPanel.className = 'feedback-panel';
+      els.feedbackPanel.innerHTML = '';
+      els.nextButton.disabled = true;
+      els.nextButton.textContent = answered + 1 >= mission.total ? '結果へ' : '次へ';
+      els.hintButton.disabled = false;
+      renderInput();
+    }
+
+    function sourceText(source) {
+      if (source === 'retry') return 'もう一度';
+      if (source === 'weak') return '苦手';
+      if (source === 'review') return '復習';
+      return 'ミッション';
+    }
+
+    function pressNumber(num) {
+      if (answerLocked || inputValue.length >= 3) return;
+      playTone('tap');
+      inputValue += num;
+      if (progress.activeMission) {
+        progress.activeMission.currentInput = inputValue;
+        saveProgress();
+      }
+      renderInput();
+    }
+
+    function clearInput() {
+      if (answerLocked) return;
+      playTone('tap');
+      inputValue = '';
+      if (progress.activeMission) {
+        progress.activeMission.currentInput = '';
+        saveProgress();
+      }
+      renderInput();
+    }
+
+    function renderInput() {
+      els.answerDisplay.textContent = inputValue || '答え';
+      els.answerDisplay.classList.toggle('empty', inputValue === '');
+    }
+
+    function submitTenkey() {
+      if (answerLocked || inputValue === '') return;
+      submitAnswer(Number(inputValue), hintUsed);
+    }
+
+    function showChoices() {
+      if (answerLocked) return;
+      playTone('tap');
+      hintUsed = true;
+      const choices = makeChoices(progress.activeMission.currentProblem);
+      els.choicePanel.innerHTML = choices.map(choice => {
+        return `<button class="choice-button" type="button" data-choice="${choice}">${choice}</button>`;
+      }).join('');
+      els.choicePanel.querySelectorAll('[data-choice]').forEach(button => {
+        button.addEventListener('click', () => {
+          inputValue = button.dataset.choice;
+          renderInput();
+          submitAnswer(Number(button.dataset.choice), true);
+        });
+      });
+      els.choicePanel.classList.add('open');
+      els.hintButton.disabled = true;
+    }
+
+    function submitAnswer(selected, usedHint) {
+      const mission = progress.activeMission;
+      const problem = mission.currentProblem;
+      const correct = selected === problem.answer;
+      const reward = applyAnswer(problem, correct, usedHint);
+
+      answerLocked = true;
+      inputValue = `${selected}`;
+      renderInput();
+
+      mission.answered.push({
+        key: problem.key,
+        a: problem.a,
+        b: problem.b,
+        answer: problem.answer,
+        selected,
+        correct,
+        source: problem.source,
+        usedHint,
+        reward,
+        answeredAt: new Date().toISOString()
+      });
+
+      if (correct) {
+        mission.currentStreak += 1;
+        playTone('correct');
+      } else {
+        mission.currentStreak = 0;
+        scheduleRetry(mission, problem);
+        playTone('wrong');
+      }
+
+      mission.currentProblem = null;
+      mission.currentInput = '';
+      els.nextButton.disabled = false;
+      els.hintButton.disabled = true;
+      showFeedback(problem, selected, correct, reward);
+      saveProgress();
+      renderTopStats();
+    }
+
+    function applyAnswer(problem, correct, usedHint) {
+      const stat = progress.stats[problem.key];
+      const today = todayKey();
+      const reward = { stars: 0, food: 0, xp: 0, bonus: false, items: [] };
+      stat.lastPracticed = today;
+      progress.totalAnswered += 1;
+      progress.lastPracticeDate = today;
+
+      if (correct) {
+        stat.correct += 1;
+        stat.streak += 1;
+        progress.totalCorrect += 1;
+        reward.stars = usedHint ? 1 : 2;
+        reward.food = 1;
+        reward.xp = usedHint ? 2 : 3;
+        if (progress.activeMission.currentStreak > 0 && (progress.activeMission.currentStreak + 1) % 3 === 0) {
+          reward.stars += 1;
+          reward.xp += 1;
+          reward.bonus = true;
+        }
+        progress.stars += reward.stars;
+        progress.food += reward.food;
+        addXp(reward.xp, reward.items);
+        progress.activeMission.earned.stars += reward.stars;
+        progress.activeMission.earned.food += reward.food;
+        progress.activeMission.earned.items.push(...reward.items);
+      } else {
+        stat.wrong += 1;
+        stat.streak = 0;
+        stat.lastWrong = today;
+      }
+      return reward;
+    }
+
+    function addXp(amount, itemBucket) {
+      progress.xp += amount;
+      while (progress.xp >= xpNeeded(progress.level)) {
+        progress.xp -= xpNeeded(progress.level);
+        progress.level += 1;
+        unlockItems(itemBucket);
+      }
+      unlockItems(itemBucket);
+    }
+
+    function unlockItems(itemBucket) {
+      ITEMS.forEach(item => {
+        if (item.level <= progress.level && !progress.items.includes(item.id)) {
+          progress.items.push(item.id);
+          itemBucket.push(item.name);
+        }
+      });
+    }
+
+    function scheduleRetry(mission, problem) {
+      if (mission.answered.length >= mission.total - 1) return;
+      const delay = randomInt(2, 4);
+      const dueIndex = Math.min(mission.total - 1, mission.answered.length + delay);
+      mission.pendingRetries.push({
+        a: problem.a,
+        b: problem.b,
+        key: problem.key,
+        answer: problem.answer,
+        source: 'retry',
+        dueIndex
+      });
+    }
+
+    function showFeedback(problem, selected, correct, reward) {
+      const title = correct ? 'せいかい' : 'おしい';
+      let body = '';
+      if (correct) {
+        const bonus = reward.bonus ? ' 連続ボーナスも入ったよ。' : '';
+        const items = reward.items.length > 0 ? ` ${reward.items.join('、')}を手に入れたよ。` : '';
+        body = `星 ${reward.stars}・ごはん ${reward.food}。${bonus}${items}`;
+      } else {
+        body = `答えは ${problem.answer}。${buildHint(problem)}。あとでもう一度出ます。`;
+      }
+      els.feedbackPanel.className = `feedback-panel open ${correct ? 'correct' : 'wrong'}`;
+      els.feedbackPanel.innerHTML = `
+        <div class="feedback-title">${title}</div>
+        <p>${body}</p>
+      `;
+    }
+
+    function nextQuestion() {
+      if (!answerLocked) return;
+      if (progress.activeMission.answered.length >= progress.activeMission.total) {
+        finishMission();
+      } else {
+        prepareQuestion();
+      }
+    }
+
+    function finishMission() {
+      const mission = progress.activeMission;
+      if (!mission) return;
+      mission.completed = true;
+      mission.completedAt = new Date().toISOString();
+      const correct = mission.answered.filter(answer => answer.correct).length;
+      const percent = Math.round((correct / mission.total) * 100);
+      const weakAfter = getWeakProblems().length;
+      const weakReduced = Math.max(0, mission.weakCountBefore - weakAfter);
+      const summary = {
+        date: todayKey(),
+        type: mission.type,
+        total: mission.total,
+        correct,
+        percent,
+        weakBefore: mission.weakCountBefore,
+        weakAfter,
+        weakReduced,
+        completedAt: mission.completedAt
+      };
+      progress.daily[todayKey()] = summary;
+      progress.lastMission = mission;
+      lastResultMission = mission;
+      progress.activeMission = null;
+      saveProgress();
+      window.dispatchEvent(new CustomEvent('kuku-mission-completed', {
+        detail: {
+          mission: buildMissionUpload(mission, summary),
+          progress: buildCloudSnapshot(),
+          settings: getCloudSettings()
+        }
+      }));
+      renderResult(mission, summary);
+      renderAll();
+      showScreen('result');
+    }
+
+    function renderResult(mission, summary) {
+      const previous = progress.daily[dateKeyWithOffset(-1)];
+      const earned = mission.earned || { stars: 0, food: 0 };
+      els.resultTitle.textContent = mission.type === 'weak' ? '苦手だけミッション' : '今日のミッション';
+      els.resultScore.textContent = `${summary.correct} / ${summary.total}`;
+      els.resultStars.textContent = `${earned.stars}`;
+      els.resultFood.textContent = `${earned.food}`;
+
+      if (previous && summary.percent > previous.percent) {
+        els.resultMessage.textContent = `昨日より正答率が上がったよ。${summary.percent}%まで進んだ。`;
+      } else if (summary.weakReduced > 0) {
+        els.resultMessage.textContent = `苦手が ${summary.weakReduced}こ減ったよ。今日の練習が効いている。`;
+      } else if (summary.correct === summary.total) {
+        els.resultMessage.textContent = `ノーミスで育成が進んだよ。星とごはんを受け取ろう。`;
+      } else {
+        els.resultMessage.textContent = `今日の練習が記録に残ったよ。間違えた九九は次に出やすくなります。`;
+      }
+
+      els.answerReview.innerHTML = mission.answered.map((answer, index) => {
+        const cls = answer.correct ? 'correct' : 'wrong';
+        const mark = answer.correct ? '○' : '×';
+        return `
+          <div class="answer-row ${cls}">
+            <span class="mark">${mark}</span>
+            <strong>${index + 1}. ${answer.a} × ${answer.b} = ${answer.answer}</strong>
+            <span>${answer.selected}</span>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function chooseNextProblem(mission) {
+      const answeredCount = mission.answered.length;
+      const recent = mission.answered.slice(-3).map(answer => answer.key);
+      const retryIndex = mission.pendingRetries.findIndex(retry => retry.dueIndex <= answeredCount && !recent.includes(retry.key));
+      if (retryIndex >= 0) {
+        const [retry] = mission.pendingRetries.splice(retryIndex, 1);
+        return { ...retry, source: 'retry' };
+      }
+
+      let source = 'fresh';
+      let candidates = [];
+      if (mission.type === 'weak') {
+        candidates = getWeakProblems().map(item => item.problem);
+        source = 'weak';
+        if (candidates.length === 0) {
+          candidates = getHardProblems();
+          source = 'review';
+        }
+      } else {
+        const roll = Math.random();
+        if (roll < 0.7) {
+          candidates = getWeakProblems().map(item => item.problem);
+          source = candidates.length > 0 ? 'weak' : 'review';
+        } else if (roll < 0.9) {
+          candidates = getReviewProblems();
+          source = 'review';
+        } else {
+          candidates = getFreshProblems();
+          source = 'fresh';
+        }
+        if (candidates.length === 0) {
+          candidates = source === 'weak' ? getHardProblems() : PROBLEMS;
+        }
+      }
+
+      if (source === 'weak' && candidates.length > 0 && candidates.every(problem => recent.includes(problem.key))) {
+        candidates = uniqueProblems([...getReviewProblems(), ...getFreshProblems(), ...getHardProblems()]);
+        source = 'review';
+      }
+
+      const problem = pickProblem(candidates, recent);
+      return { ...problem, source };
+    }
+
+    function pickProblem(candidates, recent) {
+      let pool = candidates.filter(problem => !recent.includes(problem.key));
+      if (pool.length === 0) {
+        pool = PROBLEMS.filter(problem => !recent.includes(problem.key));
+      }
+      if (pool.length === 0) pool = candidates.slice();
+      if (pool.length === 0) pool = PROBLEMS.slice();
+      const weighted = pool.flatMap(problem => {
+        const stat = progress.stats[problem.key];
+        const score = Math.max(1, Math.round(weaknessScore(problem, stat)));
+        return Array(Math.min(score, 8)).fill(problem);
+      });
+      return weighted[randomInt(0, weighted.length - 1)];
+    }
+
+    function getWeakProblems() {
+      return PROBLEMS.map(problem => ({
+        problem,
+        stat: progress.stats[problem.key],
+        score: weaknessScore(problem, progress.stats[problem.key])
+      }))
+        .filter(item => isWeakStat(item.stat))
+        .sort((a, b) => b.score - a.score);
+    }
+
+    function getReviewProblems() {
+      return PROBLEMS.filter(problem => {
+        const stat = progress.stats[problem.key];
+        const total = stat.correct + stat.wrong;
+        return total > 0 && !isWeakStat(stat);
+      });
+    }
+
+    function getFreshProblems() {
+      return PROBLEMS.filter(problem => {
+        const stat = progress.stats[problem.key];
+        return stat.correct + stat.wrong === 0;
+      });
+    }
+
+    function getHardProblems() {
+      return PROBLEMS.filter(problem => {
+        return problem.a >= 6 && problem.b >= 6 || problem.a === 7 || problem.b === 7 || problem.a === 8 || problem.b === 8;
+      });
+    }
+
+    function uniqueProblems(problems) {
+      const seen = new Set();
+      return problems.filter(problem => {
+        if (seen.has(problem.key)) return false;
+        seen.add(problem.key);
+        return true;
+      });
+    }
+
+    function isWeakStat(stat) {
+      const total = stat.correct + stat.wrong;
+      if (stat.wrong === 0) return false;
+      const wrongRate = stat.wrong / total;
+      return stat.streak < 2 || wrongRate >= 0.3;
+    }
+
+    function weaknessScore(problem, stat) {
+      const hardBonus = (problem.a >= 6 && problem.b >= 6) ? 2 : 0;
+      const sevenEightBonus = (problem.a === 7 || problem.b === 7 || problem.a === 8 || problem.b === 8) ? 1 : 0;
+      return 1 + stat.wrong * 4 + hardBonus + sevenEightBonus - stat.streak * 1.4 - stat.correct * 0.35;
+    }
+
+    function makeChoices(problem) {
+      const values = new Set([problem.answer]);
+      const near = [
+        problem.answer + problem.a,
+        problem.answer - problem.a,
+        problem.answer + problem.b,
+        problem.answer - problem.b,
+        problem.answer + 10,
+        problem.answer - 10
+      ];
+      shuffle(near).forEach(value => {
+        if (value > 0 && value <= 99) values.add(value);
+      });
+      while (values.size < 4) {
+        const randomProblem = PROBLEMS[randomInt(0, PROBLEMS.length - 1)];
+        values.add(randomProblem.answer);
+      }
+      const wrongChoices = shuffle([...values].filter(value => value !== problem.answer)).slice(0, 3);
+      return shuffle([problem.answer, ...wrongChoices]);
+    }
+
+    function buildHint(problem) {
+      const a = problem.a;
+      const b = problem.b;
+      if (b > 5) {
+        const rest = b - 5;
+        return `${a}×${b} は ${a}×5 + ${a}×${rest} = ${a * 5} + ${a * rest}`;
+      }
+      if (b > 1) {
+        return `${a}×${b} は ${a}×${b - 1} + ${a} = ${a * (b - 1)} + ${a}`;
+      }
+      return `${a}×1 は ${a}`;
+    }
+
+    function renderPetSvg(context) {
+      const hasRibbon = progress.items.includes('ribbon');
+      const hasScarf = progress.items.includes('scarf');
+      const hasCap = progress.items.includes('cap');
+      const hasBadge = progress.items.includes('badge');
+      const hasBag = progress.items.includes('bag');
+      const hasCrown = progress.items.includes('crown');
+      const levelScale = Math.min(1.12, 0.92 + progress.level * 0.025);
+      const bodyColor = progress.level >= 6 ? '#9edb87' : '#a8df9a';
+      const bellyColor = progress.level >= 4 ? '#fff5bf' : '#fff2cf';
+
+      return `
+        <svg class="pet-svg" viewBox="0 0 320 320" aria-label="育成キャラクター ${context}">
+          <ellipse cx="160" cy="290" rx="88" ry="14" fill="#17212b" opacity=".11"/>
+          <g class="pet-body" style="transform: scale(${levelScale}); transform-origin: 160px 250px;">
+            <path d="M92 224c0-52 29-92 68-92s68 40 68 92c0 42-25 67-68 67s-68-25-68-67Z" fill="${bodyColor}" stroke="#17212b" stroke-width="5"/>
+            <path d="M120 233c0-27 17-47 40-47s40 20 40 47c0 24-15 39-40 39s-40-15-40-39Z" fill="${bellyColor}" stroke="#17212b" stroke-width="4"/>
+            <path d="M87 220c-20 3-34-8-38-22-3-10 2-17 11-18 18-2 30 14 36 31Z" fill="#7ec9d1" stroke="#17212b" stroke-width="4"/>
+            <path d="M233 220c20 3 34-8 38-22 3-10-2-17-11-18-18-2-30 14-36 31Z" fill="#7ec9d1" stroke="#17212b" stroke-width="4"/>
+            <circle cx="136" cy="185" r="8" fill="#17212b"/>
+            <circle cx="184" cy="185" r="8" fill="#17212b"/>
+            <g class="pet-eye-close">
+              <path d="M125 181q11-9 22 0" fill="none" stroke="#17212b" stroke-width="5" stroke-linecap="round"/>
+              <path d="M173 181q11-9 22 0" fill="none" stroke="#17212b" stroke-width="5" stroke-linecap="round"/>
+            </g>
+            <path d="M150 208q10 9 20 0" fill="none" stroke="#17212b" stroke-width="5" stroke-linecap="round"/>
+            <g class="pet-leaf">
+              <path d="M160 136c-10-30-1-57 26-72 17 32 5 58-26 72Z" fill="#35a867" stroke="#17212b" stroke-width="4"/>
+              <path d="M160 136c10-32 0-58-27-74-16 31-4 59 27 74Z" fill="#0f9f9a" stroke="#17212b" stroke-width="4"/>
+            </g>
+            ${hasRibbon ? '<path d="M123 153l-25-15v31l25-16 25 16v-31l-25 15Z" fill="#ef6461" stroke="#17212b" stroke-width="4"/>' : ''}
+            ${hasScarf ? '<path d="M117 216c25 12 60 12 86 0l5 17c-33 15-64 15-96 0Z" fill="#0f9f9a" stroke="#17212b" stroke-width="4"/>' : ''}
+            ${hasCap ? '<path d="M113 139c24-25 70-25 94 0l-15 15c-22-11-42-11-64 0Z" fill="#276ef1" stroke="#17212b" stroke-width="4"/>' : ''}
+            ${hasBadge ? '<path d="M205 230l8 14 16 3-11 12 2 16-15-7-15 7 2-16-11-12 16-3Z" fill="#f2b84b" stroke="#17212b" stroke-width="3"/>' : ''}
+            ${hasBag ? '<path d="M81 223h35v43H81z" fill="#c79c63" stroke="#17212b" stroke-width="4"/><path d="M88 223c0-16 22-16 22 0" fill="none" stroke="#17212b" stroke-width="4"/>' : ''}
+            ${hasCrown ? '<path d="M124 126l15-28 21 24 22-24 15 28v19h-73Z" fill="#f2b84b" stroke="#17212b" stroke-width="4"/>' : ''}
+          </g>
+        </svg>
+      `;
+    }
+
+    function getCloudSettings() {
+      return {
+        enabled: Boolean(cloudSettings.enabled),
+        familyCode: cloudSettings.familyCode || '',
+        childId: cloudSettings.childId || 'ayame',
+        childName: cloudSettings.childName || progress.childName || CHILD_NAME
+      };
+    }
+
+    function buildCloudSnapshot() {
+      const weak = getWeakProblems().slice(0, 12).map(item => ({
+        key: item.problem.key,
+        a: item.problem.a,
+        b: item.problem.b,
+        answer: item.problem.answer,
+        correct: item.stat.correct,
+        wrong: item.stat.wrong,
+        streak: item.stat.streak,
+        score: Number(item.score.toFixed(2))
+      }));
+      const accuracy = progress.totalAnswered === 0 ? 0 : Math.round((progress.totalCorrect / progress.totalAnswered) * 100);
+      return {
+        version: VERSION,
+        childName: cloudSettings.childName || progress.childName || CHILD_NAME,
+        level: progress.level,
+        xp: progress.xp,
+        stars: progress.stars,
+        food: progress.food,
+        items: progress.items,
+        totalAnswered: progress.totalAnswered,
+        totalCorrect: progress.totalCorrect,
+        accuracy,
+        lastPracticeDate: progress.lastPracticeDate,
+        daily: progress.daily,
+        stats: progress.stats,
+        topWeak: weak,
+        activeMission: progress.activeMission ? {
+          id: progress.activeMission.id,
+          type: progress.activeMission.type,
+          date: progress.activeMission.date,
+          total: progress.activeMission.total,
+          answered: progress.activeMission.answered.length
+        } : null,
+        updatedAtLocal: new Date().toISOString()
+      };
+    }
+
+    function buildMissionUpload(mission, summary) {
+      return {
+        id: mission.id,
+        childName: cloudSettings.childName || progress.childName || CHILD_NAME,
+        type: mission.type,
+        date: mission.date,
+        startedAt: mission.startedAt,
+        completedAt: mission.completedAt,
+        total: mission.total,
+        correct: summary.correct,
+        percent: summary.percent,
+        weakBefore: summary.weakBefore,
+        weakAfter: summary.weakAfter,
+        weakReduced: summary.weakReduced,
+        earned: mission.earned,
+        answers: mission.answered
+      };
+    }
+
+    function replaceProgressFromCloud(remoteProgress) {
+      if (!remoteProgress || typeof remoteProgress !== 'object') return false;
+      const currentActive = progress.activeMission;
+      progress = normalizeProgress({
+        ...progress,
+        ...remoteProgress,
+        childName: remoteProgress.childName || progress.childName || CHILD_NAME,
+        activeMission: currentActive || remoteProgress.activeMission || null
+      });
+      saveProgress();
+      renderAll();
+      setCloudStatus('クラウドの記録を読み込みました。', 'ok');
+      return true;
+    }
+
+    function markCloudSynced(isoString) {
+      cloudSettings.lastSync = isoString || new Date().toISOString();
+      saveCloudSettings();
+    }
+
+    window.addEventListener('kuku-cloud-status', event => {
+      const detail = event.detail || {};
+      if (detail.syncedAt) markCloudSynced(detail.syncedAt);
+      if (detail.message) setCloudStatus(detail.message, detail.tone || '');
+    });
+
+    window.addEventListener('kuku-cloud-remote-progress', event => {
+      replaceProgressFromCloud(event.detail && event.detail.progress);
+    });
+
+    window.KukuQuest = {
+      getProgress: () => progress,
+      getCloudSnapshot: buildCloudSnapshot,
+      getCloudSettings,
+      replaceProgressFromCloud,
+      markCloudSynced,
+      renderAll
+    };
+
+    function playTone(type) {
+      try {
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContextClass) return;
+        if (!audioContext) audioContext = new AudioContextClass();
+        if (audioContext.state === 'suspended') {
+          audioContext.resume().catch(() => {});
+        }
+        const osc = audioContext.createOscillator();
+        const gain = audioContext.createGain();
+        osc.connect(gain);
+        gain.connect(audioContext.destination);
+        const now = audioContext.currentTime;
+        osc.type = type === 'wrong' ? 'triangle' : 'sine';
+        if (type === 'correct') {
+          osc.frequency.setValueAtTime(523.25, now);
+          osc.frequency.setValueAtTime(783.99, now + 0.09);
+          gain.gain.setValueAtTime(0.08, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.24);
+          osc.start(now);
+          osc.stop(now + 0.25);
+        } else if (type === 'wrong') {
+          osc.frequency.setValueAtTime(220, now);
+          osc.frequency.setValueAtTime(174.61, now + 0.11);
+          gain.gain.setValueAtTime(0.045, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+          osc.start(now);
+          osc.stop(now + 0.19);
+        } else {
+          osc.frequency.setValueAtTime(760, now);
+          gain.gain.setValueAtTime(0.035, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.06);
+          osc.start(now);
+          osc.stop(now + 0.07);
+        }
+      } catch (error) {
+        // Sound is optional.
+      }
+    }
+
+    function xpNeeded(level) {
+      return 16 + level * 2;
+    }
+
+    function todayKey() {
+      return dateKeyWithOffset(0);
+    }
+
+    function dateKeyWithOffset(offset) {
+      const date = new Date();
+      date.setDate(date.getDate() + offset);
+      const y = date.getFullYear();
+      const m = String(date.getMonth() + 1).padStart(2, '0');
+      const d = String(date.getDate()).padStart(2, '0');
+      return `${y}-${m}-${d}`;
+    }
+
+    function randomInt(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function shuffle(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = randomInt(0, i);
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    function normalizeCode(value) {
+      return value.trim().toLowerCase().replace(/[^a-z0-9_-]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
+    }
+
+    function formatShortDateTime(value) {
+      if (!value) return '';
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return value;
+      const month = date.getMonth() + 1;
+      const day = date.getDate();
+      const hour = String(date.getHours()).padStart(2, '0');
+      const minute = String(date.getMinutes()).padStart(2, '0');
+      return `${month}/${day} ${hour}:${minute}`;
+    }
+  </script>
+  <script type="module">
+    const appConfig = window.KUKU_FIREBASE_CONFIG || {};
+    const firebaseConfig = appConfig.firebaseConfig || {};
+    const canUseFirebase = Boolean(appConfig.enabled && firebaseConfig.apiKey && !String(firebaseConfig.apiKey).includes('YOUR_'));
+
+    const sendStatus = (message, tone = '', syncedAt = null) => {
+      window.dispatchEvent(new CustomEvent('kuku-cloud-status', {
+        detail: { message, tone, syncedAt }
+      }));
+    };
+
+    if (canUseFirebase) {
+      const [
+        { initializeApp },
+        { getAuth, signInAnonymously },
+        { getFirestore, doc, setDoc, getDoc, serverTimestamp, increment }
+      ] = await Promise.all([
+        import('https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js'),
+        import('https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js'),
+        import('https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js')
+      ]);
+
+      const firebaseApp = initializeApp(firebaseConfig);
+      const auth = getAuth(firebaseApp);
+      const db = getFirestore(firebaseApp);
+      let signedIn = false;
+      let pushTimer = null;
+
+      async function ensureSignedIn() {
+        if (signedIn || auth.currentUser) {
+          signedIn = true;
+          return;
+        }
+        await signInAnonymously(auth);
+        signedIn = true;
+      }
+
+      function childDoc(settings) {
+        return doc(db, 'kukuFamilies', settings.familyCode, 'children', settings.childId);
+      }
+
+      function attemptDoc(settings, missionId) {
+        return doc(db, 'kukuFamilies', settings.familyCode, 'children', settings.childId, 'attempts', missionId);
+      }
+
+      function validSettings(settings) {
+        return settings && settings.enabled && settings.familyCode && settings.childId;
+      }
+
+      function makeSummary(progress, settings) {
+        return {
+          familyCode: settings.familyCode,
+          childId: settings.childId,
+          childName: settings.childName || progress.childName || 'あやめちゃん',
+          level: progress.level || 1,
+          stars: progress.stars || 0,
+          food: progress.food || 0,
+          itemsCount: Array.isArray(progress.items) ? progress.items.length : 0,
+          totalAnswered: progress.totalAnswered || 0,
+          totalCorrect: progress.totalCorrect || 0,
+          accuracy: progress.accuracy || 0,
+          weakCount: Array.isArray(progress.topWeak) ? progress.topWeak.length : 0,
+          lastPracticeDate: progress.lastPracticeDate || null,
+          updatedAtLocal: progress.updatedAtLocal || new Date().toISOString()
+        };
+      }
+
+      async function pushProgress(progress, settings, extra = {}) {
+        if (!validSettings(settings)) return;
+        await ensureSignedIn();
+        await setDoc(childDoc(settings), {
+          ...makeSummary(progress, settings),
+          ...extra,
+          ownerUid: auth.currentUser.uid,
+          progress,
+          updatedAt: serverTimestamp()
+        }, { merge: true });
+        sendStatus('クラウドへ同期しました。', 'ok', new Date().toISOString());
+      }
+
+      async function pullProgress(settings) {
+        if (!validSettings(settings)) {
+          sendStatus('ファミリーコードと子どもIDを入れてください。', 'warn');
+          return;
+        }
+        await ensureSignedIn();
+        const snapshot = await getDoc(childDoc(settings));
+        if (!snapshot.exists()) {
+          await pushProgress(window.KukuQuest.getCloudSnapshot(), settings);
+          sendStatus('クラウドに新しく記録を作りました。', 'ok', new Date().toISOString());
+          return;
+        }
+        const remote = snapshot.data();
+        if (remote.progress) {
+          window.dispatchEvent(new CustomEvent('kuku-cloud-remote-progress', {
+            detail: { progress: remote.progress }
+          }));
+          sendStatus('クラウドの記録を読み込みました。', 'ok', new Date().toISOString());
+        }
+      }
+
+      async function uploadMission(mission, progress, settings) {
+        if (!validSettings(settings)) return;
+        await ensureSignedIn();
+        await setDoc(attemptDoc(settings, mission.id), {
+          ...mission,
+          familyCode: settings.familyCode,
+          childId: settings.childId,
+          childName: settings.childName || mission.childName || 'あやめちゃん',
+          ownerUid: auth.currentUser.uid,
+          uploadedAt: serverTimestamp()
+        }, { merge: true });
+        await pushProgress(progress, settings, {
+          attemptCount: increment(1),
+          lastAttemptAt: serverTimestamp(),
+          lastAttempt: {
+            id: mission.id,
+            type: mission.type,
+            date: mission.date,
+            correct: mission.correct,
+            total: mission.total,
+            percent: mission.percent,
+            completedAt: mission.completedAt
+          }
+        });
+      }
+
+      function schedulePush(progress, settings) {
+        if (!validSettings(settings)) return;
+        clearTimeout(pushTimer);
+        pushTimer = setTimeout(() => {
+          pushProgress(progress, settings).catch(error => {
+            sendStatus(`同期に失敗しました: ${error.message}`, 'warn');
+          });
+        }, 900);
+      }
+
+      window.addEventListener('kuku-progress-saved', event => {
+        const settings = window.KukuQuest.getCloudSettings();
+        schedulePush(event.detail.progress, settings);
+      });
+
+      window.addEventListener('kuku-cloud-sync-requested', event => {
+        const detail = event.detail || {};
+        const settings = detail.settings || window.KukuQuest.getCloudSettings();
+        const progress = detail.progress || window.KukuQuest.getCloudSnapshot();
+        const job = detail.mode === 'pull' ? pullProgress(settings) : pushProgress(progress, settings);
+        job.catch(error => sendStatus(`同期に失敗しました: ${error.message}`, 'warn'));
+      });
+
+      window.addEventListener('kuku-mission-completed', event => {
+        const detail = event.detail || {};
+        uploadMission(detail.mission, detail.progress, detail.settings || window.KukuQuest.getCloudSettings()).catch(error => {
+          sendStatus(`ミッション記録の保存に失敗しました: ${error.message}`, 'warn');
+        });
+      });
+
+      const initialSettings = window.KukuQuest.getCloudSettings();
+      if (validSettings(initialSettings)) {
+        pullProgress(initialSettings).catch(error => {
+          sendStatus(`クラウド読み込みに失敗しました: ${error.message}`, 'warn');
+        });
+      }
+    }
+  </script>
+</body>
+</html>

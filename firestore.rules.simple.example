@@ -1,0 +1,46 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function parentViewer() {
+      return signedIn()
+        && request.auth.token.email == 'hamamicchi@gmail.com';
+    }
+
+    function childOwner() {
+      return signedIn()
+        && request.auth.token.email == null
+        && request.resource.data.ownerUid == request.auth.uid;
+    }
+
+    function existingChildOwner() {
+      return signedIn()
+        && request.auth.token.email == null
+        && resource.data.ownerUid == request.auth.uid;
+    }
+
+    match /kukuFamilies/{familyId}/children/{childId} {
+      allow list, get: if parentViewer();
+      allow create: if childOwner();
+      allow update: if existingChildOwner() && request.resource.data.ownerUid == resource.data.ownerUid;
+      allow delete: if false;
+
+      match /attempts/{attemptId} {
+        allow list, get: if parentViewer();
+        allow create: if childOwner();
+        allow update: if existingChildOwner() && request.resource.data.ownerUid == resource.data.ownerUid;
+        allow delete: if false;
+      }
+    }
+  }
+}
+
+// Home-use rules for this version:
+// - Parent viewer reads only after Google login as hamamicchi@gmail.com.
+// - Child app writes with Firebase Anonymous Auth and an ownerUid.
+// - A second child device with a different anonymous UID will not be able to
+//   read/update the first device's child document under these rules.

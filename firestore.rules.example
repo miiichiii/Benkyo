@@ -1,0 +1,43 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function sameFamily(familyId) {
+      return signedIn() && request.auth.token.familyId == familyId;
+    }
+
+    function parentOf(familyId) {
+      return sameFamily(familyId) && request.auth.token.role == 'parent';
+    }
+
+    function childSelf(familyId, childId) {
+      return sameFamily(familyId)
+        && request.auth.token.role == 'child'
+        && request.auth.token.childId == childId;
+    }
+
+    match /kukuFamilies/{familyId}/children/{childId} {
+      allow read: if parentOf(familyId) || childSelf(familyId, childId);
+      allow create, update: if childSelf(familyId, childId);
+      allow delete: if false;
+
+      match /attempts/{attemptId} {
+        allow read: if parentOf(familyId) || childSelf(familyId, childId);
+        allow create, update: if childSelf(familyId, childId);
+        allow delete: if false;
+      }
+    }
+  }
+}
+
+// This strict version requires Firebase Authentication custom claims:
+// - Parent token: { familyId: "hamada-kuku", role: "parent" }
+// - Child token:  { familyId: "hamada-kuku", role: "child", childId: "ayame" }
+//
+// The parent viewer in this folder checks Google login on the client side.
+// For stronger protection, use custom claims like this file instead of relying
+// only on an email check in the browser.
